@@ -12,6 +12,7 @@ A makefile is built by first defining some variables :
 + **BIN_DIR** : directory to place the final binaries
 + **PRODUCT** : the final binary name
 + **PROJECT** : the sub-project's name
+
 Then comes the specific compilation options :
 + **CX_FLAGS** : flags to pass to $(CX) (*see below*)
 + **LD_FLAGS** : flags to pass to $(LD) (*see below*)
