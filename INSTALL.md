@@ -26,7 +26,7 @@ The compilation tools can be specified by modifying the following variables :
 In the used makefiles all this stuff is defined in the *conf.mk* file. The actual Makefile includes *conf.mk*, then all the construction files from the *mk.d* folder.
 In order :
 + **colors.mk** : defines some useful functions to output colored text on a terminal (uses *tput*)
-+ **functions.mk** : defines the *invoke* function to permit a verbose switch (see the *Compilation* section)
++ **functions.mk** : defines the *invoke* function to allow a verbose switch (see the *Compilation* section)
 + **sources.mk** : extracts source files from $(SRC_DIR) and builds the object and dependency files lists
 + **patch.mk** : performs some patching to $(CX_FLAGS)
 + **toplevel.mk** : defines some top-level rules (see the *Compilation* section)
@@ -34,7 +34,7 @@ In order :
 
 ### Compilation
 
-Any sub-priject Makefile defines several top-level targets :
+Any sub-project Makefile defines several top-level targets :
 + **release** : generate the final binary in release mode
 + **debug** : generate the final binary in debug mode
 + **clean** : remove the $(TMP_DIR) and $(BIN_DIR) folders (and therefore any build-generated file)
