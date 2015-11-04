@@ -11,18 +11,18 @@ pre-build:
 
 binaries: pre-build $(PROGRAM)
 
-.PHONY: post-build
-post-build: binaries
-	$(call blue,"==== Build successful")
-
 push: post-build
 	$(call yellow,"==== Pushing binary to remote")
-	@export PREFIX="$(shell pwd)" && cd ../debug && ./push.sh &> /dev/null
+	$(call invoke,yellow,export PREFIX="$(shell pwd)" && cd ../debug && ./push.sh)
 
-debug: push
+gdb: push
 	$(call yellow,"==== Starting debugging session")
 	@export PREFIX="$(shell pwd)" && cd ../debug && ./debug.sh
 	$(call yellow,"==== Debugging session ended")
+
+.PHONY: post-build
+post-build: binaries
+	$(call blue,"==== Build successful")
 
 ###################
 ### Phony rules ###
