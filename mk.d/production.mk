@@ -8,5 +8,5 @@ $(PROGRAM): $(OBJECTS)
 $(TMP_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(call green,"\(CX\) $<")
-	$(call invoke,green,$(CX) -c -MMD $< -o $@)
+	$(call invoke,green,$(CX) $(CX_FLAGS) -c -MMD $< -o $@)
 

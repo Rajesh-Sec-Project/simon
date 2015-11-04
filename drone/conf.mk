@@ -12,22 +12,22 @@ BIN_DIR=bin
 #####################
 
 PROJECT=simon_drone
-PRODUCT=simon.elf
+PRODUCT=simon_drone
 
 #############
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++11
+CX_FLAGS = -std=c++14 -static-libstdc++
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm
+LD_FLAGS = -lm -static-libstdc++
 
 #############
 ### Tools ###
 #############
 
-CX=armv7a-softfloat-linux-gnueabi-g++
+CX=arm-cortex_a8-linux-gnueabi-g++
 LD=$(CX)
