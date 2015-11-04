@@ -15,6 +15,15 @@ binaries: pre-build $(PROGRAM)
 post-build: binaries
 	$(call blue,"==== Build successful")
 
+push: post-build
+	$(call yellow,"==== Pushing binary to remote")
+	@export PREFIX="$(shell pwd)" && cd ../debug && ./push.sh &> /dev/null
+
+debug: push
+	$(call yellow,"==== Starting debugging session")
+	@export PREFIX="$(shell pwd)" && cd ../debug && ./debug.sh
+	$(call yellow,"==== Debugging session ended")
+
 ###################
 ### Phony rules ###
 ###################
@@ -22,7 +31,7 @@ post-build: binaries
 .PHONY: clean
 clean:
 	$(call blue,"==== Cleaning project $(PROJECT)")
-	@rm -rf $(TMP_DIR) $(BIN_DIR)
+	@rm -rf $(TMP_DIR) $(BIN_DIR) $(DBG_DIR)
 
 .PHONY: mk_debug
 mk_debug:

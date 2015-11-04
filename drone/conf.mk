@@ -6,6 +6,7 @@ SRC_DIR=src
 INC_DIR=inc
 TMP_DIR=build
 BIN_DIR=bin
+DBG_DIR=debug
 
 #####################
 ### Project names ###
