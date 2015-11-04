@@ -11,15 +11,6 @@ pre-build:
 
 binaries: pre-build $(PROGRAM)
 
-push: post-build
-	$(call yellow,"==== Pushing binary to remote")
-	$(call invoke,yellow,export PREFIX="$(shell pwd)" && cd ../debug && ./push.sh)
-
-gdb: push
-	$(call yellow,"==== Starting debugging session")
-	@export PREFIX="$(shell pwd)" && cd ../debug && ./debug.sh
-	$(call yellow,"==== Debugging session ended")
-
 .PHONY: post-build
 post-build: binaries
 	$(call blue,"==== Build successful")

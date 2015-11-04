@@ -5,6 +5,6 @@ define invoke
 endef
 else
 define invoke
-@$2;
+@$2 1> /dev/null;
 endef
 endif
