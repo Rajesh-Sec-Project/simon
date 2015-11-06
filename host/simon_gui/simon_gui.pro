@@ -12,9 +12,13 @@ TARGET = simon_gui
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp \
+    Mainwindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += \
+    Mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    Mainwindow.ui
+
+CONFIG += c++14
