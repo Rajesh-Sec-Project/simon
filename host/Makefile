@@ -1,16 +1,10 @@
-#####################
-### Configuration ###
-#####################
+include ../mk.d/all.mk
 
 include conf.mk
 
-################
-### Includes ###
-################
-
 include ../mk.d/colors.mk
 include ../mk.d/functions.mk
-include ../mk.d/sources.mk
-include ../mk.d/patch.mk
-include ../mk.d/toplevel.mk
-include ../mk.d/production.mk
+
+include ../mk.d/qt-patch.mk
+include ../mk.d/qt-toplevel.mk
+include ../mk.d/qt-qmake.mk

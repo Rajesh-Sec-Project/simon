@@ -1,12 +1,6 @@
-#####################
-### Configuration ###
-#####################
+include ../mk.d/all.mk
 
 include conf.mk
-
-################
-### Includes ###
-################
 
 include ../mk.d/colors.mk
 include ../mk.d/functions.mk

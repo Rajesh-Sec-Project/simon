@@ -8,6 +8,10 @@ define colored
 @tput sgr0;
 endef
 
+define white
+@echo "$1"
+endef
+
 define green
 $(call colored,2,$1)
 endef

@@ -19,6 +19,12 @@ post-build: binaries
 ### Phony rules ###
 ###################
 
+.PHONY: help
+help:
+	$(call blue,"==== Help to build project $(PROJECT)")
+	$(call white,     debug release: build project)
+	$(call white,     clean:         remove directories '$(TMP_DIR)' and '$(BIN_DIR)')
+
 .PHONY: clean
 clean:
 	$(call blue,"==== Cleaning project $(PROJECT)")

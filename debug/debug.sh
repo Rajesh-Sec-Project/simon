@@ -22,16 +22,17 @@ function send {
 }
 
 function stop_remote_gdb {
-    send "killall gdbserver; exit"
+    send "killall gdbserver"
 }
 
 function start_remote_gdb {
-    send "chmod +x $DIST_PATH/$PRODUCT; exit"
+    send "chmod +x $DIST_PATH/$PRODUCT"
     send_and_wait "gdbserver localhost:$GDB_PORT $DIST_PATH/$PRODUCT"
 }
 
 mkdir -p $PREFIX/$DBG_DIR
 stop_remote_gdb &> /dev/null
+#TODO: append to log and add some header w/ date, etc.
 start_remote_gdb &> $PREFIX/$DBG_DIR/gdbserver.log &
 sleep 1
 start_local_gdb
