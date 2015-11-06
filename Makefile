@@ -1,7 +1,6 @@
 include mk.d/colors.mk
 
-SUBDIRS:=$(filter-out mk.d/,$(wildcard */))
-SUBDIRS:=$(filter-out debug/,$(SUBDIRS))
+SUBDIRS:=$(filter-out $(wildcard *.d/),$(wildcard */))
 
 define descend
 @for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) --no-print-directory $1); done

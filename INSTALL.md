@@ -52,7 +52,7 @@ Any sub-project Makefile defines several top-level targets :
 + **push** : push binary to remote platform (see the *Debugging* section)
 + **gdb** : start a remote debugging session (see the *Debugging* section)
 + **shell** : start a remote telnet session
-+ **-> For Qt projects **
++ **-> For Qt projects**
 + **qmake** : execute qmake and generate the Qt project's Makefile
 + **qbuild** : build the qmake'd project
 + **qclean** : clean the qmake'd project
