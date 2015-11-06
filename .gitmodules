@@ -1,0 +1,3 @@
+[submodule "libs.d/libconf"]
+	path = libs.d/libconf
+	url = https://github.com/monti-tls/libconf

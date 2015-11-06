@@ -9,7 +9,7 @@ debug release: post-build
 pre-build:
 	$(call blue,"==== Building project $(PROJECT)")
 
-binaries: pre-build $(PROGRAM)
+binaries: pre-build $(DEPENDENCIES) $(PROGRAM)
 
 .PHONY: post-build
 post-build: binaries
@@ -29,6 +29,9 @@ help:
 clean:
 	$(call blue,"==== Cleaning project $(PROJECT)")
 	@rm -rf $(TMP_DIR) $(BIN_DIR) $(DBG_DIR)
+
+.PHONY: depclean
+depclean: $(DEPENDENCIES_CLEAN)
 
 .PHONY: mk_debug
 mk_debug:

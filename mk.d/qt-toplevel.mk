@@ -10,7 +10,7 @@ debug release: post-build
 pre-build:
 	$(call blue,"==== Building project $(PROJECT)")
 
-$(BINARY): pre-build qmake qbuild
+$(BINARY): pre-build $(DEPENDENCIES) qmake qbuild
 	@mkdir -p $(@D)
 	$(call yellow,(CP)    $@)
 	$(call invoke,yellow,cp $(TMP_DIR)/$(PRODUCT) $@)
@@ -31,3 +31,6 @@ help:
 clean:
 	$(call blue,"==== Cleaning project $(PROJECT)")
 	@rm -rf $(TMP_DIR) $(BIN_DIR)
+
+.PHONY: depclean
+depclean: $(DEPENDENCIES_CLEAN)

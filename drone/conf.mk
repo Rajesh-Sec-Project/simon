@@ -7,6 +7,7 @@ INC_DIR=inc
 TMP_DIR=build
 BIN_DIR=bin
 DBG_DIR=debug
+LIB_DIR=../libs.d
 
 #####################
 ### Project names ###
@@ -19,12 +20,15 @@ PRODUCT=simon_drone
 ### Flags ###
 #############
 
-CX_FLAGS = -std=c++14 -static-libstdc++
+CX_FLAGS = -std=gnu++11 -static-libstdc++
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm -static-libstdc++
+LD_FLAGS = -lm -static-libstdc++ -lconf
+
+CROSS = 1
+DEPENDS = libconf
 
 #############
 ### Tools ###
