@@ -1,5 +1,5 @@
-#ifndef COMM_PACKET_H
-#define COMM_PACKET_H
+#ifndef LCOMM_PACKET_H
+#define LCOMM_PACKET_H
 
 #include "lcomm/packetfactory.h"
 #include <string>
@@ -56,4 +56,4 @@ namespace lcomm
     PacketFactory<Derived> Packet<Derived>::m_factory;
 }
 
-#endif // COMM_PACKET_H
+#endif // LCOMM_PACKET_H

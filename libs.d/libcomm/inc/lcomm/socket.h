@@ -1,5 +1,5 @@
-#ifndef COMM_SOCKET_H
-#define COMM_SOCKET_H
+#ifndef LCOMM_SOCKET_H
+#define LCOMM_SOCKET_H
 
 #include <string>
 
@@ -13,4 +13,4 @@ namespace lcomm
     };
 }
 
-#endif // COMM_SOCKET_H
+#endif // LCOMM_SOCKET_H

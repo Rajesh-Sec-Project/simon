@@ -1,5 +1,5 @@
-#ifndef COMM_ENDPOINT_H
-#define COMM_ENDPOINT_H
+#ifndef LCOMM_ENDPOINT_H
+#define LCOMM_ENDPOINT_H
 
 #include "lcomm/packet.h"
 #include "lcomm/packetfactory.h"
@@ -62,4 +62,4 @@ namespace lcomm
     };
 };
 
-#endif // COMM_ENDPOINT_H
+#endif // LCOMM_ENDPOINT_H

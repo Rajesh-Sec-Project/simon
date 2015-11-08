@@ -1,5 +1,5 @@
-#ifndef COMM_SUBSCRIBER_H
-#define COMM_SUBSCRIBER_H
+#ifndef LCOMM_SUBSCRIBER_H
+#define LCOMM_SUBSCRIBER_H
 
 #include "lcomm/packet.h"
 
@@ -15,4 +15,4 @@ namespace lcomm
     };
 }
 
-#endif // COMM_SUBSCRIBER_H
+#endif // LCOMM_SUBSCRIBER_H

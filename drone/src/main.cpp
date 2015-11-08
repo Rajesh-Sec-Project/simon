@@ -6,13 +6,12 @@
 #include "lcomm/packet.h"
 #include "lcomm/subscriber.h"
 #include "lcomm/endpoint.h"
-
-using namespace lconf;
+#include "comm/serversocket.h"
 
 class ControlPacket : public lcomm::Packet<ControlPacket>
 {
 public:
-    ControlPacket(json::Node* node)
+    ControlPacket(lconf::json::Node* node)
     {
         fromJson(node);
     }
@@ -40,22 +39,27 @@ class ControlSubscriber : public lcomm::Subscriber
 public:
     void notify(lcomm::PacketBase const* packet)
     {
-        std::cout << "Received packet [" << packet << "]" << std::endl;
+        std::cout << "Received packet [" << packet->tag() << "]" << std::endl;
     }
 };
 
 int main()
 {
     using namespace lcomm;
+    using namespace comm;
 
-    Endpoint* ep = new Endpoint();
-    ep->registerPacketClass<ControlPacket>();
+    ServerSocket sock(3333);
+    for (; !sock.opened(); );
 
-    ControlSubscriber* s = new ControlSubscriber();
-    ep->registerSubscriber(s);
+    Endpoint ep;
+    ep.bind(&sock);
+    ep.registerPacketClass<ControlPacket>();
+
+    ControlSubscriber sub;
+    ep.registerSubscriber(&sub);
 
     ControlPacket ctrl("command");
-    ep->write(&ctrl);
+    ep.write(&ctrl);
 
     return 0;
 }

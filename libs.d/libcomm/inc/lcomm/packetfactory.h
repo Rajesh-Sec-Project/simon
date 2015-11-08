@@ -1,5 +1,5 @@
-#ifndef COMM_PACKETFACTORY_H
-#define COMM_PACKETFACTORY_H
+#ifndef LCOMM_PACKETFACTORY_H
+#define LCOMM_PACKETFACTORY_H
 
 #include "lconf/json.h"
 
@@ -25,4 +25,4 @@ namespace lcomm
     };
 }
 
-#endif // COMM_PACKETFACTORY_H
+#endif // LCOMM_PACKETFACTORY_H

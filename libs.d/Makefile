@@ -32,7 +32,11 @@ force_look:
 LIBCONF_DIR=libconf
 LIBCONF_INCDIR=include
 LIBCONF_BINDIR=bin
-LIBCONF_OVERRIDES=CXX=arm-cortex_a8-linux-gnueabi-g++ AR=arm-cortex_a8-linux-gnueabi-ar BIN_DIR=$(call libbin,$(LIBCONF_BINDIR))
+LIBCONF_BUILDDIR=build
+LIBCONF_OVERRIDES=CXX=arm-cortex_a8-linux-gnueabi-g++ \
+                  AR=arm-cortex_a8-linux-gnueabi-ar \
+                  BIN_DIR=$(call libbin,$(LIBCONF_BINDIR)) \
+                  BUILD_DIR=$(call libbin,$(LIBCONF_BUILDDIR))
 
 .PHONY: libconf
 libconf: force_look
@@ -57,7 +61,11 @@ libconf_bindir: force_look
 LIBCOMM_DIR=libcomm
 LIBCOMM_INCDIR=inc
 LIBCOMM_BINDIR=bin
-LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ AR=arm-cortex_a8-linux-gnueabi-ar BIN_DIR=$(call libbin,$(LIBCOMM_BINDIR))
+LIBCOMM_TMPDIR=build
+LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
+                  AR=arm-cortex_a8-linux-gnueabi-ar \
+                  BIN_DIR=$(call libbin,$(LIBCOMM_BINDIR)) \
+                  TMP_DIR=$(call libbin,$(LIBCOMM_TMPDIR))
 
 .PHONY: libcomm
 libcomm: force_look
