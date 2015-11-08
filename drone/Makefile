@@ -10,3 +10,4 @@ include ../mk.d/patch.mk
 include ../mk.d/toplevel.mk
 include ../mk.d/remote.mk
 include ../mk.d/production.mk
+include ../mk.d/qemu.mk

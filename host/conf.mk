@@ -6,4 +6,4 @@ LIB_DIR=../libs.d
 
 CROSS = 0
 DEPENDS = libconf
-QMAKE_FLAGS = LIBS+=-lconf
+QMAKE_FLAGS = LIBS+=-lconf QMAKE_CXXFLAGS+='-std=c++14'

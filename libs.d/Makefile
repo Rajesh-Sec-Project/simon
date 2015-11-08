@@ -49,3 +49,28 @@ libconf_incdir: force_look
 .PHONY: libconf_bindir
 libconf_bindir: force_look
 	@echo $(LIBCONF_DIR)/$(call libbin,$(LIBCONF_BINDIR))
+
+###############
+### libcomm ###
+###############
+
+LIBCOMM_DIR=libcomm
+LIBCOMM_INCDIR=inc
+LIBCOMM_BINDIR=bin
+LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ AR=arm-cortex_a8-linux-gnueabi-ar BIN_DIR=$(call libbin,$(LIBCOMM_BINDIR))
+
+.PHONY: libcomm
+libcomm: force_look
+	$(call libmake,LIBCOMM,)
+
+.PHONY: libcomm_clean
+libcomm_clean: force_look
+	$(call libmake,LIBCOMM,clean)
+
+.PHONY: libcomm_incdir
+libcomm_incdir: force_look
+	@echo $(LIBCOMM_DIR)/$(LIBCOMM_INCDIR)
+
+.PHONY: libcomm_bindir
+libcomm_bindir: force_look
+	@echo $(LIBCOMM_DIR)/$(call libbin,$(LIBCOMM_BINDIR))
