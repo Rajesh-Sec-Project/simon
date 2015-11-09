@@ -20,6 +20,19 @@ namespace lcomm
         json::Node* toJson() const;
         void fromJson(json::Node* node);
 
+        template <typename T>
+        void bind(std::string const& name, T& value)
+        { m_tpl.bind(name, value); }
+
+        template <typename Derived>
+        Derived* downcast() const
+        {
+            if (Derived::staticTag() == tag())
+                return (Derived*) this;
+            else
+                return 0;
+        }
+
         virtual std::string tag() const = 0;
 
     protected:

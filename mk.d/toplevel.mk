@@ -2,14 +2,13 @@
 ### Top-level rules ###
 #######################
 
-all: debug
 debug release: post-build
 
 .PHONY: pre-build
 pre-build:
 	$(call blue,"==== Building project $(PROJECT)")
 
-binaries: pre-build $(DEPENDENCIES) $(PROGRAM)
+binaries: pre-build $(PROGRAM)
 
 .PHONY: post-build
 post-build: binaries

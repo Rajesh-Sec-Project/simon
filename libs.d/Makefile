@@ -3,12 +3,12 @@ include ../mk.d/functions.mk
 # If CROSS is set to 1, apply lib's overrides
 ifeq ($(CROSS),1)
 define libmake
-$(call invoke,white,$(MAKE) $($1_OVERRIDES) --no-print-directory $2 -C $($1_DIR))
+$(call invoke,white,$(MAKE) $1 $($2_OVERRIDES) --no-print-directory $3 -C $($2_DIR))
 endef
 # Else, don't touch anything
 else
 define libmake
-$(call invoke,white,$(MAKE) --no-print-directory $2 -C $($1_DIR))
+$(call invoke,white,$(MAKE) $1 --no-print-directory $3 -C $($2_DIR))
 endef
 endif
 
@@ -40,11 +40,11 @@ LIBCONF_OVERRIDES=CXX=arm-cortex_a8-linux-gnueabi-g++ \
 
 .PHONY: libconf
 libconf: force_look
-	$(call libmake,LIBCONF,)
+	$(call libmake,release=0,LIBCONF,)
 
 .PHONY: libconf_clean
 libconf_clean: force_look
-	$(call libmake,LIBCONF,clean)
+	$(call libmake,,LIBCONF,clean)
 
 .PHONY: libconf_incdir
 libconf_incdir: force_look
@@ -69,11 +69,11 @@ LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
 
 .PHONY: libcomm
 libcomm: force_look
-	$(call libmake,LIBCOMM,)
+	$(call libmake,,LIBCOMM,debug)
 
 .PHONY: libcomm_clean
 libcomm_clean: force_look
-	$(call libmake,LIBCOMM,clean)
+	$(call libmake,,LIBCOMM,clean)
 
 .PHONY: libcomm_incdir
 libcomm_incdir: force_look

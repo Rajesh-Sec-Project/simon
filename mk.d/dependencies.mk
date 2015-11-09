@@ -1,13 +1,15 @@
 # External dependencies rule names are dependency-<name>
-DEPENDENCIES = $(addprefix dependency-,$(DEPENDS))
-DEPENDENCIES_CLEAN = $(addsuffix -clean,$(DEPENDENCIES))
+DEPENDENCIES := $(addprefix dependency-,$(DEPENDS))
 
-.PHONY: DEPENDENCIES
+DEPENDENCIES_CLEAN = $(addsuffix -clean,$(addprefix dependency-,$(DEPENDS)))
+
+#.PHONY: $(DEPENDENCIES)
+
 dependency-%:
 	$(call green,(DEP) $*)
 	$(call invoke,white,$(MAKE) CROSS=$(CROSS) --no-print-directory $* -C $(LIB_DIR))
 
-.PHONY: DEPENDENCIES_CLEAN
+# .PHONY: $(DEPENDENCIES_CLEAN)
 dependency-%-clean:
 	$(call blue,"==== Cleaning external dependency $*")
 	$(call invoke,white,$(MAKE) CROSS=$(CROSS) --no-print-directory $*_clean -C $(LIB_DIR))
