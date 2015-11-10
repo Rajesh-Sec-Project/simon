@@ -11,13 +11,11 @@
 #include <queue>
 #include <stdexcept>
 
-namespace lcomm
-{
+namespace lcomm {
     //! This class implements the lcomm::Socket interface
     //!   for a client TCP socket (using Unix sockets).
     //! It queues input data that can be read with the read() method.
-    class ClientSocket : public Socket
-    {
+    class ClientSocket : public Socket {
     public:
         //! Create a client socket, and attempt a connection to
         //!   the specified server.

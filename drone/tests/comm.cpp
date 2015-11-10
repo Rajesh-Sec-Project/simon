@@ -8,22 +8,19 @@
 #include "lcomm/lcomm.h"
 
 //! A simple packet structure.
-class MyPacket : public lcomm::Packet<MyPacket>
-{
+class MyPacket : public lcomm::Packet<MyPacket> {
 public:
     //! This constructor must be defined, and must call
     //!   fromJson(node) after setting up bindings.
-    MyPacket(lconf::json::Node* node)
-    {
+    MyPacket(lconf::json::Node* node) {
         M_setup();
 
         fromJson(node);
     }
 
     //! This is a custom constructor (that sets up bindings too).
-    MyPacket(std::string const& cmd) :
-        m_cmd(cmd)
-    {
+    MyPacket(std::string const& cmd)
+            : m_cmd(cmd) {
         M_setup();
     }
 
@@ -39,8 +36,7 @@ public:
 
 private:
     //! This function sets up bindings.
-    void M_setup()
-    {
+    void M_setup() {
         //! This call to bind(name, ref) exposes the member 'm_cmd'
         //!   to the serializing system (by reference), meaning
         //!   that it will be preserved during transmission of this packet
@@ -55,26 +51,22 @@ private:
 //! A simple ping-pong subscriber.
 //! Create with pong == false for the pinger and pong == true
 //!   for the ponger.
-class PingPonger : public lcomm::Subscriber
-{
+class PingPonger : public lcomm::Subscriber {
 public:
-    PingPonger(bool pong) :
-        m_pong(pong)
-    {}
+    PingPonger(bool pong)
+            : m_pong(pong) {
+    }
 
     //! The endpoint calls this function when a packet is received.
-    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet)
-    {
+    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
         // Don't cast directly as it is really unsafe, call the downcast<T>()
         //   function, that checks the tag of the packet.
         MyPacket* ctrl = packet->downcast<MyPacket>();
-        if (ctrl)
-        {
+        if(ctrl) {
             std::cout << ctrl->cmd() << std::endl;
 
             // If we're a ponger, reply to the packet.
-            if (m_pong)
-            {
+            if(m_pong) {
                 MyPacket ctrl("<- pong");
                 ep->write(&ctrl);
             }
@@ -85,15 +77,13 @@ private:
     bool m_pong;
 };
 
-int main()
-{
+int main() {
     // Just a random port
     int port = 48953;
 
     using namespace lcomm;
 
-    try
-    {
+    try {
         // Remember to register our packet to the system
         PacketManager::registerPacketClass<MyPacket>();
 
@@ -128,12 +118,12 @@ int main()
 
         // Wait for the client to be opened, otherwise
         //   write() will throw
-        for (; !client->opened(); );
+        for(; !client->opened();)
+            ;
 
         /*** Send some data ***/
 
-        for (int i = 0; i < 10; ++i)
-        {
+        for(int i = 0; i < 10; ++i) {
             // Create a ping packet and send it through the endpoint
             MyPacket ctrl("-> ping");
             client_ep->write(&ctrl);
@@ -148,9 +138,7 @@ int main()
         // Deleting sockets closes all connections
         delete client;
         delete server;
-    }
-    catch (std::exception const& exc)
-    {
+    } catch(std::exception const& exc) {
         std::cerr << "Exception: " << exc.what() << std::endl;
         return -1;
     }

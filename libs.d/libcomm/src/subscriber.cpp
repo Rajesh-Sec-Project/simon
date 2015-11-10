@@ -1,10 +1,9 @@
 #include "lcomm/subscriber.h"
 
-namespace lcomm
-{
-    Subscriber::Subscriber()
-    { }
+namespace lcomm {
+    Subscriber::Subscriber() {
+    }
 
-    Subscriber::~Subscriber()
-    { }
+    Subscriber::~Subscriber() {
+    }
 }

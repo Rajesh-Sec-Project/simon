@@ -1,15 +1,13 @@
 #ifndef LCOMM_SUBSCRIBER_H
 #define LCOMM_SUBSCRIBER_H
 
-namespace lcomm
-{
+namespace lcomm {
     class Endpoint;
     class PacketBase;
 
     //! An abstract subscriber interface used as
     //!   a frontend for the Endpoint class.
-    class Subscriber
-    {
+    class Subscriber {
     public:
         Subscriber();
         virtual ~Subscriber();

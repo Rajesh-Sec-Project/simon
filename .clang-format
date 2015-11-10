@@ -5,18 +5,18 @@ AccessModifierOffset: -4
 AlignEscapedNewlinesLeft: true
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
+# AllowShortCaseLabelsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
-BinPackArguments: false
+# BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: false
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: false
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializersBeforeComma: true
 ColumnLimit: 120
 CommentPragmas: ''
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
@@ -38,7 +38,7 @@ PenaltyBreakFirstLessLess: 0
 PenaltyBreakString: 100
 PenaltyExcessCharacter: 1
 PenaltyReturnTypeOnItsOwnLine: 20
-PointerBindsToType: false
+PointerBindsToType: true
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: Never
 SpaceInEmptyParentheses: false

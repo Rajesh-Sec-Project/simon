@@ -3,12 +3,10 @@
 
 #include <string>
 
-namespace lcomm
-{
+namespace lcomm {
     //! An abstract socket interface, used as a backend
     //!   for the Endpoint class.
-    class Socket
-    {
+    class Socket {
     public:
         Socket();
         virtual ~Socket();

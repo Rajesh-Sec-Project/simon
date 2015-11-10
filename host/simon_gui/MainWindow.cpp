@@ -4,12 +4,15 @@
 
 using namespace std::literals;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), _ui(std::make_unique<Ui::MainWindow>()) {
+MainWindow::MainWindow(QWidget* parent)
+        : QMainWindow(parent)
+        , _ui(std::make_unique<Ui::MainWindow>()) {
     _ui->setupUi(this);
     this->connect(_ui->myButton, SIGNAL(clicked()), this, SLOT(onClickClick()));
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow() {
+}
 
 
 void MainWindow::onClickClick() {

@@ -8,15 +8,13 @@
 #include <queue>
 #include <stdexcept>
 
-namespace lcomm
-{
+namespace lcomm {
     //! This class implements the Socket interface for
     //!   TCP connections (with the unix socket API).
     //! It implements a server socket, accepting (a single) connection
     //!   on the given port.
     //! It queues input data that can be read with the read() method.
-    class ServerSocket : public Socket
-    {
+    class ServerSocket : public Socket {
     public:
         //! Create a server socket, listening for a connection at
         //!   the given port.

@@ -12,14 +12,12 @@
 #include <atomic>
 #include <stdexcept>
 
-namespace lcomm
-{
+namespace lcomm {
     class Socket;
 
     //! This class manages the serialization and creation of packets from/to
     //!   an abstract socket interface (\see lcomm::Socket).
-    class Endpoint
-    {
+    class Endpoint {
     public:
         //! Create an endpoint.
         //! \param latency The socket's polling period for reading
