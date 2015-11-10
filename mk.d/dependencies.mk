@@ -1,13 +1,18 @@
 # External dependencies rule names are dependency-<name>
-DEPENDENCIES := $(addprefix dependency-,$(DEPENDS))
+release: DEPENDENCIES := $(addsuffix -release,$(addprefix dependency-,$(DEPENDS)))
+debug:   DEPENDENCIES := $(addsuffix -debug,$(addprefix dependency-,$(DEPENDS)))
 
 DEPENDENCIES_CLEAN = $(addsuffix -clean,$(addprefix dependency-,$(DEPENDS)))
 
 #.PHONY: $(DEPENDENCIES)
 
-dependency-%:
+dependency-%-release:
 	$(call green,(DEP) $*)
-	$(call invoke,white,$(MAKE) CROSS=$(CROSS) --no-print-directory $* -C $(LIB_DIR))
+	$(call invoke,white,$(MAKE) CROSS=$(CROSS) --no-print-directory $*_release -C $(LIB_DIR))
+
+dependency-%-debug:
+	$(call green,(DEP) $*)
+	$(call invoke,white,$(MAKE) CROSS=$(CROSS) --no-print-directory $*_debug -C $(LIB_DIR))
 
 # .PHONY: $(DEPENDENCIES_CLEAN)
 dependency-%-clean:
@@ -23,3 +28,7 @@ DEPENDENCIES_BINDIRS = $(addprefix $(LIB_DIR)/,$(foreach DEP,$(DEPENDS),$(shell 
 # Turn them into flags (added in patch.mk)
 DEPENDENCIES_INCFLAGS = $(addprefix -I,$(DEPENDENCIES_INCDIRS))
 DEPENDENCIES_LDFLAGS  = $(addprefix -L,$(DEPENDENCIES_BINDIRS))
+
+.PHONY: dependencies
+dependencies:
+	@if [[ "$(DEPENDENCIES)" != "" ]]; then $(MAKE) --no-print-directory $(DEPENDENCIES); fi

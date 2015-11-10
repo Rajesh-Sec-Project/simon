@@ -14,25 +14,29 @@ namespace lcomm
     //!   TCP connections (with the unix socket API).
     //! It implements a server socket, accepting (a single) connection
     //!   on the given port.
+    //! It queues input data that can be read with the read() method.
     class ServerSocket : public Socket
     {
     public:
         //! Create a server socket, listening for a connection at
         //!   the given port.
-        //! The latency is the polling period in ms for queuing input data (in ms).
+        //! \param port The port to listen to
+        //! \param latency The polling period for reading (and therefore queuing) input data
         ServerSocket(unsigned int port, unsigned int latency = 5);
 
         //! The socket is closed when destroying the instance.
         virtual ~ServerSocket();
 
         //! Check if the socket has a current connection opened.
+        //! \return Returns true if the socket is opened, false otherwise
         bool opened() const;
 
-        //! Write some data to the socket.
+        //! \param data The data to write to the socket
         void write(std::string const& data);
 
         //! Attempt to read some data from the socket.
-        //! Returns false if there is no data to be read.
+        //! \param data Output parameter for read data
+        //! \return True if all went well, false otherwise (or if there is nothing to read)
         bool read(std::string* data);
 
     private:

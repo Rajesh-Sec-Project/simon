@@ -38,8 +38,12 @@ LIBCONF_OVERRIDES=CXX=arm-cortex_a8-linux-gnueabi-g++ \
                   BIN_DIR=$(call libbin,$(LIBCONF_BINDIR)) \
                   BUILD_DIR=$(call libbin,$(LIBCONF_BUILDDIR))
 
-.PHONY: libconf
-libconf: force_look
+.PHONY: libconf_release
+libconf_release: force_look
+	$(call libmake,release=1,LIBCONF,)
+
+.PHONY: libconf_debug
+libconf_debug: force_look
 	$(call libmake,release=0,LIBCONF,)
 
 .PHONY: libconf_clean
@@ -67,8 +71,12 @@ LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
                   BIN_DIR=$(call libbin,$(LIBCOMM_BINDIR)) \
                   TMP_DIR=$(call libbin,$(LIBCOMM_TMPDIR))
 
-.PHONY: libcomm
-libcomm: force_look
+.PHONY: libcomm_release
+libcomm_release: force_look
+	$(call libmake,,LIBCOMM,release)
+
+.PHONY: libcomm_debug
+libcomm_debug: force_look
 	$(call libmake,,LIBCOMM,debug)
 
 .PHONY: libcomm_clean

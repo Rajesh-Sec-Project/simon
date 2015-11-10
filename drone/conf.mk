@@ -4,6 +4,7 @@
 
 SRC_DIR=src
 INC_DIR=inc
+TST_DIR=tests
 TMP_DIR=build
 BIN_DIR=bin
 DBG_DIR=debug

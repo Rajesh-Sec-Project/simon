@@ -1,7 +1,7 @@
-$(PROGRAM): $(DEPENDENCIES) $(OBJECTS)
+$(PROGRAM): dependencies $(OBJECTS)
 	@mkdir -p $(@D)
 	$(call yellow,(LD)  $@)
-	$(call invoke,yellow,$(LD) $(filter-out $(DEPENDENCIES),$^) -o $@ $(LD_FLAGS))
+	$(call invoke,yellow,$(LD) $(filter-out dependencies,$^) -o $@ $(LD_FLAGS))
 
 -include $(DEPS)
 

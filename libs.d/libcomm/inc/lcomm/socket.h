@@ -13,7 +13,13 @@ namespace lcomm
         Socket();
         virtual ~Socket();
 
+        //! Abstract method for writing some data to the socket.
+        //! \param data The data to write to the socket
         virtual void write(std::string const& data) = 0;
+
+        //! Abstract method for reading data from the socket.
+        //! \param data Output parameter for read data.
+        //! \return true if succeeded, false otherwise (or if there is no data to be read)
         virtual bool read(std::string* data) = 0;
     };
 }

@@ -193,14 +193,13 @@ namespace lcomm
 
     void Endpoint::M_notify(PacketBase* packet)
     {
-        // std::vector<std::thread> threads;
+        std::vector<std::thread> threads;
 
         for (auto subscriber : m_subscribers)
-            subscriber->notify(this, packet);
-            // threads.push_back(std::thread(&Subscriber::notify, subscriber, this, packet));
+            threads.push_back(std::thread(&Subscriber::notify, subscriber, this, packet));
 
-        // for (auto& th : threads)
-        //    th.join();
+        for (auto& th : threads)
+            th.join();
 
         delete packet;
     }

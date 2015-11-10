@@ -58,10 +58,19 @@ namespace lcomm
     {
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
-        // Remember to append a new line at the end
-        std::string raw = data + "\n";
-        if (::write(m_fd, raw.c_str(), raw.size()) < 0)
-            throw std::runtime_error("lcomm::ClientSocket::write: write failed");
+        // Don't forget to append a new line
+        std::string raw = data + '\n';
+        int size = raw.size();
+        int pos = 0;
+        int len = 0;
+        do
+        {
+            size -= len;
+            pos += len;
+            len = ::write(m_fd, raw.c_str() + pos, size);
+            if (len < 0)
+                throw std::runtime_error("lcomm::ClientSocket::write: write failed");
+        } while (len != size);
     }
 
     bool ClientSocket::read(std::string* data)

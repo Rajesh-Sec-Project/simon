@@ -5,5 +5,5 @@ BIN_DIR=bin
 LIB_DIR=../libs.d
 
 CROSS = 0
-DEPENDS = libconf
-QMAKE_FLAGS = LIBS+=-lconf QMAKE_CXXFLAGS+='-std=c++14'
+DEPENDS = libconf libcomm
+QMAKE_FLAGS = LIBS+='-lconf -lcomm' QMAKE_CXXFLAGS+='-std=c++14'

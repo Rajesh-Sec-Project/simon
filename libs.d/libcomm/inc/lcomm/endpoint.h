@@ -16,32 +16,32 @@ namespace lcomm
 {
     class Socket;
 
-    //! The Endpoint class managed reading and writing of packets.
-    //! It communicates w/ the outside world via the Socket interface,
-    //!   of which an instance must be bound to the endpoint prior to any read
-    //!   or write operation.
-    //! It sends and receives serialized packets (in the json format).
-    //! It keeps track of several Subscriber instances which are notified of new packet arrivals.
-    //! When a new packet is received, for each subscriber in the list their notify() function
-    //!   is invoked (in separate threads).
+    //! This class manages the serialization and creation of packets from/to
+    //!   an abstract socket interface (\see lcomm::Socket).
     class Endpoint
     {
     public:
         //! Create an endpoint.
-        //! The latency is the socket polling period for reading (in ms).
+        //! \param latency The socket's polling period for reading
         Endpoint(unsigned int latency = 10);
+
         virtual ~Endpoint();
 
         //! Register a subscriber instance to be notified of packet
         //!   arrivals.
+        //! \param subscriber The subscriber instance to register
         void registerSubscriber(Subscriber* subscriber);
+
         //! Unregister a subscriber.
+        //! \param subscriber The subscriber instance to unregister
         void unregisterSubscriber(Subscriber* subscriber);
 
         //! Bind this endpoint to a socket interface.
+        //! \param socket The socket to bind to
         void bind(Socket* socket);
 
         //! Send a packet through this endpoint.
+        //! \param packet The packet to send through this endpoint
         void write(PacketBase* packet);
 
     private:

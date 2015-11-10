@@ -10,7 +10,7 @@ debug release: post-build
 pre-build:
 	$(call blue,"==== Building project $(PROJECT)")
 
-$(BINARY): pre-build $(DEPENDENCIES) qmake qbuild
+$(BINARY): pre-build dependencies qmake qbuild
 	@mkdir -p $(@D)
 	$(call yellow,(CP)    $@)
 	$(call invoke,yellow,cp $(TMP_DIR)/$(PRODUCT) $@)
