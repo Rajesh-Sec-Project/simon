@@ -6,3 +6,5 @@ bin-*/
 build-*/
 *.autosave
 *~
+*.sublime-workspace
+*.sublime-project
