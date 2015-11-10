@@ -14,7 +14,8 @@
 
 namespace lcomm
 {
-    ClientSocket::ClientSocket(std::string const& ip, unsigned int port) :
+    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, unsigned int latency) :
+        m_latency(latency),
         m_init_flag(false),
         m_exit_flag(false),
         m_connected_flag(false),
@@ -128,7 +129,7 @@ namespace lcomm
                     data += c;
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
             }
 
             delete[] chunk;

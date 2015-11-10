@@ -1,4 +1,5 @@
 #include "lcomm/endpoint.h"
+#include "lcomm/packetmanager.h"
 #include <stdexcept>
 #include <sstream>
 #include <chrono>
@@ -10,7 +11,8 @@ namespace lcomm
     std::string const Endpoint::m_magic = "simon";
     std::string const Endpoint::m_version = "01";
 
-    Endpoint::Endpoint() :
+    Endpoint::Endpoint(unsigned int latency) :
+        m_latency(latency),
         m_socket(0),
         m_read_thread_exit(false),
         m_read_thread_exc(nullptr),
@@ -109,7 +111,7 @@ namespace lcomm
                     M_notify(packet);
                 }
                 else
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
             }
         }
         catch (...)
@@ -178,11 +180,11 @@ namespace lcomm
             throw std::runtime_error("lcomm::Endpoint::M_processReceived: ill-formed packet (invalid tag field)");
 
         // Find the appropriate packet factory
-        auto it = m_packet_factories.find(tag);
-        if (it == m_packet_factories.end())
+        PacketFactoryBase* factory = PacketManager::getFactoryByTag(tag);
+        if (!factory)
             throw std::runtime_error("lcomm:Endpoint::M_processReceived: packet tag '" + tag + "' has not been registered");
 
-        PacketBase* packet = it->second->create(payload);
+        PacketBase* packet = factory->create(payload);
         if (!packet)
             throw std::runtime_error("lcomm::Endpoint::M_processReceived: packet creation failed");
 

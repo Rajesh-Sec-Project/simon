@@ -20,7 +20,8 @@ namespace lcomm
     public:
         //! Create a client socket, and attempt a connection to
         //!   the specified server.
-        ClientSocket(std::string const& ip, unsigned int port);
+        //! The latency is the polling period in ms for queuing input data (in ms).
+        ClientSocket(std::string const& ip, unsigned int port, unsigned int latency = 5);
 
         //! Connection is closed and ressources freed at destruction of the socket.
         virtual ~ClientSocket();
@@ -39,6 +40,7 @@ namespace lcomm
         void M_thread();
 
     private:
+        unsigned int m_latency;
         int m_fd;
         sockaddr_in m_addr;
         std::mutex m_fd_mutex;

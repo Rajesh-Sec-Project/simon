@@ -5,11 +5,7 @@
 #include <thread>
 #include <chrono>
 
-#include "lcomm/packet.h"
-#include "lcomm/subscriber.h"
-#include "lcomm/endpoint.h"
-#include "lcomm/serversocket.h"
-#include "lcomm/clientsocket.h"
+#include "lcomm/lcomm.h"
 
 class ControlPacket : public lcomm::Packet<ControlPacket>
 {
@@ -22,7 +18,7 @@ public:
     }
 
     ControlPacket(std::string const& cmd) :
-        m_cmd(cmd), Packet()
+        m_cmd(cmd)
     {
         M_setup();
     }
@@ -78,12 +74,13 @@ int main()
 
     try
     {
+        PacketManager::registerPacketClass<ControlPacket>();
+
         /// Server side ///
 
         ServerSocket* server = new ServerSocket(port);
 
         Endpoint* server_ep = new Endpoint();
-        server_ep->registerPacketClass<ControlPacket>();
         server_ep->bind(server);
 
         ControlSubscriber server_sub(true);
@@ -96,7 +93,6 @@ int main()
         ClientSocket* client = new ClientSocket("127.0.0.1", port);
 
         Endpoint* client_ep = new Endpoint();
-        client_ep->registerPacketClass<ControlPacket>();
         client_ep->bind(client);
 
         ControlSubscriber client_sub(false);
@@ -111,7 +107,7 @@ int main()
             ControlPacket ctrl("-> ping");
             client_ep->write(&ctrl);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         delete client_ep;

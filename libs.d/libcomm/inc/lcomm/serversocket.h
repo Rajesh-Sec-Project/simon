@@ -19,7 +19,8 @@ namespace lcomm
     public:
         //! Create a server socket, listening for a connection at
         //!   the given port.
-        ServerSocket(unsigned int port);
+        //! The latency is the polling period in ms for queuing input data (in ms).
+        ServerSocket(unsigned int port, unsigned int latency = 5);
 
         //! The socket is closed when destroying the instance.
         virtual ~ServerSocket();
@@ -38,6 +39,7 @@ namespace lcomm
         void M_thread();
 
     private:
+        unsigned int m_latency;
         int m_fd, m_cfd;
         std::mutex m_fd_mutex;
         std::atomic<bool> m_init_flag, m_exit_flag, m_connected_flag;

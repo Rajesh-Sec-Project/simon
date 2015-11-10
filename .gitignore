@@ -3,5 +3,6 @@ bin/
 debug/
 *.pro.user
 bin-*/
+build-*/
 *.autosave
 *~
