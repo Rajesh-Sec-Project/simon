@@ -10,7 +10,7 @@ if [ "$#" -gt 1 ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-    format_path=("../drone" "../host" "../common")
+    format_path=("../drone" "../host" "../host-sandbox" "../libs.d/libcomm")
 else
     format_path=("$1")
 fi

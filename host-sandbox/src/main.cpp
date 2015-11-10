@@ -30,36 +30,32 @@ private:
 
 static std::atomic<bool> quit;
 
-class Pinger : public lcomm::Subscriber
-{
+class Pinger : public lcomm::Subscriber {
 public:
-	void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet)
-	{
-		PingPacket* pong = packet->downcast<PingPacket>();
-		if (pong)
-		{
-			std::cout << pong->message() << std::endl;
-		}
-	}
+    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
+        PingPacket* pong = packet->downcast<PingPacket>();
+        if(pong) {
+            std::cout << pong->message() << std::endl;
+        }
+    }
 };
 
 int main() {
-	using namespace lcomm;
+    using namespace lcomm;
 
-	try
-	{
-		quit = false;
-		
-		PacketManager::registerPacketClass<PingPacket>();
+    try {
+        quit = false;
 
-		ClientSocket* client = new ClientSocket("192.168.1.1", 50001);
-		Endpoint* ep = new Endpoint();
-		ep->bind(client);
+        PacketManager::registerPacketClass<PingPacket>();
 
-		Pinger pinger;
-		ep->registerSubscriber(&pinger);
+        ClientSocket* client = new ClientSocket("192.168.1.1", 50001);
+        Endpoint* ep = new Endpoint();
+        ep->bind(client);
 
-		// Wait for the client to be opened, otherwise
+        Pinger pinger;
+        ep->registerSubscriber(&pinger);
+
+        // Wait for the client to be opened, otherwise
         //   write() will throw
         for(; !client->opened();)
             ;
@@ -78,12 +74,10 @@ int main() {
 
         delete ep;
         delete client;
-	}
-	catch (std::exception const& exc)
-	{
-		std::cerr << "exception: " << exc.what() << std::endl;
-		return -1;
-	}
+    } catch(std::exception const& exc) {
+        std::cerr << "exception: " << exc.what() << std::endl;
+        return -1;
+    }
 
     return 0;
 }

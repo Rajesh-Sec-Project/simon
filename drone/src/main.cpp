@@ -30,51 +30,45 @@ private:
 
 static std::atomic<bool> quit;
 
-class Ponger : public lcomm::Subscriber
-{
+class Ponger : public lcomm::Subscriber {
 public:
-	void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet)
-	{
-		PingPacket* ping = packet->downcast<PingPacket>();
-		if (ping)
-		{
-			std::cout << ping->message() << std::endl;
-			PingPacket pong("pong");
-			ep->write(&pong);
+    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
+        PingPacket* ping = packet->downcast<PingPacket>();
+        if(ping) {
+            std::cout << ping->message() << std::endl;
+            PingPacket pong("pong");
+            ep->write(&pong);
 
-			if (ping->message() == "stop")
-				quit = true;
-		}
-	}
+            if(ping->message() == "stop")
+                quit = true;
+        }
+    }
 };
 
 int main() {
-	using namespace lcomm;
+    using namespace lcomm;
 
-	try
-	{
-		quit = false;
+    try {
+        quit = false;
 
-		PacketManager::registerPacketClass<PingPacket>();
+        PacketManager::registerPacketClass<PingPacket>();
 
-		ServerSocket* server = new ServerSocket(50001);
-		Endpoint* ep = new Endpoint();
-		ep->bind(server);
+        ServerSocket* server = new ServerSocket(50001);
+        Endpoint* ep = new Endpoint();
+        ep->bind(server);
 
-		Ponger ponger;
-		ep->registerSubscriber(&ponger);
+        Ponger ponger;
+        ep->registerSubscriber(&ponger);
 
-		while (!quit)
-			std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        while(!quit)
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-		delete ep;
-		delete server;
-	}
-	catch (std::exception const& exc)
-	{
-		std::cerr << "exception: " << exc.what() << std::endl;
-		return -1;
-	}
+        delete ep;
+        delete server;
+    } catch(std::exception const& exc) {
+        std::cerr << "exception: " << exc.what() << std::endl;
+        return -1;
+    }
 
     return 0;
 }
