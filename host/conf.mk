@@ -1,4 +1,4 @@
-PROJECT=simon_gui
+PROJECT=host
 PRODUCT=simon_gui
 TMP_DIR=build
 BIN_DIR=bin

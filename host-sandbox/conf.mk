@@ -10,33 +10,30 @@ BIN_DIR=bin
 DBG_DIR=debug
 LIB_DIR=../libs.d
 
-QEMU_ARM=qemu-arm
-QEMU_SYSROOT=$(HOME)/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi
-
 #####################
 ### Project names ###
 #####################
 
-PROJECT=drone
-PRODUCT=drone
+PROJECT=host-sandbox
+PRODUCT=host-sandbox
 
 #############
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++11 -static-libstdc++
+CX_FLAGS = -std=gnu++11
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm -static-libstdc++ -lcomm -lconf -lpthread
+LD_FLAGS = -lm -lcomm -lconf -lpthread
 
-CROSS = 1
+CROSS = 0
 DEPENDS = libcomm libconf
 
 #############
 ### Tools ###
 #############
 
-CX=arm-cortex_a8-linux-gnueabi-g++
+CX=g++
 LD=$(CX)

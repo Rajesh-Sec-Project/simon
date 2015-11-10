@@ -30,20 +30,15 @@ private:
 
 static std::atomic<bool> quit;
 
-class Ponger : public lcomm::Subscriber
+class Pinger : public lcomm::Subscriber
 {
 public:
 	void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet)
 	{
-		PingPacket* ping = packet->downcast<PingPacket>();
-		if (ping)
+		PingPacket* pong = packet->downcast<PingPacket>();
+		if (pong)
 		{
-			std::cout << ping->message() << std::endl;
-			PingPacket pong("pong");
-			ep->write(&pong);
-
-			if (ping->message() == "stop")
-				quit = true;
+			std::cout << pong->message() << std::endl;
 		}
 	}
 };
@@ -54,21 +49,35 @@ int main() {
 	try
 	{
 		quit = false;
-
+		
 		PacketManager::registerPacketClass<PingPacket>();
 
-		ServerSocket* server = new ServerSocket(50001);
+		ClientSocket* client = new ClientSocket("192.168.1.1", 50001);
 		Endpoint* ep = new Endpoint();
-		ep->bind(server);
+		ep->bind(client);
 
-		Ponger ponger;
-		ep->registerSubscriber(&ponger);
+		Pinger pinger;
+		ep->registerSubscriber(&pinger);
 
-		while (!quit)
-			std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		// Wait for the client to be opened, otherwise
+        //   write() will throw
+        for(; !client->opened();)
+            ;
 
-		delete ep;
-		delete server;
+        /*** Send some data ***/
+
+        for(int i = 0; i < 10; ++i) {
+            PingPacket ping("ping");
+            ep->write(&ping);
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        PingPacket quit("stop");
+        ep->write(&quit);
+
+        delete ep;
+        delete client;
 	}
 	catch (std::exception const& exc)
 	{
