@@ -29,10 +29,10 @@ CX_FLAGS = -std=gnu++14 -static-libstdc++
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm -static-libstdc++ -lcomm -lconf -lpthread
+LD_FLAGS = -lm -static-libstdc++ -lcomm -lconf -lcontrol -lpthread
 
 CROSS = 1
-DEPENDS = libcomm libconf
+DEPENDS = libcomm libconf libcontrol
 
 #############
 ### Tools ###

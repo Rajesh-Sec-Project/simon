@@ -13,18 +13,18 @@
 #include <iostream>
 
 namespace lcomm {
-    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, unsigned int latency)
+    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, unsigned int latency)
             : m_latency(latency)
             , m_init_flag(false)
             , m_exit_flag(false)
             , m_connected_flag(false)
             , m_thread_exc(nullptr)
-            , m_thread(&ClientSocket::M_thread, this) {
+            , m_thread(&ClientSocket::M_thread, this), m_tcp(tcp) {
         // Own the socket's descriptor when initializing
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
         // Create it
-        m_fd = ::socket(AF_INET, SOCK_STREAM, 0);
+        m_fd = ::socket(AF_INET, tcp ? SOCK_STREAM : SOCK_DGRAM, tcp ? 0 : IPPROTO_UDP);
         if(m_fd < 0)
             throw std::runtime_error("lcomm::ClientSocket::ClientSocket: unable to create socket");
 
@@ -51,20 +51,28 @@ namespace lcomm {
     }
 
     void ClientSocket::write(std::string const& data) {
-        std::lock_guard<std::mutex> guard(m_fd_mutex);
+        std::lock_guard <std::mutex> guard(m_fd_mutex);
 
-        // Don't forget to append a new line
-        std::string raw = data + '\n';
-        int size = raw.size();
-        int pos = 0;
-        int len = 0;
-        do {
-            size -= len;
-            pos += len;
-            len = ::write(m_fd, raw.c_str() + pos, size);
-            if(len < 0)
-                throw std::runtime_error("lcomm::ClientSocket::write: write failed");
-        } while(len != size);
+        if (m_tcp) {
+
+            // Don't forget to append a new line
+            std::string raw = data + '\n';
+            int size = raw.size();
+            int pos = 0;
+            int len = 0;
+            do {
+                size -= len;
+                pos += len;
+                len = ::write(m_fd, raw.c_str() + pos, size);
+                if (len < 0)
+                    throw std::runtime_error("lcomm::ClientSocket::write: write failed (TCP)");
+            } while (len != size);
+        }
+        else {
+            if (sendto(m_fd, data.c_str(), data.size(), 0, (struct sockaddr*) &m_addr, sizeof(m_addr)) == -1) {
+                throw std::runtime_error("lcomm::ClientSocket::write: write failed (UDP)");
+            }
+        }
     }
 
     bool ClientSocket::read(std::string* data) {

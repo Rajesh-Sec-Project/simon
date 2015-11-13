@@ -93,12 +93,12 @@ namespace lcomm {
 
                     PacketBase* packet = M_extractPacket(node);
                     delete node;
-
                     M_notify(packet);
                 } else
                     std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
             }
-        } catch(...) {
+        } catch(std::exception const &e) {
+            std::cout << "Exception received : " << e.what() << std::endl;
             m_read_thread_exc = std::current_exception();
         }
     }

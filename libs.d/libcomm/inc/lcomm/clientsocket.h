@@ -22,7 +22,7 @@ namespace lcomm {
         //! \param ip The IP address of the remote server to connect to
         //! \param port The port to connect to
         //! \param latency The polling period for reading (and therefore queuing) input data
-        ClientSocket(std::string const& ip, unsigned int port, unsigned int latency = 5);
+        ClientSocket(std::string const& ip, unsigned int port, bool tcp = true, unsigned int latency = 5);
 
         //! Connection is closed and ressources freed at destruction of the socket.
         virtual ~ClientSocket();
@@ -44,6 +44,7 @@ namespace lcomm {
         void M_thread();
 
     private:
+        bool const m_tcp;
         unsigned int m_latency;
         int m_fd;
         sockaddr_in m_addr;

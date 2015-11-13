@@ -5,16 +5,17 @@
 #include "lcontrol/control.h"
 
 using namespace lcomm;
+
 namespace lcontrol{
 
-	inline std::string control::int_to_string (int i)
+	std::string control::int_to_string (int i)
 	{
 		std::stringstream out;
 		out << i;
 		return out.str();
 
 	}
-	inline std::string control::float_to_string (float i)
+	std::string control::float_to_string (float i)
 	{
 		union {
 			int as_int;
