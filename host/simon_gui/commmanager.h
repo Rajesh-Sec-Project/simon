@@ -6,6 +6,8 @@
 #include <QDebug>
 
 class CommManager : public QObject, public lcomm::Subscriber {
+    Q_OBJECT
+
 private:
     explicit CommManager();
     virtual ~CommManager();
