@@ -3,18 +3,32 @@
 
 #include <QObject>
 #include "lcomm/lcomm.h"
+#include <QDebug>
 
-class CommManager : public QObject, public lcomm::Subscriber
-{
-public:
-    explicit CommManager(QObject* parent = 0);
+class CommManager : public QObject, public lcomm::Subscriber {
+private:
+    explicit CommManager();
     virtual ~CommManager();
 
+public:
+    static CommManager* self();
+    static void destroy();
+    bool opened();
+
+    template <typename T>
+    void write(T* packet) {
+        m_ep->write(packet);
+    }
+
+signals:
+    void packetReceived(lcomm::Endpoint* ep, lcomm::PacketBase const* packet);
+
 private:
-    void notify(lcomm::Endpoint* ep, lcomm::PacketBase* packet);
+    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet);
 
 private:
     lcomm::Endpoint* m_ep;
+    static CommManager* m_self;
 };
 
 #endif // COMMMANAGER_H

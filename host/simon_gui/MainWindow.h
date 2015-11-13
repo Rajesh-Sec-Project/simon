@@ -16,6 +16,13 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void M_up();
+    void M_down();
+    void M_left();
+    void M_right();
+    void M_stop();
+
 private:
     std::unique_ptr<Ui::MainWindow> _ui;
     GamePad* m_gamepad;

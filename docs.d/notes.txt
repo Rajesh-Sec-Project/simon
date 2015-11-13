@@ -53,6 +53,7 @@ Available commands :
 For grabbing video frames directly :
 https://github.com/ardrone/ardrone/tree/master/ardrone/video
 (program.elf must be killed by 'kill -9')
+Jules Cléro
 
 ==================================== Downloads ============================================
 

@@ -4,11 +4,10 @@
 #include <QWidget>
 
 namespace Ui {
-class GamePad;
+    class GamePad;
 }
 
-class GamePad : public QWidget
-{
+class GamePad : public QWidget {
     Q_OBJECT
 
 public:
@@ -33,7 +32,7 @@ private:
     void keyPressEvent(QKeyEvent* evt);
 
 private:
-    Ui::GamePad *m_ui;
+    Ui::GamePad* m_ui;
 };
 
 #endif // GAMEPAD_H
