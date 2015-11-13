@@ -92,3 +92,38 @@ libcomm_incdir: force_look
 .PHONY: libcomm_bindir
 libcomm_bindir: force_look
 	@echo $(LIBCOMM_DIR)/$(call libbin,$(LIBCOMM_BINDIR))
+
+
+
+###############
+### libcontrol ###
+###############
+
+LIBCOMM_DIR=libcontrol
+LIBCOMM_INCDIR=inc
+LIBCOMM_BINDIR=bin
+LIBCOMM_TMPDIR=build
+LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
+                  AR=arm-cortex_a8-linux-gnueabi-ar \
+                  BIN_DIR=$(call libbin,$(LIBCONTROL_BINDIR)) \
+                  TMP_DIR=$(call libbin,$(LIBCONTROL_TMPDIR))
+
+.PHONY: libcontrol_release
+libcontrol_release: force_look
+	$(call libmake,,LIBCONTROL,release)
+
+.PHONY: libcontrol_debug
+libcontrol_debug: force_look
+	$(call libmake,,LIBCONTROL,debug)
+
+.PHONY: libcontrol_clean
+libcontrol_clean: force_look
+	$(call libmake,,LIBCONTROL,clean)
+
+.PHONY: libcontrol_incdir
+libcontrol_incdir: force_look
+	@echo $(LIBCONTROL_DIR)/$(LIBCONTROL_INCDIR)
+
+.PHONY: libcontrol_bindir
+libcontrol_bindir: force_look
+	@echo $(LIBCONTROL_DIR)/$(call libbin,$(LIBCONTROL_BINDIR))
