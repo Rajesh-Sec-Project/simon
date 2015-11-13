@@ -95,15 +95,12 @@ int main() {
         /*** Server side ***/
 
         // Create the server socket
-        ServerSocket* server = new ServerSocket(port);
-
         // Create and attach the endpoint
-        Endpoint* server_ep = new Endpoint();
-        server_ep->bind(server);
+        Endpoint server_ep(std::make_unique<ServerSocket>(port));
 
         // Create the ponger (that receives pings and send pongs)
         PingPonger server_sub(true);
-        server_ep->registerSubscriber(&server_sub);
+        server_ep.registerSubscriber(&server_sub);
 
         /*** Client side ***/
 
@@ -111,19 +108,16 @@ int main() {
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Create the client socket
-        ClientSocket* client = new ClientSocket("127.0.0.1", port);
-
         // Create and attach the client endpoint
-        Endpoint* client_ep = new Endpoint();
-        client_ep->bind(client);
+        Endpoint client_ep(std::make_unique<ClientSocket>("127.0.0.1", port));
 
         // Create the pinger subscriber (that receives pongs)
         PingPonger client_sub(false);
-        client_ep->registerSubscriber(&client_sub);
+        client_ep.registerSubscriber(&client_sub);
 
         // Wait for the client to be opened, otherwise
         //   write() will throw
-        for(; !client->opened();)
+        for(; !client_ep.socket().opened();)
             ;
 
         /*** Send some data ***/
@@ -131,18 +125,10 @@ int main() {
         for(int i = 0; i < 10; ++i) {
             // Create a ping packet and send it through the endpoint
             MyPacket ctrl("-> ping");
-            client_ep->write(&ctrl);
+            client_ep.write(&ctrl);
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-
-        // Remember to delete endpoints **before** their sockets !
-        delete client_ep;
-        delete server_ep;
-
-        // Deleting sockets closes all connections
-        delete client;
-        delete server;
     } catch(std::exception const& exc) {
         std::cerr << "Exception: " << exc.what() << std::endl;
         return -1;
