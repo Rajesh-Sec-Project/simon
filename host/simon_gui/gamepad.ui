@@ -193,6 +193,12 @@ color: black;</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Take off the drone</string>
+       </property>
+       <property name="statusTip">
+        <string>Take off the drone</string>
+       </property>
        <property name="text">
         <string>Take off</string>
        </property>
@@ -205,6 +211,12 @@ color: black;</string>
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Land the drone</string>
+       </property>
+       <property name="statusTip">
+        <string>Land the drone</string>
        </property>
        <property name="text">
         <string>Land</string>
