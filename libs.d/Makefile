@@ -99,14 +99,14 @@ libcomm_bindir: force_look
 ### libcontrol ###
 ###############
 
-LIBCOMM_DIR=libcontrol
-LIBCOMM_INCDIR=inc
-LIBCOMM_BINDIR=bin
-LIBCOMM_TMPDIR=build
-LIBCOMM_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
-                  AR=arm-cortex_a8-linux-gnueabi-ar \
-                  BIN_DIR=$(call libbin,$(LIBCONTROL_BINDIR)) \
-                  TMP_DIR=$(call libbin,$(LIBCONTROL_TMPDIR))
+LIBCONTROL_DIR=libcontrol
+LIBCONTROL_INCDIR=inc
+LIBCONTROL_BINDIR=bin
+LIBCONTROL_TMPDIR=build
+LIBCONTROL_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
+                     AR=arm-cortex_a8-linux-gnueabi-ar \
+                     BIN_DIR=$(call libbin,$(LIBCONTROL_BINDIR)) \
+                     TMP_DIR=$(call libbin,$(LIBCONTROL_TMPDIR))
 
 .PHONY: libcontrol_release
 libcontrol_release: force_look
