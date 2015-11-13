@@ -11,12 +11,12 @@
 
 class GamePadSubscriber : public lcomm::Subscriber {
 public:
-    GamePadSubscriber(int &seqNum, lcomm::ClientSocket &sock);
+    GamePadSubscriber(int& seqNum, lcomm::ClientSocket& sock);
     void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet);
 
 protected:
-    int &m_sequenceNum;
-    lcomm::ClientSocket &m_socket;
+    int& m_sequenceNum;
+    lcomm::ClientSocket& m_socket;
 };
 
 class GameSystem {
@@ -36,8 +36,7 @@ protected:
     GamePadSubscriber m_gamePadSubscriber;
     std::atomic_bool m_alive = {true};
     std::thread m_clientComThread;
-
 };
 
 
-#endif //SIMON_GAMESYSTEM_H
+#endif // SIMON_GAMESYSTEM_H

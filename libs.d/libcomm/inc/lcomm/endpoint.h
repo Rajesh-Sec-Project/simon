@@ -39,7 +39,7 @@ namespace lcomm {
         //! \param packet The packet to send through this endpoint
         void write(PacketBase* packet);
 
-        Socket const &socket() const;
+        Socket const& socket() const;
 
     private:
         void M_readThread();

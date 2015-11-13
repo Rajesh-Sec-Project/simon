@@ -73,7 +73,7 @@ namespace lcomm {
 
         //! Return the packet factory associated with this class.
         //! \return The packet factory instance (unique for each derived class)
-        static PacketFactoryBase &factory() {
+        static PacketFactoryBase& factory() {
             return m_factory;
         }
 

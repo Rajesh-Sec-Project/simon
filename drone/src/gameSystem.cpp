@@ -10,13 +10,13 @@
 using namespace std::literals;
 using namespace lcomm;
 
-GamePadSubscriber::GamePadSubscriber(int &seqNum, ClientSocket &sock) : m_sequenceNum(seqNum), m_socket(sock) {
-
+GamePadSubscriber::GamePadSubscriber(int& seqNum, ClientSocket& sock)
+        : m_sequenceNum(seqNum)
+        , m_socket(sock) {
 }
 
 
-void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet)
-{
+void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
     GamepadPacket* ctrl = packet->downcast<GamepadPacket>();
     if(ctrl) {
         std::cout << "Received: " << ctrl->keys() << std::endl;
@@ -24,9 +24,8 @@ void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* pac
             for(int i = 0; i < 20; ++i) {
                 lcontrol::control::land(m_sequenceNum++, m_socket);
             }
-        }
-        else if(ctrl->keys() & GamepadPacket::TakeOff) {
-            for (int i = 0; i < 20; ++i) {
+        } else if(ctrl->keys() & GamepadPacket::TakeOff) {
+            for(int i = 0; i < 20; ++i) {
                 lcontrol::control::takeoff(m_sequenceNum++, m_socket);
             }
         }
@@ -34,15 +33,17 @@ void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* pac
 }
 
 
-GameSystem::GameSystem() : m_endpoint(std::make_unique<ServerSocket>(50001)), m_socket( "127.0.0.1", 5556, false), m_gamePadSubscriber(m_sequenceNum, m_socket) {
-    //m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
+GameSystem::GameSystem()
+        : m_endpoint(std::make_unique<ServerSocket>(50001))
+        , m_socket("127.0.0.1", 5556, false)
+        , m_gamePadSubscriber(m_sequenceNum, m_socket) {
+    // m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
     m_endpoint.registerSubscriber(&m_gamePadSubscriber);
 
     this->M_droneSetup();
 }
 
 GameSystem::~GameSystem() {
-
 }
 
 void GameSystem::stop() {

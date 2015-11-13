@@ -19,7 +19,8 @@ namespace lcomm {
             , m_exit_flag(false)
             , m_connected_flag(false)
             , m_thread_exc(nullptr)
-            , m_thread(&ClientSocket::M_thread, this), m_tcp(tcp) {
+            , m_thread(&ClientSocket::M_thread, this)
+            , m_tcp(tcp) {
         // Own the socket's descriptor when initializing
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
@@ -51,9 +52,9 @@ namespace lcomm {
     }
 
     void ClientSocket::write(std::string const& data) {
-        std::lock_guard <std::mutex> guard(m_fd_mutex);
+        std::lock_guard<std::mutex> guard(m_fd_mutex);
 
-        if (m_tcp) {
+        if(m_tcp) {
 
             // Don't forget to append a new line
             std::string raw = data + '\n';
@@ -64,12 +65,11 @@ namespace lcomm {
                 size -= len;
                 pos += len;
                 len = ::write(m_fd, raw.c_str() + pos, size);
-                if (len < 0)
+                if(len < 0)
                     throw std::runtime_error("lcomm::ClientSocket::write: write failed (TCP)");
-            } while (len != size);
-        }
-        else {
-            if (sendto(m_fd, data.c_str(), data.size(), 0, (struct sockaddr*) &m_addr, sizeof(m_addr)) == -1) {
+            } while(len != size);
+        } else {
+            if(sendto(m_fd, data.c_str(), data.size(), 0, (struct sockaddr*)&m_addr, sizeof(m_addr)) == -1) {
                 throw std::runtime_error("lcomm::ClientSocket::write: write failed (UDP)");
             }
         }

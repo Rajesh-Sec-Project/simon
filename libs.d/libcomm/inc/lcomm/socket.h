@@ -21,7 +21,6 @@ namespace lcomm {
         virtual bool read(std::string* data) = 0;
 
         virtual bool opened() const = 0;
-
     };
 }
 

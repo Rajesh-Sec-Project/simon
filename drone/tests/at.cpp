@@ -16,7 +16,7 @@ void command(Command const& cmd) {
 int main() {
     command(at::ref{true, false});
     command(at::ref{false, false});
-    
+
     command(at::commwdg{});
     command(at::config{"key", "value"});
 

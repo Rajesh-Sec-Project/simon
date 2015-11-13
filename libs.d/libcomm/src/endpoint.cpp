@@ -26,7 +26,7 @@ namespace lcomm {
             std::rethrow_exception(m_read_thread_exc);
     }
 
-    Socket const &Endpoint::socket() const {
+    Socket const& Endpoint::socket() const {
         return *m_socket;
     }
 
@@ -97,8 +97,8 @@ namespace lcomm {
                 } else
                     std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
             }
-        } catch(std::exception const &e) {
-            std::cout << "Exception received : " << e.what() << std::endl;
+        } catch(std::exception const& e) {
+            std::cerr << "Exception received : " << e.what() << std::endl;
             m_read_thread_exc = std::current_exception();
         }
     }
