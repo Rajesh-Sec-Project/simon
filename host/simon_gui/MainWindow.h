@@ -22,6 +22,8 @@ private slots:
     void M_left();
     void M_right();
     void M_stop();
+    void M_takeOff();
+    void M_land();
 
 private:
     std::unique_ptr<Ui::MainWindow> _ui;

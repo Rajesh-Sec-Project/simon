@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_gamepad, SIGNAL(left()), this, SLOT(M_left()));
     QObject::connect(m_gamepad, SIGNAL(right()), this, SLOT(M_right()));
     QObject::connect(m_gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
+    QObject::connect(m_gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
+    QObject::connect(m_gamepad, SIGNAL(land()), this, SLOT(M_land()));
 }
 
 MainWindow::~MainWindow() {
@@ -47,5 +49,15 @@ void MainWindow::M_right() {
 
 void MainWindow::M_stop() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Stop);
+    CommManager::self()->write(&pkt);
+}
+
+void MainWindow::M_takeOff() {
+    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
+    CommManager::self()->write(&pkt);
+}
+
+void MainWindow::M_land() {
+    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
     CommManager::self()->write(&pkt);
 }

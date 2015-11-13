@@ -19,6 +19,7 @@ public:
 
     template <typename T>
     void write(T* packet) {
+        qDebug() << "write " << packet;
         m_ep->write(packet);
     }
 

@@ -14,6 +14,8 @@ GamePad::GamePad(QWidget* parent)
     QObject::connect(m_ui->button_left, SIGNAL(clicked()), this, SLOT(M_left()));
     QObject::connect(m_ui->button_right, SIGNAL(clicked()), this, SLOT(M_right()));
     QObject::connect(m_ui->button_stop, SIGNAL(clicked()), this, SLOT(M_stop()));
+    QObject::connect(m_ui->button_takeOff, SIGNAL(clicked()), this, SLOT(M_takeOff()));
+    QObject::connect(m_ui->button_land, SIGNAL(clicked()), this, SLOT(M_land()));
 }
 
 GamePad::~GamePad() {
@@ -38,6 +40,14 @@ void GamePad::M_right() {
 
 void GamePad::M_stop() {
     emit stop();
+}
+
+void GamePad::M_takeOff() {
+    emit takeOff();
+}
+
+void GamePad::M_land() {
+    emit land();
 }
 
 void GamePad::keyPressEvent(QKeyEvent* evt) {

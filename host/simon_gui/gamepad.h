@@ -20,6 +20,8 @@ signals:
     void left();
     void right();
     void stop();
+    void takeOff();
+    void land();
 
 private slots:
     void M_up();
@@ -27,6 +29,8 @@ private slots:
     void M_left();
     void M_right();
     void M_stop();
+    void M_takeOff();
+    void M_land();
 
 private:
     void keyPressEvent(QKeyEvent* evt);
