@@ -7,6 +7,11 @@
 
 #include "lcomm/lcomm.h"
 
+//! This test is a simple ping-pong test for the endpoint system.
+//! It implements two endpoints (each one with an associated subscriber)
+//!   bound to local client and server TCP sockets.
+//! The server endpoint subscriber answers (the pong) to any received packets (the ping).
+
 //! A simple packet structure.
 class MyPacket : public lcomm::Packet<MyPacket> {
 public:

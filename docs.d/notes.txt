@@ -1,0 +1,66 @@
+================================= Communication ===========================================
+
+NavData sent on UDP 5554 (beware of demo / debug mode)
+Video stream on TCP 5555 (encoded)
+AT commands  on UDP 5556 (see below)
+Contorl port on TCP 5559 (get conf. data and conf. acks)
+
+================================= Tag detection ===========================================
+
+See page 42 of SDK doc.
+See page 89 for available configurations.
+
+================================= Configuration notes =====================================
+
+control:flight_without_shell -> set to "TRUE" if shell removed
+
+================================= AT Commands =============================================
+
+Good period = 30 ms
+Must send kind of a watchdog every 2 seconds
+Syntax :
+	AT*<CMD>=<SEQ>,a1,...,an\r
+
+<SEQ> is the sequence number :
+	- must be 1 the first time
+	- always increment
+
+ai is the i-th argument :
+	- if integer, encode it in decimal representation
+	- if string, encode it enclosed by double quotes, e.g. "string !"
+	- if float, must be encoded as the equivalent 32-bit word in IEEE-754 format
+
+Available commands :
+	REF (input)
+		-> take off, land, emergency stop
+	PCMD (flag, roll, pitch, gaz, yaw)
+		-> move the drone
+	TCMD_MAG (flag, roll, pitch, gaz, yaw, psi, psi accuracy)
+		-> move the drone absolutely
+	FTRIM ()
+		-> set the reference horizontal plane (set on ground)
+	COMMWDG ()
+		-> reset the comm watchdog (every 500 ms ?)
+	CALIB ()
+		-> calibrate the magnetometer (must be flying)
+	CONFIG (key, value)
+	CONFIG_IDS (session, user, app id)
+	CTRL (mode, ?)
+		-> mode = 4 to get all conf. in control port (TCP 5559)
+		
+==================================== Video ================================================
+
+For grabbing video frames directly :
+https://github.com/ardrone/ardrone/tree/master/ardrone/video
+(program.elf must be killed by 'kill -9')
+
+==================================== Downloads ============================================
+
+SDK download => http://svn.ardrone.org/attachments/download/514/ARDrone_SDK_2_0_1.tar.gz (unmaintained)
+GitHub       => https://github.com/Parrot-Developers
+Forum        => http://forum.developer.parrot.com/
+GPL sources  => https://devzone.parrot.com/projects/show/oss-ardrone2
+
+==================================== Hacking resources ====================================
+
+http://blog.perquin.com/blog/category/ardrone/

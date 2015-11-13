@@ -26,7 +26,7 @@ test-%-build: $(TMP_DIR)/$(TST_DIR)/%.o
 
 test-%-run:
 	$(call yellow,(TST) $*)
-	$(call invoke,yellow,$(QEMU_ARM) -L '$(QEMU_SYSROOT)' $(BIN_DIR)/$(TST_DIR)/$*)
+	@$(QEMU_ARM) -L '$(QEMU_SYSROOT)' $(BIN_DIR)/$(TST_DIR)/$*
 
 .PRECIOUS: $(TMP_DIR)/$(TST_DIR)/%.o
 $(TMP_DIR)/$(TST_DIR)/%.o: $(TST_DIR)/%.cpp
