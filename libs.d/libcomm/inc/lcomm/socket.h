@@ -19,6 +19,9 @@ namespace lcomm {
         //! \param data Output parameter for read data.
         //! \return true if succeeded, false otherwise (or if there is no data to be read)
         virtual bool read(std::string* data) = 0;
+
+        virtual bool opened() const = 0;
+
     };
 }
 

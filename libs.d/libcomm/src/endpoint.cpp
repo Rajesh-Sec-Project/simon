@@ -10,9 +10,9 @@ namespace lcomm {
     std::string const Endpoint::m_magic = "simon";
     std::string const Endpoint::m_version = "01";
 
-    Endpoint::Endpoint(unsigned int latency)
+    Endpoint::Endpoint(std::unique_ptr<Socket> socket, unsigned int latency)
             : m_latency(latency)
-            , m_socket(0)
+            , m_socket(std::move(socket))
             , m_read_thread_exit(false)
             , m_read_thread_exc(nullptr)
             , m_read_thread(&Endpoint::M_readThread, this) {
@@ -26,18 +26,16 @@ namespace lcomm {
             std::rethrow_exception(m_read_thread_exc);
     }
 
+    Socket const &Endpoint::socket() const {
+        return *m_socket;
+    }
+
     void Endpoint::registerSubscriber(Subscriber* subscriber) {
         m_subscribers.emplace(subscriber);
     }
 
     void Endpoint::unregisterSubscriber(Subscriber* subscriber) {
         m_subscribers.erase(subscriber);
-    }
-
-    void Endpoint::bind(Socket* socket) {
-        if(m_socket)
-            throw std::logic_error("lcomm::Endpoint::bind: endpoint is already bound");
-        m_socket = socket;
     }
 
     void Endpoint::write(PacketBase* packet) {

@@ -53,18 +53,14 @@ int main() {
 
         PacketManager::registerPacketClass<PingPacket>();
 
-        ServerSocket* server = new ServerSocket(50001);
-        Endpoint* ep = new Endpoint();
-        ep->bind(server);
+        Endpoint ep(std::make_unique<ServerSocket>(50001));
 
         Ponger ponger;
-        ep->registerSubscriber(&ponger);
+        ep.registerSubscriber(&ponger);
 
         while(!quit)
             std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-        delete ep;
-        delete server;
     } catch(std::exception const& exc) {
         std::cerr << "exception: " << exc.what() << std::endl;
         return -1;

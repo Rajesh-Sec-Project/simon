@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "lcomm/lcomm.h"
+#include <memory>
 
 class PingPacket : public lcomm::Packet<PingPacket> {
 public:
@@ -48,32 +49,28 @@ int main() {
 
         PacketManager::registerPacketClass<PingPacket>();
 
-        ClientSocket* client = new ClientSocket("192.168.1.1", 50001);
-        Endpoint* ep = new Endpoint();
-        ep->bind(client);
+        Endpoint ep(std::make_unique<ClientSocket>("192.168.1.1", 50001));
 
         Pinger pinger;
-        ep->registerSubscriber(&pinger);
+        ep.registerSubscriber(&pinger);
 
         // Wait for the client to be opened, otherwise
         //   write() will throw
-        for(; !client->opened();)
+        for(; !ep.socket().opened();)
             ;
 
         /*** Send some data ***/
 
         for(int i = 0; i < 10; ++i) {
             PingPacket ping("ping");
-            ep->write(&ping);
+            ep.write(&ping);
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         PingPacket quit("stop");
-        ep->write(&quit);
+        ep.write(&quit);
 
-        delete ep;
-        delete client;
     } catch(std::exception const& exc) {
         std::cerr << "exception: " << exc.what() << std::endl;
         return -1;

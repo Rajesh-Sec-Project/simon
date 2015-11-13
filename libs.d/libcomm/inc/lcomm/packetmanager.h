@@ -22,7 +22,7 @@ namespace lcomm {
         //! \tparam T The packet class name to register into the system
         template <typename T>
         static void registerPacketClass() {
-            m_packet_factories[T::staticTag()] = T::factory();
+            m_packet_factories[T::staticTag()] = &T::factory();
         }
 
         //! Get a packet factory by tag.

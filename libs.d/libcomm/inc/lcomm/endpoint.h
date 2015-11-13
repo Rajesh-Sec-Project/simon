@@ -11,6 +11,7 @@
 #include <mutex>
 #include <atomic>
 #include <stdexcept>
+#include <memory>
 
 namespace lcomm {
     class Socket;
@@ -21,7 +22,7 @@ namespace lcomm {
     public:
         //! Create an endpoint.
         //! \param latency The socket's polling period for reading
-        Endpoint(unsigned int latency = 10);
+        Endpoint(std::unique_ptr<Socket> socket, unsigned int latency = 10);
 
         virtual ~Endpoint();
 
@@ -34,13 +35,11 @@ namespace lcomm {
         //! \param subscriber The subscriber instance to unregister
         void unregisterSubscriber(Subscriber* subscriber);
 
-        //! Bind this endpoint to a socket interface.
-        //! \param socket The socket to bind to
-        void bind(Socket* socket);
-
         //! Send a packet through this endpoint.
         //! \param packet The packet to send through this endpoint
         void write(PacketBase* packet);
+
+        Socket const &socket() const;
 
     private:
         void M_readThread();
@@ -49,7 +48,7 @@ namespace lcomm {
 
     private:
         unsigned int m_latency;
-        Socket* m_socket;
+        std::unique_ptr<Socket> m_socket;
         std::mutex m_socket_mutex;
         std::atomic<bool> m_read_thread_exit;
         std::exception_ptr m_read_thread_exc;
