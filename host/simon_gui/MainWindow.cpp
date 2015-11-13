@@ -8,13 +8,11 @@ MainWindow::MainWindow(QWidget* parent)
         : QMainWindow(parent)
         , _ui(std::make_unique<Ui::MainWindow>()) {
     _ui->setupUi(this);
-    this->connect(_ui->myButton, SIGNAL(clicked()), this, SLOT(onClickClick()));
+
+    m_gamepad = new GamePad();
+    m_gamepad->show();
 }
 
 MainWindow::~MainWindow() {
-}
-
-
-void MainWindow::onClickClick() {
-    std::cout << "Sending \"" << _ui->text->toPlainText().toUtf8().constData() << "\" to the network!" << std::endl;
+    delete m_gamepad;
 }

@@ -14,6 +14,9 @@ void command(Command const& cmd) {
 }
 
 int main() {
+    command(at::ref{true, false});
+    command(at::ref{false, false});
+    
     command(at::commwdg{});
     command(at::config{"key", "value"});
 
@@ -21,9 +24,6 @@ int main() {
         float roll = (i - 5.0) / 5.0;
         command(at::pcmd{false, false, true, roll, 0, 0, 0});
     }
-
-    command(at::ref{true, false});
-    command(at::ref{false, false});
 
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <memory>
+#include "gamepad.h"
 
 namespace Ui {
     class MainWindow;
@@ -15,11 +16,9 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void onClickClick();
-
 private:
     std::unique_ptr<Ui::MainWindow> _ui;
+    GamePad* m_gamepad;
 };
 
 #endif // MAINWINDOW_H
