@@ -1,3 +1,5 @@
+include ../mk.d/sh.mk
+
 include ../mk.d/all.mk
 
 include conf.mk

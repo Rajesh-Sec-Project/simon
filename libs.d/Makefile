@@ -1,3 +1,5 @@
+include ../mk.d/sh.mk
+
 include ../mk.d/functions.mk
 
 # If CROSS is set to 1, apply lib's overrides
