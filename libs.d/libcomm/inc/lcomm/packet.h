@@ -17,9 +17,9 @@ namespace lcomm {
     class PacketBase {
     public:
         //! Create a packet instance.
-        PacketBase();
+        PacketBase() = default;
 
-        virtual ~PacketBase();
+        virtual ~PacketBase() = default;
 
         //! Serialize this packet to lconf::json representation.
         //! \return The serialized packet
@@ -38,7 +38,7 @@ namespace lcomm {
             if(Derived::staticTag() == tag())
                 return (Derived*)this;
             else
-                return 0;
+                return nullptr;
         }
 
         //! An abstract function returning a string tag
@@ -68,8 +68,7 @@ namespace lcomm {
     public:
         using PacketBase::PacketBase;
 
-        virtual ~Packet() {
-        }
+        virtual ~Packet() = default;
 
         //! Return the packet factory associated with this class.
         //! \return The packet factory instance (unique for each derived class)

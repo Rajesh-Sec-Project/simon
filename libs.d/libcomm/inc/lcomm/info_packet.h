@@ -10,7 +10,7 @@ namespace lcomm {
     public:
         InfoPacket(lconf::json::Node* node);
         InfoPacket(std::string const& info);
-        ~InfoPacket();
+        ~InfoPacket() = default;
 
         std::string const& info() const;
         void setInfo(std::string const& info);

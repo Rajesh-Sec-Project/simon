@@ -6,7 +6,7 @@ namespace lcomm {
     PacketFactoryBase* PacketManager::getFactoryByTag(std::string const& tag) {
         auto it = m_packet_factories.find(tag);
         if(it == m_packet_factories.end())
-            return 0;
+            return nullptr;
         else
             return it->second;
     }

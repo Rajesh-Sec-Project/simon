@@ -11,9 +11,6 @@ namespace lcomm {
         M_setup();
     }
 
-    InfoPacket::~InfoPacket() {
-    }
-
     std::string const& InfoPacket::info() const {
         return m_info;
     }
