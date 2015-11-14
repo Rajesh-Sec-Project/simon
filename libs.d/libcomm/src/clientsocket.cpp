@@ -11,9 +11,10 @@
 
 #include <chrono>
 #include <iostream>
+#include <array>
 
 namespace lcomm {
-    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, unsigned int latency)
+    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, std::chrono::nanoseconds latency)
             : m_latency(latency)
             , m_init_flag(false)
             , m_exit_flag(false)
@@ -51,11 +52,10 @@ namespace lcomm {
         return m_connected_flag;
     }
 
-    void ClientSocket::write(std::string const& data) {
+    void ClientSocket::write(std::string const& data) const {
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
         if(m_tcp) {
-
             // Don't forget to append a new line
             std::string raw = data + '\n';
             int size = raw.size();
@@ -75,7 +75,7 @@ namespace lcomm {
         }
     }
 
-    bool ClientSocket::read(std::string* data) {
+    bool ClientSocket::read(std::string* data) const {
         if(!data || !m_connected_flag)
             return false;
 
@@ -83,7 +83,7 @@ namespace lcomm {
         if(!m_rcv_queue.size())
             return false;
 
-        *data = m_rcv_queue.front();
+        *data = std::move(m_rcv_queue.front());
         m_rcv_queue.pop();
 
         return true;
@@ -108,37 +108,33 @@ namespace lcomm {
                 throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
 
             // Allocate input chunk buffer
-            int const chunk_size = 4096;
-            char* chunk = new char[chunk_size];
+            constexpr int const chunk_size = 4096;
+            std::array<char, chunk_size> chunk;
 
-            std::string data = "";
+            std::string data;
 
-            for(;;) {
-                if(m_exit_flag)
-                    break;
-
-                int len;
-                if((len = ::read(m_fd, chunk, chunk_size)) < 0) {
+            while(!m_exit_flag) {
+                ssize_t len;
+                if((len = ::read(m_fd, &chunk[0], chunk_size)) < 0) {
                     if(errno != EWOULDBLOCK && errno != EAGAIN)
                         throw std::runtime_error("lcomm::ClientSocket::M_thread: read failed");
                 }
 
-                for(int i = 0; i < len; ++i) {
+                for(ssize_t i = 0; i < len; ++i) {
                     char c = chunk[i];
 
                     if(c == '\n') {
                         std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-                        m_rcv_queue.push(data);
-                        data = "";
+                        m_rcv_queue.push(std::move(data));
+                        data.clear();
                     }
 
                     data += c;
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
+                std::this_thread::sleep_for(m_latency);
             }
 
-            delete[] chunk;
             ::close(m_fd);
             m_connected_flag = false;
         } catch(...) {

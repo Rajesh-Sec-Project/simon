@@ -56,7 +56,7 @@ namespace lcomm {
         return m_connected_flag;
     }
 
-    void ServerSocket::write(std::string const& data) {
+    void ServerSocket::write(std::string const& data) const {
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
         // Don't forget to append a new line
@@ -73,7 +73,7 @@ namespace lcomm {
         } while(len != size);
     }
 
-    bool ServerSocket::read(std::string* data) {
+    bool ServerSocket::read(std::string* data) const {
         if(!data || !m_connected_flag)
             return false;
 

@@ -30,12 +30,12 @@ namespace lcomm {
         bool opened() const;
 
         //! \param data The data to write to the socket
-        void write(std::string const& data);
+        void write(std::string const& data) const;
 
         //! Attempt to read some data from the socket.
         //! \param data Output parameter for read data
         //! \return True if all went well, false otherwise (or if there is nothing to read)
-        bool read(std::string* data);
+        bool read(std::string* data) const;
 
     private:
         void M_thread();
@@ -43,12 +43,12 @@ namespace lcomm {
     private:
         unsigned int m_latency;
         int m_fd, m_cfd;
-        std::mutex m_fd_mutex;
+        mutable std::mutex m_fd_mutex;
         std::atomic<bool> m_init_flag, m_exit_flag, m_connected_flag;
         std::exception_ptr m_thread_exc;
         std::thread m_thread;
-        std::queue<std::string> m_rcv_queue;
-        std::mutex m_rcv_queue_mutex;
+        mutable std::queue<std::string> m_rcv_queue;
+        mutable std::mutex m_rcv_queue_mutex;
     };
 }
 

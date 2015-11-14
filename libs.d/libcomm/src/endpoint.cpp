@@ -75,19 +75,18 @@ namespace lcomm {
 
                 if(received) {
                     std::string magic, tag;
-                    json::Node* node;
+                    std::unique_ptr<json::Node> node;
 
                     // Parse packet's content
                     try {
                         std::istringstream ss;
                         ss.str(data);
-                        node = json::parse(ss);
+                        node.reset(json::parse(ss));
                     } catch(json::Exception const& exc) {
                         throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception)");
                     }
 
-                    auto packet = M_extractPacket(node);
-                    delete node;
+                    auto packet = M_extractPacket(*node);
                     M_notify(*packet);
                 } else
                     std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
@@ -98,9 +97,9 @@ namespace lcomm {
         }
     }
 
-    std::unique_ptr<PacketBase> Endpoint::M_extractPacket(json::Node* node) {
+    std::unique_ptr<PacketBase> Endpoint::M_extractPacket(json::Node& node) {
         // Check if it is an object as expected
-        json::ObjectNode* obj = node->downcast<json::ObjectNode>();
+        json::ObjectNode* obj = node.downcast<json::ObjectNode>();
         if(!obj)
             throw std::runtime_error("lcomm::Endpoint::M_processReceived: ill-formed packet (not an object)");
 

@@ -43,7 +43,7 @@ namespace lcomm {
 
     private:
         void M_readThread();
-        std::unique_ptr<PacketBase> M_extractPacket(json::Node* node);
+        std::unique_ptr<PacketBase> M_extractPacket(json::Node& node);
         void M_notify(PacketBase const &packet);
 
     private:
