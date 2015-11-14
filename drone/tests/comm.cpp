@@ -63,7 +63,7 @@ public:
     }
 
     //! The endpoint calls this function when a packet is received.
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override {
         // Don't cast directly as it is really unsafe, call the downcast<T>()
         //   function, that checks the tag of the packet.
         MyPacket* ctrl = packet.downcast<MyPacket>();

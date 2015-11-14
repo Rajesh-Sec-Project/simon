@@ -8,8 +8,7 @@ namespace lcomm {
     //!   for the Endpoint class.
     class Socket {
     public:
-        Socket();
-        virtual ~Socket();
+        virtual ~Socket() = default;
 
         //! Abstract method for writing some data to the socket.
         //! \param data The data to write to the socket

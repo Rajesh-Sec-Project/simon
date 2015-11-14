@@ -11,7 +11,7 @@
 
 class GamePadSubscriber : public lcomm::Subscriber {
 public:
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
 };
 
 class GameSystem {

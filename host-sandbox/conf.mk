@@ -21,7 +21,7 @@ PRODUCT=host-sandbox
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++14 -Wall
+CX_FLAGS = -std=gnu++14 -Wall #-Wsuggest-override
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g

@@ -28,7 +28,7 @@ namespace lcomm {
         //! Implements the PacketFactoryBase::create() abstract function.
         //! \param node The json data from which to initialize the newly created packet
         //! \return The newly created packet instance
-        std::unique_ptr<PacketBase> create(json::Node* node) const {
+        std::unique_ptr<PacketBase> create(json::Node* node) const override {
             return std::make_unique<Derived>(node);
         }
     };

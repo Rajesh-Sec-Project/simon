@@ -27,7 +27,7 @@ signals:
     void packetReceived(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
 
 private:
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
 
 private:
     lcomm::Endpoint* m_ep;

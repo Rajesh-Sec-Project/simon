@@ -33,7 +33,7 @@ private slots:
     void M_land();
 
 private:
-    void keyPressEvent(QKeyEvent* evt);
+    void keyPressEvent(QKeyEvent* evt) override;
 
 private:
     Ui::GamePad* m_ui;

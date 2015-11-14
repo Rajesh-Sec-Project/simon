@@ -19,7 +19,7 @@ PRODUCT=libcontrol.a
 ### Flags ###
 #############
 
-CX_FLAGS = -std=c++14 -I../libconf/include -I../libcomm/inc -Wall
+CX_FLAGS = -std=c++14 -I../libconf/include -I../libcomm/inc -Wall #-Wsuggest-override
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g

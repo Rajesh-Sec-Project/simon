@@ -18,7 +18,6 @@ namespace lcomm {
     public:
         //! Create a packet instance.
         PacketBase() = default;
-
         virtual ~PacketBase() = default;
 
         //! Serialize this packet to lconf::json representation.
@@ -87,7 +86,7 @@ namespace lcomm {
 
         //! This implements the PacketBase::tag() virtual function.
         //! \return The computed unique tag for the derived class
-        std::string tag() const {
+        std::string tag() const override {
             return staticTag();
         }
 

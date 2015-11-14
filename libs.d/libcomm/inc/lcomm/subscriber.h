@@ -9,7 +9,6 @@ namespace lcomm {
     //!   a frontend for the Endpoint class.
     class Subscriber {
     public:
-        Subscriber() = default;
         virtual ~Subscriber() = default;
 
         //! An abstract method to be notified about the arrival

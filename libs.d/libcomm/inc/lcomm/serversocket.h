@@ -30,15 +30,15 @@ namespace lcomm {
 
         //! Check if the socket has a current connection opened.
         //! \return Returns true if the socket is opened, false otherwise
-        bool opened() const;
+        bool opened() const override;
 
         //! \param data The data to write to the socket
-        void write(std::string const& data) const;
+        void write(std::string const& data) const override;
 
         //! Attempt to read some data from the socket.
         //! \param data Output parameter for read data
         //! \return True if all went well, false otherwise (or if there is nothing to read)
-        bool read(std::string* data) const;
+        bool read(std::string* data) const override;
 
     private:
         void M_thread();
