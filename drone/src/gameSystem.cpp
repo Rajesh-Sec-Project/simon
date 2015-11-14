@@ -17,8 +17,8 @@ GamePadSubscriber::GamePadSubscriber(int& seqNum, ClientSocket& sock)
 }
 
 
-void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
-    GamepadPacket* ctrl = packet->downcast<GamepadPacket>();
+void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
+    GamepadPacket* ctrl = packet.downcast<GamepadPacket>();
     if(ctrl) {
         std::cout << "Received: " << ctrl->keys() << std::endl;
         if(ctrl->keys() & GamepadPacket::Land) {

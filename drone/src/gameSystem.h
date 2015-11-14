@@ -12,7 +12,7 @@
 class GamePadSubscriber : public lcomm::Subscriber {
 public:
     GamePadSubscriber(int& seqNum, lcomm::ClientSocket& sock);
-    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet);
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
 
 protected:
     int& m_sequenceNum;

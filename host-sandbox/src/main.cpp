@@ -33,8 +33,8 @@ static std::atomic<bool> quit;
 
 class Pinger : public lcomm::Subscriber {
 public:
-    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
-        PingPacket* pong = packet->downcast<PingPacket>();
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
+        PingPacket* pong = packet.downcast<PingPacket>();
         if(pong) {
             std::cout << pong->message() << std::endl;
         }

@@ -19,7 +19,7 @@ namespace lcomm {
         //!   may be registered to several endpoints)
         //! \param packet The received packet. Do **not** free this instance,
         //!   as the endpoint is already taking care of this.
-        virtual void notify(Endpoint* ep, PacketBase const* packet) = 0;
+        virtual void notify(Endpoint& ep, PacketBase const &packet) = 0;
     };
 }
 

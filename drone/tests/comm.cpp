@@ -63,17 +63,17 @@ public:
     }
 
     //! The endpoint calls this function when a packet is received.
-    void notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
         // Don't cast directly as it is really unsafe, call the downcast<T>()
         //   function, that checks the tag of the packet.
-        MyPacket* ctrl = packet->downcast<MyPacket>();
+        MyPacket* ctrl = packet.downcast<MyPacket>();
         if(ctrl) {
             std::cout << ctrl->cmd() << std::endl;
 
             // If we're a ponger, reply to the packet.
             if(m_pong) {
                 MyPacket ctrl("<- pong");
-                ep->write(ctrl);
+                ep.write(ctrl);
             }
         }
     }

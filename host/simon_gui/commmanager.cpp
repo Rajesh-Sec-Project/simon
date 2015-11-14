@@ -28,6 +28,6 @@ bool CommManager::opened() {
     return m_ep->socket().opened();
 }
 
-void CommManager::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* packet) {
+void CommManager::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
     emit packetReceived(ep, packet);
 }

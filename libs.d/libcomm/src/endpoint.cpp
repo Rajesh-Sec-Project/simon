@@ -86,9 +86,9 @@ namespace lcomm {
                         throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception)");
                     }
 
-                    PacketBase* packet = M_extractPacket(node);
+                    auto packet = M_extractPacket(node);
                     delete node;
-                    M_notify(packet);
+                    M_notify(*packet);
                 } else
                     std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
             }
@@ -98,7 +98,7 @@ namespace lcomm {
         }
     }
 
-    PacketBase* Endpoint::M_extractPacket(json::Node* node) {
+    std::unique_ptr<PacketBase> Endpoint::M_extractPacket(json::Node* node) {
         // Check if it is an object as expected
         json::ObjectNode* obj = node->downcast<json::ObjectNode>();
         if(!obj)
@@ -157,22 +157,20 @@ namespace lcomm {
             throw std::runtime_error("lcomm:Endpoint::M_processReceived: packet tag '" + tag +
                                      "' has not been registered");
 
-        PacketBase* packet = factory->create(payload);
+        auto packet = factory->create(payload);
         if(!packet)
             throw std::runtime_error("lcomm::Endpoint::M_processReceived: packet creation failed");
 
         return packet;
     }
 
-    void Endpoint::M_notify(PacketBase* packet) {
+    void Endpoint::M_notify(PacketBase  const &packet) {
         std::vector<std::thread> threads;
 
         for(auto subscriber : m_subscribers)
-            threads.push_back(std::thread(&Subscriber::notify, subscriber, this, packet));
+            threads.push_back(std::thread(&Subscriber::notify, subscriber, std::ref(*this), std::ref(packet)));
 
         for(auto& th : threads)
             th.join();
-
-        delete packet;
     }
 }
