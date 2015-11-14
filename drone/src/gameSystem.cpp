@@ -9,6 +9,7 @@
 
 using namespace std::literals;
 using namespace lcomm;
+using namespace lcontrol;
 
 GamePadSubscriber::GamePadSubscriber(int& seqNum, ClientSocket& sock)
         : m_sequenceNum(seqNum)
@@ -21,13 +22,9 @@ void GamePadSubscriber::notify(lcomm::Endpoint* ep, lcomm::PacketBase const* pac
     if(ctrl) {
         std::cout << "Received: " << ctrl->keys() << std::endl;
         if(ctrl->keys() & GamepadPacket::Land) {
-            for(int i = 0; i < 20; ++i) {
-                lcontrol::control::land(m_sequenceNum++, m_socket);
-            }
+            Control::land();
         } else if(ctrl->keys() & GamepadPacket::TakeOff) {
-            for(int i = 0; i < 20; ++i) {
-                lcontrol::control::takeoff(m_sequenceNum++, m_socket);
-            }
+            Control::takeoff();
         }
     }
 }
@@ -51,10 +48,8 @@ void GameSystem::stop() {
 }
 
 void GameSystem::M_droneSetup() {
-    for(int j = 0; j < 20; ++j) {
-        lcontrol::control::horizontalPlan(m_sequenceNum++, m_socket);
-        std::this_thread::sleep_for(20ms);
-    }
+    Control::init();
+    Control::enableStabilization();
     std::cout << "Stabilization OK!" << std::endl;
 }
 
