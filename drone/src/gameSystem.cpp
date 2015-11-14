@@ -35,7 +35,7 @@ GameSystem::GameSystem()
         , m_socket("127.0.0.1", 5556, false)
         , m_gamePadSubscriber(m_sequenceNum, m_socket) {
     // m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
-    m_endpoint.registerSubscriber(&m_gamePadSubscriber);
+    m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
     this->M_droneSetup();
 }

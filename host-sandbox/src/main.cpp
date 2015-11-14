@@ -52,7 +52,7 @@ int main() {
         Endpoint ep(std::make_unique<ClientSocket>("192.168.1.1", 50001));
 
         Pinger pinger;
-        ep.registerSubscriber(&pinger);
+        ep.registerSubscriber(pinger);
 
         // Wait for the client to be opened, otherwise
         //   write() will throw

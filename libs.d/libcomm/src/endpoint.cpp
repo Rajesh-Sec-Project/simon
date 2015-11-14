@@ -30,12 +30,12 @@ namespace lcomm {
         return *m_socket;
     }
 
-    void Endpoint::registerSubscriber(Subscriber* subscriber) {
-        m_subscribers.emplace(subscriber);
+    void Endpoint::registerSubscriber(Subscriber& subscriber) {
+        m_subscribers.emplace(&subscriber);
     }
 
-    void Endpoint::unregisterSubscriber(Subscriber* subscriber) {
-        m_subscribers.erase(subscriber);
+    void Endpoint::unregisterSubscriber(Subscriber& subscriber) {
+        m_subscribers.erase(&subscriber);
     }
 
     void Endpoint::write(PacketBase* packet) {

@@ -29,11 +29,11 @@ namespace lcomm {
         //! Register a subscriber instance to be notified of packet
         //!   arrivals.
         //! \param subscriber The subscriber instance to register
-        void registerSubscriber(Subscriber* subscriber);
+        void registerSubscriber(Subscriber &subscriber);
 
         //! Unregister a subscriber.
         //! \param subscriber The subscriber instance to unregister
-        void unregisterSubscriber(Subscriber* subscriber);
+        void unregisterSubscriber(Subscriber &subscriber);
 
         //! Send a packet through this endpoint.
         //! \param packet The packet to send through this endpoint

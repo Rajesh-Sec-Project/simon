@@ -100,7 +100,7 @@ int main() {
 
         // Create the ponger (that receives pings and send pongs)
         PingPonger server_sub(true);
-        server_ep.registerSubscriber(&server_sub);
+        server_ep.registerSubscriber(server_sub);
 
         /*** Client side ***/
 
@@ -113,7 +113,7 @@ int main() {
 
         // Create the pinger subscriber (that receives pongs)
         PingPonger client_sub(false);
-        client_ep.registerSubscriber(&client_sub);
+        client_ep.registerSubscriber(client_sub);
 
         // Wait for the client to be opened, otherwise
         //   write() will throw
