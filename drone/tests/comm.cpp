@@ -73,7 +73,7 @@ public:
             // If we're a ponger, reply to the packet.
             if(m_pong) {
                 MyPacket ctrl("<- pong");
-                ep->write(&ctrl);
+                ep->write(ctrl);
             }
         }
     }
@@ -125,7 +125,7 @@ int main() {
         for(int i = 0; i < 10; ++i) {
             // Create a ping packet and send it through the endpoint
             MyPacket ctrl("-> ping");
-            client_ep.write(&ctrl);
+            client_ep.write(ctrl);
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }

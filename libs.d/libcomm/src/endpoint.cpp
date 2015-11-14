@@ -38,27 +38,22 @@ namespace lcomm {
         m_subscribers.erase(&subscriber);
     }
 
-    void Endpoint::write(PacketBase* packet) {
-        if(!m_socket)
-            throw std::logic_error("lcomm::Endpoint::write: endpoint is not bound to any socket");
-
-        json::Node* node = packet->toJson();
+    void Endpoint::write(PacketBase const & packet) {
+        json::Node* node = packet.toJson();
         if(!node)
             throw std::logic_error("lcomm::Endpoint::write: packet serialization failed");
 
-        json::ObjectNode* obj = new json::ObjectNode();
+        auto obj = std::make_unique<json::ObjectNode>();
         obj->impl()["magic"] = new json::StringNode(m_magic);
         obj->impl()["version"] = new json::StringNode(m_version);
-        obj->impl()["tag"] = new json::StringNode(packet->tag());
+        obj->impl()["tag"] = new json::StringNode(packet.tag());
         obj->impl()["payload"] = node;
 
         std::ostringstream os;
-        json::serialize(obj, os, false);
+        json::serialize(obj.get(), os, false);
 
         std::lock_guard<std::mutex> guard(m_socket_mutex);
         m_socket->write(os.str());
-
-        delete obj;
     }
 
     void Endpoint::M_readThread() {

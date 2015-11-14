@@ -37,7 +37,7 @@ namespace lcomm {
 
         //! Send a packet through this endpoint.
         //! \param packet The packet to send through this endpoint
-        void write(PacketBase* packet);
+        void write(PacketBase const &packet);
 
         Socket const& socket() const;
 

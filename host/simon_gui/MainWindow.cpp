@@ -29,35 +29,35 @@ MainWindow::~MainWindow() {
 
 void MainWindow::M_up() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Up);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_down() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Down);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_left() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Left);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_right() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Right);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_stop() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Stop);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_takeOff() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }
 
 void MainWindow::M_land() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
-    CommManager::self()->write(&pkt);
+    CommManager::self()->write(pkt);
 }

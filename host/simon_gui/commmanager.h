@@ -18,8 +18,8 @@ public:
     bool opened();
 
     template <typename T>
-    void write(T* packet) {
-        qDebug() << "write " << packet;
+    void write(T &packet) {
+        qDebug() << "write " << &packet;
         m_ep->write(packet);
     }
 
