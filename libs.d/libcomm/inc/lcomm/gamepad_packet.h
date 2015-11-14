@@ -20,7 +20,7 @@ namespace lcomm {
     public:
         GamepadPacket(lconf::json::Node* node);
         GamepadPacket(Keys keys);
-        ~GamepadPacket();
+        ~GamepadPacket() = default;
 
         Keys keys() const;
         void setKeys(Keys keys);

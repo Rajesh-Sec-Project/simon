@@ -11,9 +11,6 @@ namespace lcomm {
         M_setup();
     }
 
-    GamepadPacket::~GamepadPacket() {
-    }
-
     GamepadPacket::Keys GamepadPacket::keys() const {
         return m_keys;
     }

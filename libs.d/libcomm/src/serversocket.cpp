@@ -11,9 +11,10 @@
 #include <stdexcept>
 #include <chrono>
 #include <iostream>
+#include <array>
 
 namespace lcomm {
-    ServerSocket::ServerSocket(unsigned int port, unsigned int latency)
+    ServerSocket::ServerSocket(unsigned int port, std::chrono::nanoseconds latency)
             : m_latency(latency)
             , m_init_flag(false)
             , m_exit_flag(false)
@@ -81,7 +82,7 @@ namespace lcomm {
         if(!m_rcv_queue.size())
             return false;
 
-        *data = m_rcv_queue.front();
+        *data = std::move(m_rcv_queue.front());
         m_rcv_queue.pop();
 
         return true;
@@ -111,19 +112,16 @@ namespace lcomm {
                     throw std::runtime_error("lcomm::ServerSocket::M_thread: fcntl failed");
 
                 // Get the socket's buffer size
-                int chunk_size = 4096;
+                constexpr int const chunk_size = 4096;
 
                 // Allocate input buffer
-                char* chunk = new char[chunk_size];
+                std::array<char, chunk_size> chunk;
 
-                std::string data = "";
+                std::string data;
 
-                for(;;) {
-                    if(m_exit_flag)
-                        break;
-
+                while(!m_exit_flag) {
                     int len;
-                    if((len = ::read(m_cfd, chunk, chunk_size)) < 0) {
+                    if((len = ::read(m_cfd, &chunk[0], chunk_size)) < 0) {
                         if(errno != EWOULDBLOCK && errno != EAGAIN)
                             throw std::runtime_error("lcomm::ServerSocket::M_thread: read failed");
                     }
@@ -132,17 +130,16 @@ namespace lcomm {
                         char c = chunk[i];
                         if(c == '\n') {
                             std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-                            m_rcv_queue.push(data);
-                            data = "";
+                            m_rcv_queue.push(std::move(data));
+                            data.clear();
                         }
 
                         data += c;
                     }
 
-                    std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
+                    std::this_thread::sleep_for(m_latency);
                 }
 
-                delete[] chunk;
                 ::close(m_cfd);
                 m_connected_flag = false;
             }
