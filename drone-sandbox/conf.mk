@@ -24,7 +24,7 @@ PRODUCT=drone-sandbox
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++14 -static-libstdc++
+CX_FLAGS = -std=gnu++14 -static-libstdc++ -Wall
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g

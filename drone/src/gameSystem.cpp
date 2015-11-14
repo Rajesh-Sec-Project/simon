@@ -11,12 +11,6 @@ using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-GamePadSubscriber::GamePadSubscriber(int& seqNum, ClientSocket& sock)
-        : m_sequenceNum(seqNum)
-        , m_socket(sock) {
-}
-
-
 void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
     GamepadPacket* ctrl = packet.downcast<GamepadPacket>();
     if(ctrl) {
@@ -29,18 +23,13 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
     }
 }
 
-
 GameSystem::GameSystem()
-        : m_endpoint(std::make_unique<ServerSocket>(50001))
-        , m_socket("127.0.0.1", 5556, false)
-        , m_gamePadSubscriber(m_sequenceNum, m_socket) {
+        : m_endpoint(std::make_unique<ServerSocket>(50001)) {
     // m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
     this->M_droneSetup();
-}
 
-GameSystem::~GameSystem() {
 }
 
 void GameSystem::stop() {

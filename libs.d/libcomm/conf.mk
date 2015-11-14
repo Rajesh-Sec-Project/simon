@@ -19,7 +19,7 @@ PRODUCT=libcomm.a
 ### Flags ###
 #############
 
-CX_FLAGS = -std=c++14 -I../libconf/include
+CX_FLAGS = -std=c++14 -I../libconf/include -Wall
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g

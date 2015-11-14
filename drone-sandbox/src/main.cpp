@@ -8,8 +8,6 @@ using namespace lcomm;
 using namespace std::literals;
 
 int main() {
-
-    int i = 0;
     ClientSocket s("127.0.0.1", 5556, false);
 
     Control::enableStabilization();

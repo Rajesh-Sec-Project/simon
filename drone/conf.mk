@@ -24,12 +24,12 @@ PRODUCT=drone
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++14 -static-libstdc++
+CX_FLAGS = -std=gnu++14 -static-libstdc++ -Wall
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm -static-libstdc++ -lcomm -lconf -lcontrol -lpthread
+LD_FLAGS = -lm -lcomm -lconf -lcontrol -lpthread -lcomm
 
 CROSS = 1
 DEPENDS = libcomm libconf libcontrol

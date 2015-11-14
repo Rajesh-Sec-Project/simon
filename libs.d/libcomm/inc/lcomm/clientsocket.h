@@ -48,7 +48,6 @@ namespace lcomm {
         void M_thread();
 
     private:
-        bool const m_tcp;
         std::chrono::nanoseconds m_latency;
         int m_fd;
         sockaddr_in m_addr;
@@ -58,6 +57,7 @@ namespace lcomm {
         std::thread m_thread;
         mutable std::queue<std::string> m_rcv_queue;
         mutable std::mutex m_rcv_queue_mutex;
+        bool const m_tcp;
     };
 }
 
