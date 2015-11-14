@@ -29,22 +29,22 @@ namespace lcomm {
         //! Register a subscriber instance to be notified of packet
         //!   arrivals.
         //! \param subscriber The subscriber instance to register
-        void registerSubscriber(Subscriber &subscriber);
+        void registerSubscriber(Subscriber& subscriber);
 
         //! Unregister a subscriber.
         //! \param subscriber The subscriber instance to unregister
-        void unregisterSubscriber(Subscriber &subscriber);
+        void unregisterSubscriber(Subscriber& subscriber);
 
         //! Send a packet through this endpoint.
         //! \param packet The packet to send through this endpoint
-        void write(PacketBase const &packet);
+        void write(PacketBase const& packet);
 
         Socket const& socket() const;
 
     private:
         void M_readThread();
         std::unique_ptr<PacketBase> M_extractPacket(json::Node& node);
-        void M_notify(PacketBase const &packet);
+        void M_notify(PacketBase const& packet);
 
     private:
         unsigned int m_latency;

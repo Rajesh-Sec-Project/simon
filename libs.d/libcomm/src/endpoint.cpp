@@ -38,7 +38,7 @@ namespace lcomm {
         m_subscribers.erase(&subscriber);
     }
 
-    void Endpoint::write(PacketBase const & packet) {
+    void Endpoint::write(PacketBase const& packet) {
         json::Node* node = packet.toJson();
         if(!node)
             throw std::logic_error("lcomm::Endpoint::write: packet serialization failed");
@@ -163,7 +163,7 @@ namespace lcomm {
         return packet;
     }
 
-    void Endpoint::M_notify(PacketBase  const &packet) {
+    void Endpoint::M_notify(PacketBase const& packet) {
         std::vector<std::thread> threads;
 
         for(auto subscriber : m_subscribers)

@@ -37,12 +37,12 @@ namespace lcomm {
 
         //! Write some data in the socket.
         //! \param data The data to write to the socket
-        void write(std::string const& data) const override ;
+        void write(std::string const& data) const override;
 
         //! Attempt to read data from the socket.
         //! \param data Output parameter for read data
         //! \return True if all went well, false otherwise (or if there is nothing to read)
-        bool read(std::string* data) const override ;
+        bool read(std::string* data) const override;
 
     private:
         void M_thread();

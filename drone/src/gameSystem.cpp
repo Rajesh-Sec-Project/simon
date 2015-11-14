@@ -29,7 +29,6 @@ GameSystem::GameSystem()
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
     this->M_droneSetup();
-
 }
 
 void GameSystem::stop() {
