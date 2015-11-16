@@ -11,12 +11,11 @@ int main() {
     using namespace lcomm;
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();
 
-
     GameSystem system;
 
-    while(true) {
-        std::this_thread::sleep_for(10ms);
-    }
+    std::getchar();
+
+    std::exit(0);
 
     return 0;
 }
