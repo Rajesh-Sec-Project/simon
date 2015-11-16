@@ -11,11 +11,25 @@ using namespace lcomm;
 #define NUM_ITER 20
 #define SLEEP_DELAY 20ms
 
+// Define to 1 if you want the frames sent to the drone to be printed on stdout.
+#define PRINT_FRAMES 0
+
 namespace lcontrol {
+
+    namespace {
+        void printFrame(std::string const &f) {
+#if PRINT_FRAMES
+            std::cout << f << '\n';
+#endif
+        }
+    }
 
     std::atomic<std::uint32_t> Control::m_seqNum;
     std::unique_ptr<lcomm::ClientSocket> Control::m_sock;
 
+    std::string Control::float_to_string(float i) {
+        return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
+    }
 
     void Control::init() {
         m_seqNum = 0;
@@ -43,17 +57,13 @@ namespace lcontrol {
         }
     }
 
-    std::string Control::float_to_string(float i) {
-        return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
-    }
-
     // Ask the drone to send the navdata :
     // AT*CONFIG="seqNum",\"general:navdata_demo\",\"TRUE\"\r
     void Control::sendNavData(std::uint32_t seqNum, ClientSocket& s) {
         std::string data("AT*CONFIG=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",\"general:navdata_demo\",\"TRUE\"\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -63,7 +73,7 @@ namespace lcontrol {
         std::string data("AT*COMWD=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + "\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -73,7 +83,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290717952\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -83,7 +93,7 @@ namespace lcontrol {
         std::string data("AT*FTRIM=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + "\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -93,7 +103,7 @@ namespace lcontrol {
         std::string data("AT*CALIB=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",0\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -103,7 +113,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290718208\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -113,7 +123,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290717696\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 
@@ -125,7 +135,7 @@ namespace lcontrol {
         data += seqStr + "," + std::to_string(flag) + "," + Control::float_to_string(leftRightTilt) + "," +
                 Control::float_to_string(frontBackTilt) + "," + Control::float_to_string(verticalSpeed) + "," +
                 Control::float_to_string(angularSpeed) + ",\r";
-        std::cout << data << '\n';
+        printFrame(data);
         s.write(data);
     }
 }
