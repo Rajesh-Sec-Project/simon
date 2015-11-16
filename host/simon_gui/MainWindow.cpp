@@ -51,6 +51,8 @@ void MainWindow::M_right() {
 void MainWindow::M_stop() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Stop);
     CommManager::self().write(pkt);
+    std::this_thread::sleep_for(200ms);
+    CommManager::self().reconnect();
 }
 
 void MainWindow::M_takeOff() {

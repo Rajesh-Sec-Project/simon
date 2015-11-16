@@ -13,6 +13,8 @@
 #include <iostream>
 #include <array>
 
+using namespace std::literals;
+
 namespace lcomm {
     ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, std::chrono::nanoseconds latency)
             : m_latency(latency)
@@ -55,23 +57,29 @@ namespace lcomm {
     void ClientSocket::write(std::string const& data) const {
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
-        if(m_tcp) {
-            // Don't forget to append a new line
-            std::string raw = data + '\n';
-            int size = raw.size();
-            int pos = 0;
-            int len = 0;
-            do {
-                size -= len;
-                pos += len;
-                len = ::write(m_fd, raw.c_str() + pos, size);
-                if(len < 0)
-                    throw std::runtime_error("lcomm::ClientSocket::write: write failed (TCP)");
-            } while(len != size);
-        } else {
-            if(sendto(m_fd, data.c_str(), data.size(), 0, (struct sockaddr*)&m_addr, sizeof(m_addr)) == -1) {
-                throw std::runtime_error("lcomm::ClientSocket::write: write failed (UDP)");
+        try {
+            if (m_tcp) {
+                // Don't forget to append a new line
+                std::string raw = data + '\n';
+                int size = raw.size();
+                int pos = 0;
+                int len = 0;
+                do {
+                    size -= len;
+                    pos += len;
+                    len = ::write(m_fd, raw.c_str() + pos, size);
+                    if (len < 0)
+                        throw std::runtime_error("lcomm::ClientSocket::write: write failed (TCP) "s + std::strerror(errno));
+                } while (len != size);
+            } else {
+                if (sendto(m_fd, data.c_str(), data.size(), 0, (struct sockaddr *) &m_addr, sizeof(m_addr)) == -1) {
+                    throw std::runtime_error("lcomm::ClientSocket::write: write failed (UDP) "s + std::strerror(errno));
+                }
             }
+        }
+        catch(...) {
+            m_connected_flag = false;
+            throw;
         }
     }
 
@@ -98,14 +106,18 @@ namespace lcomm {
             // Try to connect to the server
             {
                 std::lock_guard<std::mutex> guard(m_fd_mutex);
-                if(connect(m_fd, (struct sockaddr*)&m_addr, sizeof(m_addr)) < 0)
-                    throw std::runtime_error("lcomm::ClientSocket::M_thread: connect failed");
+
+                // Set the socket to be non blocking
+                if(fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) < 0)
+                    throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
+
+                while(connect(m_fd, (struct sockaddr*)&m_addr, sizeof(m_addr)) < 0) {
+                    std::cerr << "lcomm::ClientSocket::M_thread: connect failed. Retrying..." << std::endl;
+                    std::this_thread::sleep_for(1s);
+                }
+
                 m_connected_flag = true;
             }
-
-            // Set the socket to be non blocking
-            if(fcntl(m_fd, F_SETFL, O_NONBLOCK) < 0)
-                throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
 
             // Allocate input chunk buffer
             constexpr int const chunk_size = 4096;
@@ -137,7 +149,8 @@ namespace lcomm {
 
             ::close(m_fd);
             m_connected_flag = false;
-        } catch(...) {
+        } catch(std::exception const &e) {
+            std::cerr << "ClientSocket::M_thread: Received exception! " << e.what() << std::endl;
             m_thread_exc = std::current_exception();
         }
     }

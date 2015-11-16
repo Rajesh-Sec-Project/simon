@@ -12,6 +12,9 @@
 #include <atomic>
 #include <stdexcept>
 #include <memory>
+#include <chrono>
+
+using namespace std::literals;
 
 namespace lcomm {
     class Socket;
@@ -22,7 +25,7 @@ namespace lcomm {
     public:
         //! Create an endpoint.
         //! \param latency The socket's polling period for reading
-        Endpoint(std::unique_ptr<Socket> socket, unsigned int latency = 10);
+        Endpoint(std::unique_ptr<Socket> socket, std::chrono::nanoseconds latency = 10ms);
 
         virtual ~Endpoint();
 
@@ -41,13 +44,17 @@ namespace lcomm {
 
         Socket const& socket() const;
 
+        std::set<Subscriber*> const &subscribers() const {
+            return m_subscribers;
+        }
+
     private:
         void M_readThread();
         std::unique_ptr<PacketBase> M_extractPacket(json::Node& node);
         void M_notify(PacketBase const& packet);
 
     private:
-        unsigned int m_latency;
+        std::chrono::nanoseconds m_latency;
         std::unique_ptr<Socket> m_socket;
         std::mutex m_socket_mutex;
         std::atomic<bool> m_read_thread_exit;

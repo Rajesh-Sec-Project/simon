@@ -27,7 +27,7 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                          "       |   |\n"
                          "       |   |\n"
                          "       |   |\n"
-                         "       |___|"
+                         "       |___|\n"
                       << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Down) {
             std::cout << "Detected a movement to the bottom:\n"
@@ -39,7 +39,7 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                          "     __|   |__\n"
                          "    \\         /\n"
                          "      \\     /\n"
-                         "        \\ /"
+                         "        \\ /\n"
                       << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Left) {
             std::cout << "Detected a movement to the left:\n"
@@ -48,7 +48,7 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                          "/                |\n"
                          "\\   _____________|\n"
                          " \\ |\n"
-                         "  \\|"
+                         "  \\|\n"
                       << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Right) {
             std::cout << "Detected a movement to the right:\n"
@@ -57,7 +57,7 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                          "|                \\\n"
                          "|_____________   /\n"
                          "              | /\n"
-                         "              |/"
+                         "              |/\n"
                       << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Stop) {
             std::cout << "Stop requested:\n"
@@ -79,7 +79,7 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|"
+                         "              |_|\n"
                       << std::endl;
 
             Control::land();

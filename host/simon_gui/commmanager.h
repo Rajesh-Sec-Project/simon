@@ -16,15 +16,13 @@ private:
     virtual ~CommManager();
 
 public:
-    static CommManager& self();
+    static CommManager &self();
     static void destroy();
     bool opened();
 
-    template <typename T>
-    void write(T& packet) {
-        qDebug() << "write " << &packet;
-        m_ep.write(packet);
-    }
+    void write(lcomm::PacketBase const& packet);
+
+    void reconnect();
 
 signals:
     void packetReceived(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
@@ -32,9 +30,8 @@ signals:
 private:
     void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
     static std::unique_ptr<CommManager> M_makeCommManager();
-
 private:
-    lcomm::Endpoint m_ep;
+    std::unique_ptr<lcomm::Endpoint> m_ep;
     static std::unique_ptr<CommManager> m_self;
 };
 

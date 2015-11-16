@@ -10,7 +10,7 @@ namespace lcomm {
     std::string const Endpoint::m_magic = "simon";
     std::string const Endpoint::m_version = "01";
 
-    Endpoint::Endpoint(std::unique_ptr<Socket> socket, unsigned int latency)
+    Endpoint::Endpoint(std::unique_ptr<Socket> socket, std::chrono::nanoseconds latency)
             : m_latency(latency)
             , m_socket(std::move(socket))
             , m_read_thread_exit(false)
@@ -69,27 +69,28 @@ namespace lcomm {
 
                 // Try to read some input data
                 {
-                    std::lock_guard<std::mutex> guard(m_socket_mutex);
+                    std::lock_guard <std::mutex> guard(m_socket_mutex);
                     received = m_socket->read(&data);
                 }
 
-                if(received) {
+                if (received) {
                     std::string magic, tag;
-                    std::unique_ptr<json::Node> node;
+                    std::unique_ptr <json::Node> node;
 
                     // Parse packet's content
                     try {
                         std::istringstream ss;
                         ss.str(data);
                         node.reset(json::parse(ss));
-                    } catch(json::Exception const& exc) {
+                    } catch (json::Exception const &exc) {
                         throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception)");
                     }
 
                     auto packet = M_extractPacket(*node);
                     M_notify(*packet);
-                } else
-                    std::this_thread::sleep_for(std::chrono::milliseconds(m_latency));
+                } else {
+                    std::this_thread::sleep_for(m_latency);
+                }
             }
         } catch(std::exception const& e) {
             std::cerr << "Exception received : " << e.what() << std::endl;

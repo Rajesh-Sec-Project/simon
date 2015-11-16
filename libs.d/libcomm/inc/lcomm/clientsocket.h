@@ -52,7 +52,8 @@ namespace lcomm {
         int m_fd;
         sockaddr_in m_addr;
         mutable std::mutex m_fd_mutex;
-        std::atomic<bool> m_init_flag, m_exit_flag, m_connected_flag;
+        std::atomic_bool m_init_flag, m_exit_flag;
+        mutable std::atomic_bool m_connected_flag;
         std::exception_ptr m_thread_exc;
         std::thread m_thread;
         mutable std::queue<std::string> m_rcv_queue;
