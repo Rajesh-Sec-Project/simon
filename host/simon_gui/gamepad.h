@@ -2,6 +2,7 @@
 #define GAMEPAD_H
 
 #include <QWidget>
+#include <memory>
 
 namespace Ui {
     class GamePad;
@@ -36,7 +37,7 @@ private:
     void keyPressEvent(QKeyEvent* evt) override;
 
 private:
-    Ui::GamePad* m_ui;
+    std::unique_ptr<Ui::GamePad> m_ui;
 };
 
 #endif // GAMEPAD_H

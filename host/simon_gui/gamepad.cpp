@@ -6,7 +6,7 @@
 
 GamePad::GamePad(QWidget* parent)
         : QWidget(parent)
-        , m_ui(new Ui::GamePad) {
+        , m_ui(std::make_unique<Ui::GamePad>()) {
     m_ui->setupUi(this);
 
     QObject::connect(m_ui->button_down, SIGNAL(clicked()), this, SLOT(M_down()));
@@ -19,7 +19,6 @@ GamePad::GamePad(QWidget* parent)
 }
 
 GamePad::~GamePad() {
-    delete m_ui;
 }
 
 void GamePad::M_up() {

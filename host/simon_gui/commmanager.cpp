@@ -1,31 +1,32 @@
 #include "commmanager.h"
 #include <memory>
 
-CommManager* CommManager::m_self = 0;
+std::unique_ptr<CommManager> CommManager::m_self;
 
 CommManager::CommManager()
-        : QObject(0) {
-    m_ep = new lcomm::Endpoint(std::make_unique<lcomm::ClientSocket>("192.168.1.1", 50001));
+        : QObject(0)
+        , m_ep(std::make_unique<lcomm::ClientSocket>("192.168.1.1", 50001)) {
 }
 
 CommManager::~CommManager() {
-    delete m_ep;
 }
 
-CommManager* CommManager::self() {
+CommManager& CommManager::self() {
     if(!m_self)
-        m_self = new CommManager();
-    return m_self;
+        m_self = M_makeCommManager();
+    return *m_self;
 }
 
 void CommManager::destroy() {
-    if(m_self)
-        delete m_self;
-    m_self = 0;
+    m_self = nullptr;
+}
+
+std::unique_ptr<CommManager> CommManager::M_makeCommManager() {
+    return std::unique_ptr<CommManager>{new CommManager};
 }
 
 bool CommManager::opened() {
-    return m_ep->socket().opened();
+    return m_ep.socket().opened();
 }
 
 void CommManager::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {

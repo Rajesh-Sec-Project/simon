@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
 
     qDebug() << "Waiting for connection...";
-    while(!CommManager::self()->opened())
+    while(!CommManager::self().opened())
         ;
     qDebug() << "Connected !";
 

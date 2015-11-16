@@ -17,7 +17,7 @@ using namespace lcomm;
 namespace lcontrol {
 
     namespace {
-        void printFrame(std::string const &f) {
+        void printFrame(std::string const& f) {
 #if PRINT_FRAMES
             std::cout << f << '\n';
 #endif

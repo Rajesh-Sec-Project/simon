@@ -26,8 +26,8 @@ private slots:
     void M_land();
 
 private:
-    std::unique_ptr<Ui::MainWindow> _ui;
-    GamePad* m_gamepad;
+    std::unique_ptr<Ui::MainWindow> m_ui;
+    std::unique_ptr<GamePad> m_gamepad;
 };
 
 #endif // MAINWINDOW_H

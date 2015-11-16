@@ -4,23 +4,26 @@
 #include <QObject>
 #include "lcomm/lcomm.h"
 #include <QDebug>
+#include <memory>
 
 class CommManager : public QObject, public lcomm::Subscriber {
     Q_OBJECT
 
 private:
+    friend std::unique_ptr<CommManager>::deleter_type;
+
     explicit CommManager();
     virtual ~CommManager();
 
 public:
-    static CommManager* self();
+    static CommManager& self();
     static void destroy();
     bool opened();
 
     template <typename T>
     void write(T& packet) {
         qDebug() << "write " << &packet;
-        m_ep->write(packet);
+        m_ep.write(packet);
     }
 
 signals:
@@ -28,10 +31,11 @@ signals:
 
 private:
     void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
+    static std::unique_ptr<CommManager> M_makeCommManager();
 
 private:
-    lcomm::Endpoint* m_ep;
-    static CommManager* m_self;
+    lcomm::Endpoint m_ep;
+    static std::unique_ptr<CommManager> m_self;
 };
 
 #endif // COMMMANAGER_H
