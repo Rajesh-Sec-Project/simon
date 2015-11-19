@@ -34,6 +34,12 @@ namespace lcontrol {
     void Control::init() {
         m_seqNum = 0;
         m_sock = std::make_unique<ClientSocket>("127.0.0.1", 5556, false);
+        int numAttempt = 0;
+        while(!m_sock->opened()) {
+            std::cout << "Waiting for lcontrol's connection " << numAttempt++ << "..." << std::endl;
+            std::this_thread::sleep_for(100ms);
+        }
+        std::cout << "lcontrol connected!" << std::endl;
     }
 
     void Control::enableStabilization() {
