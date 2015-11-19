@@ -1,0 +1,3 @@
+# 127.0.0.2 is the spoofed address
+# 5550 is the listening port
+iptables -t nat -A PREROUTING -p udp -d 127.0.0.2 -j DNAT --to-destination 127.0.0.1:5550
