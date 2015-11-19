@@ -11,11 +11,17 @@ int main() {
     using namespace lcomm;
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();
 
-    GameSystem system;
+    std::cout << "App's per-thread stack size (kB): " << std::endl;
+    std::system("ulimit -s");
 
-    std::getchar();
+    {
+        GameSystem system;
 
-    std::exit(0);
+    }
+
+    /*while(true) {
+        std::this_thread::sleep_for(1s);
+    }*/
 
     return 0;
 }

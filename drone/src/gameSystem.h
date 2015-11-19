@@ -9,15 +9,21 @@
 #include <atomic>
 #include "lcomm/lcomm.h"
 
+class GameSystem;
+
 class GamePadSubscriber : public lcomm::Subscriber {
 public:
+    GamePadSubscriber(GameSystem &gs) : m_gs(gs) {}
     void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
+
+private:
+    GameSystem &m_gs;
 };
 
 class GameSystem {
 public:
     GameSystem();
-    ~GameSystem() = default;
+    ~GameSystem();
 
     void stop();
 
@@ -27,7 +33,7 @@ protected:
 
     lcomm::Endpoint m_endpoint;
     GamePadSubscriber m_gamePadSubscriber;
-    std::atomic_bool m_alive = {true};
+    std::atomic_bool m_alive = {false};
     std::thread m_clientComThread;
 };
 

@@ -83,17 +83,21 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
                       << std::endl;
 
             Control::land();
-            std::exit(0);
+            m_gs.stop();
         }
     }
 }
 
 GameSystem::GameSystem()
-        : m_endpoint(std::make_unique<ServerSocket>(50001)) {
-    // m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
+        : m_endpoint(std::make_unique<ServerSocket>(50001)), m_gamePadSubscriber(*this) {
+    m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
     this->M_droneSetup();
+}
+
+GameSystem::~GameSystem() {
+    m_clientComThread.join();
 }
 
 void GameSystem::stop() {
@@ -104,10 +108,13 @@ void GameSystem::M_droneSetup() {
     Control::init();
     Control::enableStabilization();
     std::cout << "Stabilization OK!" << std::endl;
+
+    while(!m_alive);
 }
 
 void GameSystem::M_clientComThread() {
+    m_alive = true;
     while(m_alive) {
-        std::this_thread::sleep_for(10ms);
+        std::this_thread::sleep_for(100ms);
     }
 }
