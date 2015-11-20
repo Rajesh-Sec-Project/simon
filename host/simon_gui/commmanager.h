@@ -16,7 +16,7 @@ private:
     virtual ~CommManager();
 
 public:
-    static CommManager &self();
+    static CommManager& self();
     static void destroy();
     bool opened();
 
@@ -30,6 +30,7 @@ signals:
 private:
     void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
     static std::unique_ptr<CommManager> M_makeCommManager();
+
 private:
     std::unique_ptr<lcomm::Endpoint> m_ep;
     static std::unique_ptr<CommManager> m_self;

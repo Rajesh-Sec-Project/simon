@@ -4,15 +4,14 @@
 std::unique_ptr<CommManager> CommManager::m_self;
 
 CommManager::CommManager()
-        : QObject(0),
-    m_ep(std::make_unique<lcomm::Endpoint>(std::make_unique<lcomm::ClientSocket>("192.168.1.1", 50001))) {
+        : QObject(0)
+        , m_ep(std::make_unique<lcomm::Endpoint>(std::make_unique<lcomm::ClientSocket>("192.168.1.1", 50001))) {
 }
 
 CommManager::~CommManager() {
-
 }
 
-CommManager &CommManager::self() {
+CommManager& CommManager::self() {
     if(!m_self)
         m_self = M_makeCommManager();
     return *m_self;
@@ -48,9 +47,8 @@ void CommManager::write(lcomm::PacketBase const& packet) {
         try {
             m_ep->write(packet);
             break;
-        }
-        catch(std::exception const &e) {
-            std::cerr << "CommManager::write failed: " << e.what() <<std::endl;
+        } catch(std::exception const& e) {
+            std::cerr << "CommManager::write failed: " << e.what() << std::endl;
             this->reconnect();
         }
     }

@@ -13,11 +13,13 @@ class GameSystem;
 
 class GamePadSubscriber : public lcomm::Subscriber {
 public:
-    GamePadSubscriber(GameSystem &gs) : m_gs(gs) {}
+    GamePadSubscriber(GameSystem& gs)
+            : m_gs(gs) {
+    }
     void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
 
 private:
-    GameSystem &m_gs;
+    GameSystem& m_gs;
 };
 
 class GameSystem {

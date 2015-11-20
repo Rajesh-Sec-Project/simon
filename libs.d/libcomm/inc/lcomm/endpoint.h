@@ -44,7 +44,7 @@ namespace lcomm {
 
         Socket const& socket() const;
 
-        std::set<Subscriber*> const &subscribers() const {
+        std::set<Subscriber*> const& subscribers() const {
             return m_subscribers;
         }
 
@@ -56,7 +56,6 @@ namespace lcomm {
     private:
         std::chrono::nanoseconds m_latency;
         std::unique_ptr<Socket> m_socket;
-        std::mutex m_socket_mutex;
         std::atomic<bool> m_read_thread_exit;
         std::exception_ptr m_read_thread_exc;
         std::thread m_read_thread;
