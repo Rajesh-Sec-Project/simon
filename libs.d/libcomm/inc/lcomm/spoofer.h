@@ -14,7 +14,7 @@ public:
 	//! The spoofer will forge UDP packets and send them
 	//!   to to:to_port, faking the source address to
 	//!   fake:fake_port.
-	Spoofer(std::string const& to, int to_port, std::string const& fake, int fake_port, std::string const& data = "SPOOF!");
+	Spoofer(std::string const& to, int to_port, std::string const& fake, int fake_port, const char* data, int data_len);
 
 	//! Send a spoof packet to the target.
 	void spoof();
