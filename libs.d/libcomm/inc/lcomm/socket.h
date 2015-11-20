@@ -20,6 +20,11 @@ namespace lcomm {
         virtual bool read(std::string* data) const = 0;
 
         virtual bool opened() const = 0;
+
+        virtual void connect() = 0;
+
+        virtual void close() = 0;
+
     };
 }
 

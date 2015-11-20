@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <cstring>
 
 #include <stdexcept>
 #include <chrono>
@@ -16,11 +17,8 @@
 namespace lcomm {
     ServerSocket::ServerSocket(unsigned int port, std::chrono::nanoseconds latency)
             : m_latency(latency)
-            , m_init_flag(false)
-            , m_exit_flag(false)
             , m_connected_flag(false)
-            , m_thread_exc(nullptr)
-            , m_thread(&ServerSocket::M_thread, this) {
+            , m_buf(4096) {
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
         // Create the socket descriptor
@@ -41,17 +39,11 @@ namespace lcomm {
         // 3 is the backlog, i.e. the size of the connection queue
         if(::listen(m_fd, 3) < 0)
             throw std::runtime_error("lcomm::ServerSocket::ServerSocket: listen failed");
-
-        m_init_flag = true;
     }
 
     ServerSocket::~ServerSocket() {
-        m_exit_flag = true;
-        m_thread.join();
-
-        if(m_thread_exc)
-            std::rethrow_exception(m_thread_exc);
-    }
+       this->close();
+     }
 
     bool ServerSocket::opened() const {
         return m_connected_flag;
@@ -78,73 +70,52 @@ namespace lcomm {
         if(!data || !m_connected_flag)
             return false;
 
-        std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-        if(!m_rcv_queue.size())
-            return false;
+        while(m_connected_flag) {
+            ssize_t len;
+            if ((len = ::read(m_cfd, &m_buf[0], m_buf.size())) < 0) {
+                if (errno != EWOULDBLOCK && errno != EAGAIN)
+                    throw std::runtime_error("lcomm::ServerSocket::M_thread: read failed");
+            }
 
-        *data = std::move(m_rcv_queue.front());
-        m_rcv_queue.pop();
+            for (ssize_t i = 0; i < len; ++i) {
+                char c = m_buf[i];
+                if (c == '\n') {
+                    return true;
+                }
 
-        return true;
+                *data += c;
+            }
+
+            std::this_thread::sleep_for(m_latency);
+        }
+
+        return false;
     }
 
-    void ServerSocket::M_thread() {
-        try {
-            while(!m_init_flag)
-                if(m_exit_flag)
-                    return;
+    void ServerSocket::connect() {
+        // Listen for incoming connections
+        {
+            std::lock_guard<std::mutex> guard(m_fd_mutex);
+            m_cfd = ::accept(m_fd, 0, 0);
+            if(m_cfd < 0)
+                throw std::runtime_error("lcomm::ServerSocket::M_thread: accept failed");
+        }
 
-            while(!m_exit_flag) {
-                // Listen for incoming connections
-                {
-                    std::lock_guard<std::mutex> guard(m_fd_mutex);
-                    m_cfd = ::accept(m_fd, 0, 0);
-                    if(m_cfd < 0)
-                        throw std::runtime_error("lcomm::ServerSocket::M_thread: accept failed");
-                    m_connected_flag = true;
-                }
+        // Set the socket to be non blocking
+        int flags;
+        if((flags = fcntl(m_cfd, F_GETFL, 0)) < 0)
+            flags = 0;
+        if(fcntl(m_cfd, F_SETFL, flags | O_NONBLOCK) < 0)
+            throw std::runtime_error("lcomm::ServerSocket::M_thread: fcntl failed");
 
-                // Set the socket to be non blocking
-                int flags;
-                if((flags = fcntl(m_cfd, F_GETFL, 0)) < 0)
-                    flags = 0;
-                if(fcntl(m_cfd, F_SETFL, flags | O_NONBLOCK) < 0)
-                    throw std::runtime_error("lcomm::ServerSocket::M_thread: fcntl failed");
+        m_connected_flag = true;
+    }
 
-                // Get the socket's buffer size
-                constexpr int const chunk_size = 4096;
-
-                // Allocate input buffer
-                std::array<char, chunk_size> chunk;
-
-                std::string data;
-
-                while(!m_exit_flag) {
-                    int len;
-                    if((len = ::read(m_cfd, &chunk[0], chunk_size)) < 0) {
-                        if(errno != EWOULDBLOCK && errno != EAGAIN)
-                            throw std::runtime_error("lcomm::ServerSocket::M_thread: read failed");
-                    }
-
-                    for(int i = 0; i < len; ++i) {
-                        char c = chunk[i];
-                        if(c == '\n') {
-                            std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-                            m_rcv_queue.push(std::move(data));
-                            data.clear();
-                        }
-
-                        data += c;
-                    }
-
-                    std::this_thread::sleep_for(m_latency);
-                }
-
-                ::close(m_cfd);
-                m_connected_flag = false;
-            }
-        } catch(...) {
-            m_thread_exc = std::current_exception();
+    void ServerSocket::close() {
+        std::lock_guard<std::mutex> guard(m_fd_mutex);
+        if(m_connected_flag) {
+            ::close(m_fd);
+            m_connected_flag = false;
         }
     }
 }

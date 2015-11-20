@@ -20,7 +20,9 @@ namespace lcomm {
 
     Endpoint::~Endpoint() {
         m_read_thread_exit = true;
+        m_socket->close();
         m_read_thread.join();
+        m_socket.reset();
 
         if(m_read_thread_exc)
             std::rethrow_exception(m_read_thread_exc);
@@ -52,18 +54,20 @@ namespace lcomm {
         std::ostringstream os;
         json::serialize(obj.get(), os, false);
 
-        std::lock_guard<std::mutex> guard(m_socket_mutex);
         m_socket->write(os.str());
     }
 
     void Endpoint::M_readThread() {
         try {
-            // Wait for the endpoint to be bound
-            for(; !m_socket && !m_read_thread_exit;)
-                ;
+            {
+                std::lock_guard <std::mutex> guard(m_socket_mutex);
+                m_socket->connect();
+            }
+
+            std::cout << "Connection OK" << std::endl;
 
             // Loop until asked to exit
-            while(m_socket && !m_read_thread_exit) {
+            while(!m_read_thread_exit) {
                 std::string data;
                 bool received = false;
 
@@ -165,12 +169,8 @@ namespace lcomm {
     }
 
     void Endpoint::M_notify(PacketBase const& packet) {
-        std::vector<std::thread> threads;
-
-        for(auto subscriber : m_subscribers)
-            threads.push_back(std::thread(&Subscriber::notify, subscriber, std::ref(*this), std::ref(packet)));
-
-        for(auto& th : threads)
-            th.join();
+        for(auto subscriber : m_subscribers) {
+            subscriber->notify(*this, packet);
+        }
     }
 }

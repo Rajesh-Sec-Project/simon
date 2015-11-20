@@ -12,6 +12,7 @@
 #include <stdexcept>
 
 #include <chrono>
+#include <vector>
 
 using namespace std::literals;
 
@@ -44,21 +45,17 @@ namespace lcomm {
         //! \return True if all went well, false otherwise (or if there is nothing to read)
         bool read(std::string* data) const override;
 
-    private:
-        void M_thread();
+        void connect() override;
+        void close() override;
 
     private:
         std::chrono::nanoseconds m_latency;
         int m_fd;
         sockaddr_in m_addr;
         mutable std::mutex m_fd_mutex;
-        std::atomic_bool m_init_flag, m_exit_flag;
         mutable std::atomic_bool m_connected_flag;
-        std::exception_ptr m_thread_exc;
-        std::thread m_thread;
-        mutable std::queue<std::string> m_rcv_queue;
-        mutable std::mutex m_rcv_queue_mutex;
         bool const m_tcp;
+        mutable std::vector<char> m_buf;
     };
 }
 
