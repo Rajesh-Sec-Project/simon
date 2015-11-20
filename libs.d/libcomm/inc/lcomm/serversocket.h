@@ -40,18 +40,15 @@ namespace lcomm {
         //! \return True if all went well, false otherwise (or if there is nothing to read)
         bool read(std::string* data) const override;
 
-    private:
-        void M_thread();
+        void connect() override;
+        void close() override;
 
     private:
         std::chrono::nanoseconds m_latency;
         int m_fd, m_cfd;
         mutable std::mutex m_fd_mutex;
-        std::atomic<bool> m_init_flag, m_exit_flag, m_connected_flag;
-        std::exception_ptr m_thread_exc;
-        std::thread m_thread;
-        mutable std::queue<std::string> m_rcv_queue;
-        mutable std::mutex m_rcv_queue_mutex;
+        std::atomic_bool m_connected_flag;
+        mutable std::vector<char> m_buf;
     };
 }
 

@@ -18,12 +18,8 @@ using namespace std::literals;
 namespace lcomm {
     ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, std::chrono::nanoseconds latency)
             : m_latency(latency)
-            , m_init_flag(false)
-            , m_exit_flag(false)
             , m_connected_flag(false)
-            , m_thread_exc(nullptr)
-            , m_thread(&ClientSocket::M_thread, this)
-            , m_tcp(tcp) {
+            , m_tcp(tcp), m_buf(4096) {
         // Own the socket's descriptor when initializing
         std::lock_guard<std::mutex> guard(m_fd_mutex);
 
@@ -36,18 +32,10 @@ namespace lcomm {
         m_addr.sin_family = AF_INET;
         m_addr.sin_addr.s_addr = inet_addr(ip.c_str());
         m_addr.sin_port = htons(port);
-
-        // Signal our thread that we're inited
-        m_init_flag = true;
     }
 
     ClientSocket::~ClientSocket() {
-        // Signal our thread that we must exit and join
-        m_exit_flag = true;
-        m_thread.join();
-
-        if(m_thread_exc)
-            std::rethrow_exception(m_thread_exc);
+        this->close();
     }
 
     bool ClientSocket::opened() const {
@@ -87,71 +75,56 @@ namespace lcomm {
         if(!data || !m_connected_flag)
             return false;
 
-        std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-        if(!m_rcv_queue.size())
-            return false;
-
-        *data = std::move(m_rcv_queue.front());
-        m_rcv_queue.pop();
-
-        return true;
-    }
-
-    void ClientSocket::M_thread() {
         try {
-            while(!m_init_flag)
-                if(m_exit_flag)
-                    return;
-
-            // Try to connect to the server
-            {
-                std::lock_guard<std::mutex> guard(m_fd_mutex);
-
-                // Set the socket to be non blocking
-                if(fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) < 0)
-                    throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
-
-                while(connect(m_fd, (struct sockaddr*)&m_addr, sizeof(m_addr)) < 0) {
-                    std::cerr << "lcomm::ClientSocket::M_thread: connect failed. Retrying..." << std::endl;
-                    std::this_thread::sleep_for(1s);
-                }
-
-                m_connected_flag = true;
-            }
-
-            // Allocate input chunk buffer
-            constexpr int const chunk_size = 4096;
-            std::array<char, chunk_size> chunk;
-
-            std::string data;
-
-            while(!m_exit_flag) {
+            while(m_connected_flag) {
                 ssize_t len;
-                if((len = ::read(m_fd, &chunk[0], chunk_size)) < 0) {
-                    if(errno != EWOULDBLOCK && errno != EAGAIN)
+                if ((len = ::read(m_fd, &m_buf[0], m_buf.size())) < 0) {
+                    if (errno != EWOULDBLOCK && errno != EAGAIN)
                         throw std::runtime_error("lcomm::ClientSocket::M_thread: read failed");
                 }
 
-                for(ssize_t i = 0; i < len; ++i) {
-                    char c = chunk[i];
+                for (ssize_t i = 0; i < len; ++i) {
+                    char c = m_buf[i];
 
-                    if(c == '\n') {
-                        std::lock_guard<std::mutex> guard(m_rcv_queue_mutex);
-                        m_rcv_queue.push(std::move(data));
-                        data.clear();
+                    if (c == '\n') {
+                        return true;
                     }
 
-                    data += c;
+                    *data += c;
                 }
 
                 std::this_thread::sleep_for(m_latency);
             }
 
-            ::close(m_fd);
-            m_connected_flag = false;
         } catch(std::exception const &e) {
             std::cerr << "ClientSocket::M_thread: Received exception! " << e.what() << std::endl;
-            m_thread_exc = std::current_exception();
+            throw;
+        }
+
+        return false;
+    }
+
+    void ClientSocket::connect() {
+        if(m_tcp) {
+            std::lock_guard <std::mutex> guard(m_fd_mutex);
+
+            // Set the socket to be non blocking
+            if (fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) < 0)
+                throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
+
+            while (::connect(m_fd, (struct sockaddr *) &m_addr, sizeof(m_addr)) < 0) {
+                std::cerr << "lcomm::ClientSocket::M_thread: connect failed. Retrying..." << std::endl;
+                std::this_thread::sleep_for(1s);
+            }
+        }
+        m_connected_flag = true;
+    }
+
+    void ClientSocket::close() {
+        std::lock_guard<std::mutex> guard(m_fd_mutex);
+        if(m_connected_flag) {
+            ::close(m_fd);
+            m_connected_flag = false;
         }
     }
 }
