@@ -1,3 +1,11 @@
+================================= Exec at drone startup ===================================
+Add the two following lines in the file /etc/init.d/rcS, just before the final echo.
+Then, copy the start_drone.sh script in /data/video, and chmod +x it.
+
+sleep 4 # Wait for program.elf startup
+DRONE_STARTUP=1 /data/video/start_drone.sh # Launch the drone control program
+
+
 ================================= Communication ===========================================
 
 NavData sent on UDP 5554 (beware of demo / debug mode)
