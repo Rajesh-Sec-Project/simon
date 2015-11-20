@@ -24,7 +24,6 @@ namespace lcomm {
         virtual void connect() = 0;
 
         virtual void close() = 0;
-
     };
 }
 

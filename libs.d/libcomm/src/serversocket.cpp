@@ -42,8 +42,8 @@ namespace lcomm {
     }
 
     ServerSocket::~ServerSocket() {
-       this->close();
-     }
+        this->close();
+    }
 
     bool ServerSocket::opened() const {
         return m_connected_flag;
@@ -72,14 +72,14 @@ namespace lcomm {
 
         while(m_connected_flag) {
             ssize_t len;
-            if ((len = ::read(m_cfd, &m_buf[0], m_buf.size())) < 0) {
-                if (errno != EWOULDBLOCK && errno != EAGAIN)
+            if((len = ::read(m_cfd, &m_buf[0], m_buf.size())) < 0) {
+                if(errno != EWOULDBLOCK && errno != EAGAIN)
                     throw std::runtime_error("lcomm::ServerSocket::M_thread: read failed");
             }
 
-            for (ssize_t i = 0; i < len; ++i) {
+            for(ssize_t i = 0; i < len; ++i) {
                 char c = m_buf[i];
-                if (c == '\n') {
+                if(c == '\n') {
                     return true;
                 }
 

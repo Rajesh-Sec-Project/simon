@@ -44,7 +44,7 @@ namespace lcomm {
 
         Socket const& socket() const;
 
-        std::set<Subscriber*> const &subscribers() const {
+        std::set<Subscriber*> const& subscribers() const {
             return m_subscribers;
         }
 

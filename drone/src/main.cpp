@@ -14,10 +14,7 @@ int main() {
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");
 
-    {
-        GameSystem system;
-
-    }
+    { GameSystem system; }
 
     /*while(true) {
         std::this_thread::sleep_for(1s);
