@@ -4,6 +4,7 @@
 #include "gameSystem.h"
 #include <thread>
 #include "lcomm/gamepad_packet.h"
+#include "../inc/RandomSequence.h"
 
 using namespace std::literals;
 
@@ -14,7 +15,11 @@ int main() {
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");
 
-    { GameSystem system; }
+    { 
+	GameSystem system; 
+        RandomSequence seq;
+
+    }
 
     /*while(true) {
         std::this_thread::sleep_for(1s);
