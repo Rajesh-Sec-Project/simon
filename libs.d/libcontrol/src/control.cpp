@@ -63,6 +63,18 @@ namespace lcontrol {
         }
     }
 
+    void Control::config(std::string const& key, std::string const& value) {
+        Control::config(m_seqNum.fetch_add(1), key, value, *m_sock);
+    }
+
+    void Control::ackControl() {
+        Control::ackControl(m_seqNum.fetch_add(1), *m_sock);
+    }
+
+    void Control::getCfgControl() {
+        Control::getCfgControl(m_seqNum.fetch_add(1), *m_sock);
+    }
+
     // Ask the drone to send the navdata :
     // AT*CONFIG="seqNum",\"general:navdata_demo\",\"TRUE\"\r
     void Control::sendNavData(std::uint32_t seqNum, ClientSocket& s) {
@@ -141,6 +153,34 @@ namespace lcontrol {
         data += seqStr + "," + std::to_string(flag) + "," + Control::float_to_string(leftRightTilt) + "," +
                 Control::float_to_string(frontBackTilt) + "," + Control::float_to_string(verticalSpeed) + "," +
                 Control::float_to_string(angularSpeed) + ",\r";
+        printFrame(data);
+        s.write(data);
+    }
+
+    void Control::config(std::uint32_t seqNum, std::string const& key, std::string const& value, ClientSocket& s) {
+        std::string data("AT*CONFIG=");
+        std::string seqStr = std::to_string(seqNum);
+        data += seqStr + ",\"" + key + "\",\"" + value + "\"\r";
+        printFrame(data);
+        s.write(data);
+    }
+
+    // Send a control command ack, this resets the command_ack bit
+    //   in the drone's state bitfield
+    void Control::ackControl(std::uint32_t seqNum, ClientSocket& s) {
+        std::string data("AT*CTRL=");
+        std::string seqStr = std::to_string(seqNum);
+        data += seqStr + ",5\r";
+        printFrame(data);
+        s.write(data);
+    }
+
+    // Get the drone's configuration dumped to the control port
+    //   (TCP 5559)
+    void Control::getCfgControl(std::uint32_t seqNum, ClientSocket& s) {
+        std::string data("AT*CTRL=");
+        std::string seqStr = std::to_string(seqNum);
+        data += seqStr + ",4\r";
         printFrame(data);
         s.write(data);
     }

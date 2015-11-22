@@ -15,10 +15,9 @@ int main() {
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");
 
-    { 
-	GameSystem system; 
+    {
+        GameSystem system;
         RandomSequence seq;
-
     }
 
     /*while(true) {
