@@ -1,12 +1,16 @@
-#ifndef DRONE_NAVDATA_H
-#define DRONE_NAVDATA_H
+#ifndef DRONE_NAVDATACONTROLLER_H
+#define DRONE_NAVDATACONTROLLER_H
 
 #include <cstdint>
+#include "pcap.h"
+#include <string>
+#include <thread>
+#include <atomic>
 
 namespace navdata {
     //! This enumeration map bitfields to the drone state word in
     //!   the navdata header.
-    enum class drone_state {
+    enum drone_state {
         //!< (0) ardrone is landed, (1) ardrone is flying
         fly = 1 << 0,
         //!< (0) video disable, (1) video enable
@@ -20,7 +24,7 @@ namespace navdata {
         //!< Start button stat
         user_feedback = 1 << 5,
         //!< Control command ACK : (0) None, (1) one received
-        command = 1 << 6,
+        command_ack = 1 << 6,
         //!< (0) camera not ready, (1) Camera ready
         camera = 1 << 7,
         //!< Travelling mask : (0) disable, (1) enable
@@ -102,14 +106,12 @@ namespace navdata {
         option_wind,
         option_kalman_pressure,
         option_hdvideo_stream,
-        option_wifi
+        option_wifi,
+        option_cks = 0xFFFF
     };
 
-    // See ARDroneLib/Soft/Common/navdata_common.h for
-    //   options structures.
-
     //! The global header for all Navdata UDP packets
-    struct header {
+    struct __attribute__((packed)) header {
         //!< Navdata magic number, always 0x55667788
         uint32_t magic;
         //!< Drone's state mask, \see drone_state enumeration
@@ -121,12 +123,133 @@ namespace navdata {
     };
 
     //! The Navdata option header.
-    struct option_header {
+    struct __attribute__((packed)) option_header {
         //!< Option tag, \see option_tag enumeration
         uint16_t tag;
         //!< Option data size
         uint16_t size;
     };
+
+    // See ARDroneLib/Soft/Common/navdata_common.h for
+    //   options structures.
+
+    //! Enumeration values for demo.ctrl_state
+    enum option_demo_state {
+        DEMO_STATE_DEFAULT = 0,
+        DEMO_STATE_INIT,
+        DEMO_STATE_LANDED,
+        DEMO_STATE_FLYING,
+        DEMO_STATE_HOVERING
+    };
+
+    //! Demo navdata option
+    struct __attribute__((packed)) demo {
+        //!< Normally this should be 'option_demo'
+        uint16_t tag;
+        //!< Size of this option
+        uint16_t size;
+
+        //!< Drone's state, see option_demo_state enumeration
+        uint32_t ctrl_state;
+        //< Battery voltage in mV
+        uint32_t vbat_flying_percentage;
+
+        //!< Pitch in mdeg
+        float theta;
+        //!< Roll in mdeg
+        float phi;
+        //!< Yaw in mdeg
+        float psi;
+
+        //!< Altitude in cm
+        int32_t altitude;
+
+        //!< Estimated linear speeds
+        float vx;
+        float vy;
+        float vz;
+
+        //!< Not used
+        uint32_t num_frames;
+
+        //!< Don't use, deprecated
+        uint32_t detection_camera_rot[3][3];
+        uint32_t detection_camera_trans[3];
+        uint32_t detection_tag_index;
+
+        //!< Type of tag searched in detection
+        uint32_t detection_camera_type;
+
+        //!< Don't use, deprecated
+        uint32_t drone_camera_rot[3][3];
+        uint32_t drone_camera_trans[3];
+    };
+
+    //! Vision detection navdata option
+    struct vision_detect {
+        //!< Normally this should be 'option_vision_detect'
+      uint16_t tag;
+      //!< Size of this struct
+      uint16_t size;
+
+      uint32_t nb_detected;
+      uint32_t type[4];
+      uint32_t xc[4];
+      uint32_t yc[4];
+      uint32_t width[4];
+      uint32_t height[4];
+      uint32_t dist[4];
+      float orientation_angle[4];
+      float rotation[3][3][4];
+      float translation[3][4];
+      uint32_t camera_source[4];
+    };
 }
 
-#endif // DRONE_NAVDATA_H
+struct Navdata {
+    navdata::header header;
+    navdata::demo demo;
+    navdata::vision_detect vision_detect;
+};
+
+class NavdataController {
+public:
+    NavdataController();
+    ~NavdataController();
+
+    //! Init the navdata controller
+    void init();
+
+    //! Check if the navdata controller is initialized
+    bool inited() const;
+
+    //! Check if some new navdata is available
+    bool available() const;
+
+    //! Grab some navdata (resets avail flag)
+    Navdata grab();
+
+private:
+    void M_setupPcap();
+    void M_sniffed(const pcap_pkthdr* header, const unsigned char* buffer);
+    static void M_proxy(unsigned char* self, const pcap_pkthdr* header, const unsigned char* buffer);
+
+    void M_initNavdata();
+    void M_decode(const unsigned char* data, int size);
+
+    void M_trace(std::string const& msg) const;
+
+private:
+    std::thread m_pcap;
+    pcap_t* m_pcap_handle;
+
+    std::atomic<bool> m_available, m_inited;
+    Navdata m_navdata;
+
+    static std::string m_fool_ip;
+    static std::string m_sniff_ip;
+    static int m_sniff_port;
+    static int m_timeout;
+};
+
+#endif // DRONE_NAVDATACONTROLLER_H

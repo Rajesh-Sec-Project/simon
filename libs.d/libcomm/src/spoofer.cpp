@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <netinet/udp.h>
@@ -18,7 +17,7 @@
 
 // using namespace lcomm;
 
-lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& fake, int fake_port, std::string const& data) {
+lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& fake, int fake_port, const char* data, int data_len) {
     // Create raw IP socket
     m_sock = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
 
@@ -37,7 +36,7 @@ lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& f
 
     // Data part
     m_data = m_datagram + sizeof(iphdr) + sizeof(udphdr);
-    strcpy(m_data, data.c_str());
+    memcpy(m_data, data, data_len);
 
     m_sin.sin_family = AF_INET;
     m_sin.sin_port = to_port;
@@ -47,7 +46,7 @@ lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& f
     m_iph->ihl = 5;
     m_iph->version = 4;
     m_iph->tos = 0;
-    m_iph->tot_len = sizeof(iphdr) + sizeof(udphdr) + strlen(m_data);
+    m_iph->tot_len = sizeof(iphdr) + sizeof(udphdr) + data_len;
     m_iph->id = htonl(54321); // Id of this packet
     m_iph->frag_off = 0;
     m_iph->ttl = 255;
@@ -62,8 +61,8 @@ lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& f
     // UDP header
     m_udph->source = htons(fake_port);
     m_udph->dest = htons(to_port);
-    m_udph->len = htons(8 + strlen(m_data)); // tcp header size
-    m_udph->check = 0;                       // leave checksum 0 now, filled later by pseudo header
+    m_udph->len = htons(8 + data_len); // tcp header size
+    m_udph->check = 0;                 // leave checksum 0 now, filled later by pseudo header
 
     struct pseudo_header {
         u_int32_t source_address;
@@ -78,13 +77,13 @@ lcomm::Spoofer::Spoofer(std::string const& to, int to_port, std::string const& f
     psh.dest_address = m_sin.sin_addr.s_addr;
     psh.placeholder = 0;
     psh.protocol = IPPROTO_UDP;
-    psh.udp_length = htons(sizeof(udphdr) + strlen(m_data));
+    psh.udp_length = htons(sizeof(udphdr) + data_len);
 
-    int psize = sizeof(pseudo_header) + sizeof(udphdr) + strlen(m_data);
+    int psize = sizeof(pseudo_header) + sizeof(udphdr) + data_len;
     m_pseudogram = new char[psize];
 
     memcpy(m_pseudogram, (char*)&psh, sizeof(pseudo_header));
-    memcpy(m_pseudogram + sizeof(pseudo_header), m_udph, sizeof(udphdr) + strlen(m_data));
+    memcpy(m_pseudogram + sizeof(pseudo_header), m_udph, sizeof(udphdr) + data_len);
 
     m_udph->check = M_csum((unsigned short*)m_pseudogram, psize);
 }

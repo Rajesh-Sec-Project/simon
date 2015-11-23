@@ -1,9 +1,12 @@
 #include <iostream>
+#include <thread>
+#include <iomanip>
 
 #include "lcomm/lcomm.h"
-#include "gameSystem.h"
-#include <thread>
+#include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
+#include "randomsequence.h"
+#include "navdatacontroller.h"
 
 using namespace std::literals;
 
@@ -14,11 +17,10 @@ int main() {
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");
 
-    { GameSystem system; }
+    GameSystem system;
 
-    /*while(true) {
-        std::this_thread::sleep_for(1s);
-    }*/
+    while(system.alive())
+        std::this_thread::sleep_for(100ms);
 
     return 0;
 }

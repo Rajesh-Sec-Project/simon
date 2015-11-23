@@ -7,9 +7,13 @@ namespace lcontrol {
     public:
         static void init();
 
+        static void watchdog();
         static void enableStabilization();
         static void takeoff();
         static void land();
+        static void config(std::string const& key, std::string const& value);
+        static void ackControl();
+        static void getCfgControl();
 
     private:
         static std::string float_to_string(float i);
@@ -28,8 +32,14 @@ namespace lcontrol {
                              float verticalSpeed,
                              float angularSpeed,
                              lcomm::ClientSocket& s);
+        static void config(std::uint32_t seqNum, std::string const& key, std::string const& value, lcomm::ClientSocket& s);
+        static void ackControl(std::uint32_t seqNum, lcomm::ClientSocket& s);
+        static void getCfgControl(std::uint32_t seqNum, lcomm::ClientSocket& s);
 
         static std::atomic<std::uint32_t> m_seqNum;
         static std::unique_ptr<lcomm::ClientSocket> m_sock;
+
+        static void M_trace(std::string const& msg);
+        static void M_traceFrame(std::string const& msg);
     };
 }

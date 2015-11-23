@@ -24,12 +24,14 @@ PRODUCT=drone-sandbox
 ### Flags ###
 #############
 
-CX_FLAGS = -std=gnu++14 -static-libstdc++ -Wall #-Wsuggest-override
+CX_FLAGS  = -std=gnu++14 -static-libstdc++ -Wall #-Wsuggest-override
+CX_FLAGS += -I$(LIB_DIR)/libpcap/include
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS = -lm -static-libstdc++ -lcomm -lconf -lcontrol -lpthread
+LD_FLAGS  = -lm -static-libstdc++ -lcomm -lconf -lcontrol -lpthread
+LD_FLAGS += -L$(LIB_DIR)/libpcap/lib -lpcap
 
 CROSS = 1
 DEPENDS = libcomm libconf libcontrol
