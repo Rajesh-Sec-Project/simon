@@ -3,10 +3,11 @@
 #include <sstream>
 #include <stdlib.h>
 #include <time.h>
-#include "../inc/Moves.h"
 #include <map>
 #include <string>
 #include <unistd.h>
+
+#include "moves.h"
 
 using namespace lmoves;
 

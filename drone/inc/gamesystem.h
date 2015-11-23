@@ -8,19 +8,8 @@
 #include <thread>
 #include <atomic>
 #include "lcomm/lcomm.h"
-
-class GameSystem;
-
-class GamePadSubscriber : public lcomm::Subscriber {
-public:
-    GamePadSubscriber(GameSystem& gs)
-            : m_gs(gs) {
-    }
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
-
-private:
-    GameSystem& m_gs;
-};
+#include "gamepadsubscriber.h"
+#include "navdata.h"
 
 class GameSystem {
 public:
@@ -28,15 +17,18 @@ public:
     ~GameSystem();
 
     void stop();
+    bool alive() const;
 
 protected:
-    void M_clientComThread();
+    void M_gameLoop();
     void M_droneSetup();
+    void M_trace(std::string const& msg);
 
     lcomm::Endpoint m_endpoint;
     GamePadSubscriber m_gamePadSubscriber;
     std::atomic_bool m_alive = {false};
-    std::thread m_clientComThread;
+    std::thread m_gameLoop;
+    NavdataController m_navctrl;
 };
 
 

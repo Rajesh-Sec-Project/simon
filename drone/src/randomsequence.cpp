@@ -1,13 +1,12 @@
-
-#include "../inc/RandomSequence.h"
 #include <chrono>
 #include <thread>
 #include <cstdlib>
+#include "randomsequence.h"
 
 using namespace std::literals;
 
 RandomSequence::RandomSequence() {
-    m_clientComThread = std::thread(&RandomSequence::M_clientComThread, this);
+    m_clientComThread = std::thread(&RandomSequence::M_thread, this);
 }
 
 RandomSequence::~RandomSequence() {
@@ -19,7 +18,7 @@ void RandomSequence::stop() {
     this->m_alive = false;
 }
 
-void RandomSequence::M_clientComThread() {
+void RandomSequence::M_thread() {
     this->m_alive = true;
     while(m_alive) {
         this->m_move.add_move();
@@ -27,13 +26,3 @@ void RandomSequence::M_clientComThread() {
         this->m_move.print();
     }
 }
-/*
-int main(){
-    std::system("ulimit -s");
-
-    {
-        RandomSequence seq;
-
-    }
-    return 0 ;
-}*/

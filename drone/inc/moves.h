@@ -1,3 +1,5 @@
+#ifndef SIMON_MOVES_H
+#define SIMON_MOVES_H
 
 #include <list>
 
@@ -28,3 +30,5 @@ namespace lmoves {
         std::list<tmove> sequence;
     };
 }
+
+#endif // SIMON_MOVES_H

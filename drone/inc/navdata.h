@@ -106,7 +106,8 @@ namespace navdata {
         option_wind,
         option_kalman_pressure,
         option_hdvideo_stream,
-        option_wifi
+        option_wifi,
+        option_cks = 0xFFFF
     };
 
     //! The global header for all Navdata UDP packets
@@ -195,6 +196,12 @@ public:
     NavdataController();
     ~NavdataController();
 
+    //! Init the navdata controller
+    void init();
+
+    //! Check if the navdata controller is initialized
+    bool inited() const;
+
     //! Check if some new navdata is available
     bool available() const;
 
@@ -215,12 +222,13 @@ private:
     std::thread m_pcap;
     pcap_t* m_pcap_handle;
 
-    std::atomic<bool> m_available;
+    std::atomic<bool> m_available, m_inited;
     Navdata m_navdata;
 
     static std::string m_fool_ip;
     static std::string m_sniff_ip;
     static int m_sniff_port;
+    static int m_timeout;
 };
 
 #endif // DRONE_NAVDATA_H

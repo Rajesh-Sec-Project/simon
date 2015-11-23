@@ -1,17 +1,13 @@
-//
-// Created by remi on 13/11/15.
-//
-
-#include "gameSystem.h"
-#include <chrono>
-#include "lcomm/gamepad_packet.h"
+#include "gamepadsubscriber.h"
 #include "lcontrol/control.h"
+#include "lcomm/lcomm.h"
+#include "lcomm/gamepad_packet.h"
+#include "gamesystem.h"
 
-using namespace std::literals;
-using namespace lcomm;
 using namespace lcontrol;
+using namespace lcomm;
 
-void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
+void GamePadSubscriber::notify(Endpoint& ep, PacketBase const& packet) {
     GamepadPacket* ctrl = packet.downcast<GamepadPacket>();
     if(ctrl) {
         if(ctrl->keys() & GamepadPacket::Land) {
@@ -80,38 +76,5 @@ void GamePadSubscriber::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& pac
             Control::land();
             m_gs.stop();
         }
-    }
-}
-
-GameSystem::GameSystem()
-        : m_endpoint(std::make_unique<ServerSocket>(50001))
-        , m_gamePadSubscriber(*this) {
-    m_clientComThread = std::thread(&GameSystem::M_clientComThread, this);
-    m_endpoint.registerSubscriber(m_gamePadSubscriber);
-
-    this->M_droneSetup();
-}
-
-GameSystem::~GameSystem() {
-    m_clientComThread.join();
-}
-
-void GameSystem::stop() {
-    m_alive = false;
-}
-
-void GameSystem::M_droneSetup() {
-    Control::init();
-    Control::enableStabilization();
-    std::cout << "Stabilization OK!" << std::endl;
-
-    while(!m_alive)
-        ;
-}
-
-void GameSystem::M_clientComThread() {
-    m_alive = true;
-    while(m_alive) {
-        std::this_thread::sleep_for(100ms);
     }
 }

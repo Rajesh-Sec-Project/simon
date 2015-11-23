@@ -7,6 +7,7 @@ namespace lcontrol {
     public:
         static void init();
 
+        static void watchdog();
         static void enableStabilization();
         static void takeoff();
         static void land();
@@ -37,5 +38,8 @@ namespace lcontrol {
 
         static std::atomic<std::uint32_t> m_seqNum;
         static std::unique_ptr<lcomm::ClientSocket> m_sock;
+
+        static void M_trace(std::string const& msg);
+        static void M_traceFrame(std::string const& msg);
     };
 }

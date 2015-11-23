@@ -15,15 +15,6 @@ using namespace lcomm;
 #define PRINT_FRAMES 0
 
 namespace lcontrol {
-
-    namespace {
-        void printFrame(std::string const& f) {
-#if PRINT_FRAMES
-            std::cout << f << '\n';
-#endif
-        }
-    }
-
     std::atomic<std::uint32_t> Control::m_seqNum;
     std::unique_ptr<lcomm::ClientSocket> Control::m_sock;
 
@@ -34,12 +25,17 @@ namespace lcontrol {
     void Control::init() {
         m_seqNum = 0;
         m_sock = std::make_unique<ClientSocket>("127.0.0.1", 5556, false);
+        m_sock->connect();
         int numAttempt = 0;
         while(!m_sock->opened()) {
-            std::cout << "Waiting for lcontrol's connection " << numAttempt++ << "..." << std::endl;
+            M_trace("waiting for connection on :5556 " + std::to_string(numAttempt++) + "...");
             std::this_thread::sleep_for(100ms);
         }
-        std::cout << "lcontrol connected!" << std::endl;
+        M_trace("connected !");
+    }
+
+    void Control::watchdog() {
+        watchdog(m_seqNum.fetch_add(1), *m_sock);
     }
 
     void Control::enableStabilization() {
@@ -81,17 +77,15 @@ namespace lcontrol {
         std::string data("AT*CONFIG=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",\"general:navdata_demo\",\"TRUE\"\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
     // Reset the communication watchdog :
     // AT*COMWDG="seqNum"\r
-    void Control::watchdog(std::uint32_t seqNum, ClientSocket& s) {
-        std::string data("AT*COMWD=");
-        std::string seqStr = std::to_string(seqNum);
-        data += seqStr + "\r";
-        printFrame(data);
+    void Control::watchdog(std::uint32_t, ClientSocket& s) {
+        std::string data("AT*COMWDG=1\r");
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -101,7 +95,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290717952\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -111,7 +105,7 @@ namespace lcontrol {
         std::string data("AT*FTRIM=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + "\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -121,7 +115,7 @@ namespace lcontrol {
         std::string data("AT*CALIB=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",0\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -131,7 +125,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290718208\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -141,7 +135,7 @@ namespace lcontrol {
         std::string data("AT*REF=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",290717696\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -153,7 +147,7 @@ namespace lcontrol {
         data += seqStr + "," + std::to_string(flag) + "," + Control::float_to_string(leftRightTilt) + "," +
                 Control::float_to_string(frontBackTilt) + "," + Control::float_to_string(verticalSpeed) + "," +
                 Control::float_to_string(angularSpeed) + ",\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -161,7 +155,7 @@ namespace lcontrol {
         std::string data("AT*CONFIG=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",\"" + key + "\",\"" + value + "\"\r";
-        printFrame(data);
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -170,8 +164,8 @@ namespace lcontrol {
     void Control::ackControl(std::uint32_t seqNum, ClientSocket& s) {
         std::string data("AT*CTRL=");
         std::string seqStr = std::to_string(seqNum);
-        data += seqStr + ",5\r";
-        printFrame(data);
+        data += seqStr + ",5,0\r";
+        M_traceFrame(data);
         s.write(data);
     }
 
@@ -180,8 +174,18 @@ namespace lcontrol {
     void Control::getCfgControl(std::uint32_t seqNum, ClientSocket& s) {
         std::string data("AT*CTRL=");
         std::string seqStr = std::to_string(seqNum);
-        data += seqStr + ",4\r";
-        printFrame(data);
+        data += seqStr + ",4,0\r";
+        M_traceFrame(data);
         s.write(data);
+    }
+
+    void Control::M_trace(std::string const& msg) {
+        std::cout << "[lcontrol::Control] " << msg << std::endl;
+    }
+
+    void Control::M_traceFrame(std::string const& msg) {
+#if PRINT_FRAMES
+        std::cout << "[lcontrol::Control] " << msg << std::endl;
+#endif
     }
 }

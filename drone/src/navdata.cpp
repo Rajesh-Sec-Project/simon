@@ -17,11 +17,12 @@
 std::string NavdataController::m_fool_ip = "127.0.0.1";
 std::string NavdataController::m_sniff_ip = "127.0.0.2";
 int NavdataController::m_sniff_port = 5554;
+int NavdataController::m_timeout = 5;
 
 NavdataController::NavdataController()
         : m_pcap(&NavdataController::M_setupPcap, this)
-        , m_available(false) {
-    M_initNavdata();
+        , m_available(false)
+        , m_inited(false) {
 }
 
 NavdataController::~NavdataController() {
@@ -29,6 +30,14 @@ NavdataController::~NavdataController() {
         pcap_close(m_pcap_handle);
         m_pcap.join();
     }
+}
+
+void NavdataController::init() {
+    M_initNavdata();
+}
+
+bool NavdataController::inited() const {
+    return m_inited;
 }
 
 bool NavdataController::available() const {
@@ -41,6 +50,8 @@ Navdata NavdataController::grab() {
 }
 
 void NavdataController::M_setupPcap() {
+    M_trace("configuring pcap");
+
     char errbuf[128];
     pcap_t* m_pcap_handle = pcap_open_live("lo", 65536, 1, 0, errbuf);
 
@@ -81,7 +92,7 @@ void NavdataController::M_sniffed(const pcap_pkthdr* header, const unsigned char
         return;
 
     // Get the data from the sniffed packet
-    int header_size = sizeof(ethhdr) + iphdrlen + sizeof(udph);
+    int header_size = sizeof(ethhdr) + iphdrlen + sizeof(udph) + 4; //@FIXME: why the +4 ???
     const unsigned char* data = buffer + header_size;
 
     M_decode(data, size - header_size);
@@ -111,18 +122,19 @@ void NavdataController::M_initNavdata() {
             ;
         Navdata nav = grab();
 
+        M_trace("waiting for bootstrap #" + std::to_string(tm));
+
         // Check flag
         if(nav.header.state & navdata::navdata_bootstrap)
             break;
 
-        if(++tm > 30)
+        if(++tm > m_timeout)
             throw std::runtime_error("NavdataController::M_initNavdata: drone not in bootstrap mode");
     }
-
     M_trace("drone in bootstrap mode");
 
     // Setup navdata bits, either demo or option_flags
-    Control::config("navdata_demo", "TRUE");
+    Control::config("general:navdata_demo", "TRUE");
     M_trace("navdata_demo set");
 
     // Wait for the command_ack bit
@@ -132,20 +144,27 @@ void NavdataController::M_initNavdata() {
             ;
         Navdata nav = grab();
 
+        M_trace("waiting for ack #" + std::to_string(tm));
+
         // Check flag
         if(nav.header.state & navdata::command_ack)
             break;
 
-        if(++tm > 30)
+        if(++tm > m_timeout)
             throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
     }
-
     M_trace("got command ack");
 
     // Clear it, and we're OK !
     Control::ackControl();
+    M_trace("ack clear sent");
 
-    M_trace("ack clear sent, we're good to go !");
+    // Setup options here
+    int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_altitude);
+    Control::config("general:navdata_options", std::to_string(options));
+    M_trace("options sets up, good to go !");
+
+    m_inited = true;
 }
 
 void NavdataController::M_decode(const unsigned char* data, int size) {
@@ -154,7 +173,7 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     // Get the navdata header
     m_navdata.header = *reinterpret_cast<const header*>(data);
     if(m_navdata.header.magic != 0x55667788) {
-        std::cerr << "NavdataController::M_decode: bad navdata magic" << std::endl;
+        M_trace("bad navdata magic");
         return;
     }
 
@@ -164,10 +183,11 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
         const option_header* header = reinterpret_cast<const option_header*>(data + pos);
 
         // Handle navdata options here
-        if(header->tag == option_demo) {
-            std::cout << "NavdataController::M_decode: god demo" << std::endl;
-
+        if(header->tag == option_cks) {
+            break;
+        } else if(header->tag == option_demo) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
+        } else if(header->tag == option_altitude) {
         }
 
         pos += header->size;

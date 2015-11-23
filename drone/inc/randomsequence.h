@@ -1,6 +1,9 @@
+#ifndef SIMON_RANQOMSEQUENCE_H
+#define SIMON_RANQOMSEQUENCE_H
+
 #include <thread>
 #include <atomic>
-#include "Moves.h"
+#include "moves.h"
 
 
 /* This class will produce a random sequence of movements
@@ -18,9 +21,13 @@ public:
     // allows to stop the incrementation of the sequence.
     void stop();
 
-protected:
-    void M_clientComThread();
+private:
+    void M_thread();
+
+private:
     std::atomic_bool m_alive = {false};
     std::thread m_clientComThread;
     lmoves::Moves m_move;
 };
+
+#endif // SIMON_RANQOMSEQUENCE_H
