@@ -1,4 +1,4 @@
-#include "navdata.h"
+#include "navdatacontroller.h"
 #include "lcontrol/control.h"
 #include "lcomm/spoofer.h"
 
@@ -109,7 +109,7 @@ void NavdataController::M_initNavdata() {
     // First, spoof the navdata server
     char data[] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     lcomm::Spoofer spoofer(m_fool_ip, m_sniff_port, m_sniff_ip, m_sniff_port, data, sizeof(data));
-    for(int i = 0; i < 2; ++i) {
+    for(int i = 0; i < 1; ++i) {
         spoofer.spoof();
         M_trace("spoof packet sent");
         std::this_thread::sleep_for(std::chrono::milliseconds(250));
@@ -160,7 +160,7 @@ void NavdataController::M_initNavdata() {
     M_trace("ack clear sent");
 
     // Setup options here
-    int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_altitude);
+    int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_vision_detect);
     Control::config("general:navdata_options", std::to_string(options));
     M_trace("options sets up, good to go !");
 
@@ -187,7 +187,8 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
             break;
         } else if(header->tag == option_demo) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
-        } else if(header->tag == option_altitude) {
+        } else if(header->tag == option_vision_detect) {
+            m_navdata.vision_detect = *reinterpret_cast<const vision_detect*>(header);
         }
 
         pos += header->size;

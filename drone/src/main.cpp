@@ -6,7 +6,7 @@
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
 #include "randomsequence.h"
-#include "navdata.h"
+#include "navdatacontroller.h"
 
 using namespace std::literals;
 

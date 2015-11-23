@@ -1,5 +1,5 @@
-#ifndef DRONE_NAVDATA_H
-#define DRONE_NAVDATA_H
+#ifndef DRONE_NAVDATACONTROLLER_H
+#define DRONE_NAVDATACONTROLLER_H
 
 #include <cstdint>
 #include "pcap.h"
@@ -184,11 +184,32 @@ namespace navdata {
         uint32_t drone_camera_rot[3][3];
         uint32_t drone_camera_trans[3];
     };
+
+    //! Vision detection navdata option
+    struct vision_detect {
+        //!< Normally this should be 'option_vision_detect'
+      uint16_t tag;
+      //!< Size of this struct
+      uint16_t size;
+
+      uint32_t nb_detected;
+      uint32_t type[4];
+      uint32_t xc[4];
+      uint32_t yc[4];
+      uint32_t width[4];
+      uint32_t height[4];
+      uint32_t dist[4];
+      float orientation_angle[4];
+      float rotation[3][3][4];
+      float translation[3][4];
+      uint32_t camera_source[4];
+    };
 }
 
 struct Navdata {
     navdata::header header;
     navdata::demo demo;
+    navdata::vision_detect vision_detect;
 };
 
 class NavdataController {
@@ -231,4 +252,4 @@ private:
     static int m_timeout;
 };
 
-#endif // DRONE_NAVDATA_H
+#endif // DRONE_NAVDATACONTROLLER_H

@@ -9,7 +9,8 @@
 #include <atomic>
 #include "lcomm/lcomm.h"
 #include "gamepadsubscriber.h"
-#include "navdata.h"
+#include "navdatacontroller.h"
+#include "roundelcontroller.h"
 
 class GameSystem {
 public:
@@ -24,11 +25,15 @@ protected:
     void M_droneSetup();
     void M_trace(std::string const& msg);
 
+private:
     lcomm::Endpoint m_endpoint;
     GamePadSubscriber m_gamePadSubscriber;
+    std::atomic_bool m_inited = {false};
     std::atomic_bool m_alive = {false};
     std::thread m_gameLoop;
+
     NavdataController m_navctrl;
+    RoundelController m_roundelctrl;
 };
 
 
