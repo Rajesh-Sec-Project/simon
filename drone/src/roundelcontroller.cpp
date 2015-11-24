@@ -1,6 +1,7 @@
 #include "roundelcontroller.h"
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
+#include "gamesystem.h"
 
 #include <thread>
 #include <chrono>
@@ -43,8 +44,9 @@ enum Tag {
 
 using namespace lcontrol;
 
-RoundelController::RoundelController(NavdataController& navctrl)
-        : m_navctrl(navctrl) {
+RoundelController::RoundelController(GameSystem& system)
+        : GameElement(system)
+        , m_navctrl(system.navdataController()) {
 }
 
 RoundelController::~RoundelController() {
@@ -97,7 +99,10 @@ void RoundelController::M_clearAck() {
             break;
 
         if(++tm > 10)
+        {
+            M_error("command ack not set");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
+        }
     }
     M_trace("got command ack");
 
@@ -119,11 +124,10 @@ void RoundelController::M_clearAck() {
             break;
 
         if(++tm > 10)
+        {
+            M_error("command ack not cleared");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
+        }
     }
     M_trace("command ack cleared");
-}
-
-void RoundelController::M_trace(std::string const& msg) const {
-    std::cout << "[RoundelController] " << msg << std::endl;
 }

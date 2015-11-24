@@ -1,6 +1,7 @@
 #include "navdatacontroller.h"
 #include "lcontrol/control.h"
 #include "lcomm/spoofer.h"
+#include "gamesystem.h"
 
 #include <cstring>
 #include <sys/socket.h>
@@ -21,8 +22,9 @@ std::string NavdataController::m_sniff_ip = "127.0.0.2";
 int NavdataController::m_sniff_port = 5554;
 int NavdataController::m_timeout = 5;
 
-NavdataController::NavdataController()
-        : m_pcap(&NavdataController::M_setupPcap, this)
+NavdataController::NavdataController(GameSystem& system)
+        : GameElement(system)
+        , m_pcap(&NavdataController::M_setupPcap, this)
         , m_available(false)
         , m_inited(false) {
 }
@@ -58,7 +60,7 @@ void NavdataController::M_setupPcap() {
     pcap_t* m_pcap_handle = pcap_open_live("lo", 65536, 1, 0, errbuf);
 
     if(!m_pcap_handle) {
-        std::cerr << "Unable to open pcap: " << errbuf << std::endl;
+        M_error("unable to open pcap device " + std::string(errbuf));
         return;
     }
 
@@ -131,7 +133,10 @@ void NavdataController::M_initNavdata() {
             break;
 
         if(++tm > m_timeout)
+        {
+            M_error("drone not in bootstrap mode");
             throw std::runtime_error("NavdataController::M_initNavdata: drone not in bootstrap mode");
+        }
     }
     M_trace("drone in bootstrap mode");
 
@@ -153,7 +158,10 @@ void NavdataController::M_initNavdata() {
             break;
 
         if(++tm > m_timeout)
+        {
+            M_error("command ack not set");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
+        }
     }
     M_trace("got command ack");
 
@@ -175,7 +183,10 @@ void NavdataController::M_initNavdata() {
             break;
 
         if(++tm > m_timeout)
+        {
+            M_error("command ack not cleared");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
+        }
     }
     M_trace("command ack cleared");
 
@@ -193,13 +204,13 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     // Get the navdata header
     m_navdata.header = *reinterpret_cast<const header*>(data);
     if(m_navdata.header.magic != 0x55667788) {
-        M_trace("bad navdata magic, dumping header :");
+        M_warning("bad navdata magic, dumping header :");
         std::ostringstream ss;
         ss << "  ";
         for(unsigned int i = 0; i < sizeof(header); ++i) {
             ss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i] << " ";
         }
-        M_trace(ss.str());
+        M_warning(ss.str());
         return;
     }
 
@@ -222,8 +233,4 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
 
     // Signal availability to other threads
     m_available = true;
-}
-
-void NavdataController::M_trace(std::string const& msg) const {
-    std::cout << "[NavdataController] " << msg << std::endl;
 }

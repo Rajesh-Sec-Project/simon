@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <atomic>
+#include "gameelement.h"
 
 namespace navdata {
     //! This enumeration map bitfields to the drone state word in
@@ -212,9 +213,11 @@ struct Navdata {
     navdata::vision_detect vision_detect;
 };
 
-class NavdataController {
+class GameSystem;
+
+class NavdataController : public GameElement {
 public:
-    NavdataController();
+    NavdataController(GameSystem& system);
     ~NavdataController();
 
     //! Init the navdata controller
@@ -236,8 +239,6 @@ private:
 
     void M_initNavdata();
     void M_decode(const unsigned char* data, int size);
-
-    void M_trace(std::string const& msg) const;
 
 private:
     std::thread m_pcap;

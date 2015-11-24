@@ -25,6 +25,8 @@ public:
     void reconnect();
 
 signals:
+    void connected();
+    void disconnected();
     void packetReceived(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
 
 private:

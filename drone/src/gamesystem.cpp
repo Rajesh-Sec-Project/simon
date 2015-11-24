@@ -4,12 +4,17 @@
 
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
+#include "lcomm/log_packet.h"
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include <iomanip>
 #include <chrono>
 #include <iostream>
 #include <ctime>
+
+//! Set to 1 if you want to also print
+//!   logging messages to stdout / stderr
+#define LOCAL_LOGS 1
 
 using namespace std::literals;
 using namespace lcomm;
@@ -18,7 +23,8 @@ using namespace lcontrol;
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
-        , m_roundelctrl(m_navctrl) {
+        , m_navctrl(*this)
+        , m_roundelctrl(*this) {
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
@@ -38,19 +44,74 @@ bool GameSystem::alive() const {
     return m_alive;
 }
 
+NavdataController& GameSystem::navdataController()
+{
+    return m_navctrl;
+}
+
+NavdataController const& GameSystem::navdataController() const
+{
+    return m_navctrl;
+}
+
+void GameSystem::trace(std::string const& nm, std::string const& msg)
+{
+    std::string str = "[" + nm + "] " + msg;
+    lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
+    m_endpoint.write(log);
+
+    #if defined(LOCAL_LOGS)
+    std::cout << "[TRACE]  " << str << std::endl;
+    #endif
+}
+
+void GameSystem::message(std::string const& nm, std::string const& msg)
+{
+    std::string str = "[" + nm + "] " + msg;
+    lcomm::LogPacket log(lcomm::LogPacket::Message, str);
+    m_endpoint.write(log);
+    
+    #if defined(LOCAL_LOGS)
+    std::cout << "[INFO]  " << str << std::endl;
+    #endif
+}
+
+void GameSystem::warning(std::string const& nm, std::string const& msg)
+{
+    std::string str = "[" + nm + "] " + msg;
+    lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
+    m_endpoint.write(log);
+    
+    #if defined(LOCAL_LOGS)
+    std::cout << "[WARN]  " << str << std::endl;
+    #endif
+}
+
+void GameSystem::error(std::string const& nm, std::string const& msg)
+{
+    std::string str = "[" + nm + "] " + msg;
+    lcomm::LogPacket log(lcomm::LogPacket::Error, str);
+    m_endpoint.write(log);
+    
+    #if defined(LOCAL_LOGS)
+    std::cerr << "[ERROR] " << str << std::endl;
+    #endif
+}
+
 void GameSystem::M_droneSetup() {
     // Init AT command stuff
     Control::init();
 
     // Send several FTRIM commands
     Control::enableStabilization();
-    M_trace("stabilization ok");
+    trace("GameSystem", "stabilization ok");
 
     // Init the navdata system and wait for it to be fully
     //   initialized
     m_navctrl.init();
     while(!m_navctrl.inited())
         ;
+    trace("GameSystem", "navdata controller ok");
 
     // Init the roundel system
     m_roundelctrl.init();
@@ -70,7 +131,7 @@ void GameSystem::M_gameLoop() {
 
     // OK, we're alive !
     m_alive = true;
-    M_trace("starting main game loop");
+    message("GameSystem", "starting main game loop");
 
     // Main game loop
     while(m_alive) {
@@ -107,8 +168,4 @@ void GameSystem::M_gameLoop() {
         //       activation time is accurate
         std::this_thread::sleep_for(5ms);
     }
-}
-
-void GameSystem::M_trace(std::string const& msg) {
-    std::cout << "[GameSystem] " << msg << std::endl;
 }

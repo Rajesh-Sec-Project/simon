@@ -7,6 +7,10 @@
 using namespace lcontrol;
 using namespace lcomm;
 
+GamePadSubscriber::GamePadSubscriber(GameSystem& system)
+    : GameElement(system)
+{}
+
 void GamePadSubscriber::notify(Endpoint& ep, PacketBase const& packet) {
     GamepadPacket* ctrl = packet.downcast<GamepadPacket>();
     if(ctrl) {
@@ -79,7 +83,7 @@ void GamePadSubscriber::notify(Endpoint& ep, PacketBase const& packet) {
                       << std::endl;
 
             Control::land();
-            m_gs.stop();
+            m_system.stop();
         }
     }
 }

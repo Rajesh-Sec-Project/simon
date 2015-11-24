@@ -2,18 +2,17 @@
 #define SIMON_GAMEPADSUBSCRIBER_H
 
 #include "lcomm/lcomm.h"
+#include "gameelement.h"
 
 class GameSystem;
 
-class GamePadSubscriber : public lcomm::Subscriber {
+//! A simple gamepad subscriber class, that responds
+//!   to host's gamepad messages
+class GamePadSubscriber : public GameElement, public lcomm::Subscriber {
 public:
-    GamePadSubscriber(GameSystem& gs)
-            : m_gs(gs) {
-    }
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
+    GamePadSubscriber(GameSystem& system);
 
-private:
-    GameSystem& m_gs;
+    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
 };
 
 #endif // SIMON_GAMEPADSUBSCRIBER_H

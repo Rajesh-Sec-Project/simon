@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <memory>
-#include "gamepad.h"
+#include "lcomm/lcomm.h"
 
 namespace Ui {
     class MainWindow;
@@ -25,9 +25,10 @@ private slots:
     void M_takeOff();
     void M_land();
 
+    void M_receivedLog(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
+
 private:
     std::unique_ptr<Ui::MainWindow> m_ui;
-    std::unique_ptr<GamePad> m_gamepad;
 };
 
 #endif // MAINWINDOW_H

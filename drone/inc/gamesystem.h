@@ -13,26 +13,52 @@
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"
 
+//! The game system class, that manages :
+//!   - all the game components
+//!   - the main game loop
+//!   - the communication with the host system
+//!     (through an lcomm::Endpoint)
 class GameSystem {
 public:
     GameSystem();
     ~GameSystem();
 
+    //! Stop the game system's loop
     void stop();
+
+    //! Is the game alive ?
     bool alive() const;
 
+    //! Get the system's navdata controller
+    NavdataController& navdataController();
+
+    //! Get the system's navdata controller (const version)
+    NavdataController const& navdataController() const;
+
+    //! Send out a trace log to the host
+    void trace(std::string const& nm, std::string const& msg);
+
+    //! Send out a message log to the host
+    void message(std::string const& nm, std::string const& msg);
+
+    //! Send out a warning log to the host
+    void warning(std::string const& nm, std::string const& msg);
+
+    //! Send out an error log to the host
+    void error(std::string const& nm, std::string const& msg);
+
 protected:
-    void M_gameLoop();
     void M_droneSetup();
-    void M_trace(std::string const& msg);
+    void M_gameLoop();
 
 private:
     lcomm::Endpoint m_endpoint;
-    GamePadSubscriber m_gamePadSubscriber;
+    
     std::atomic_bool m_inited = {false};
     std::atomic_bool m_alive = {false};
     std::thread m_gameLoop;
 
+    GamePadSubscriber m_gamePadSubscriber;
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
 };

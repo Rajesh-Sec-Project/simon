@@ -1,20 +1,20 @@
 #ifndef SIMON_ROUNDELCONTROLLER_H
 #define SIMON_ROUNDELCONTROLLER_H
 
+#include "gameelement.h"
 #include <string>
 
 class NavdataController;
 
-class RoundelController {
+class RoundelController : public GameElement {
 public:
-    RoundelController(NavdataController& ctrl);
+    RoundelController(GameSystem& system);
     ~RoundelController();
 
     void init();
 
 private:
     void M_clearAck();
-    void M_trace(std::string const& msg) const;
 
 private:
     NavdataController& m_navctrl;
