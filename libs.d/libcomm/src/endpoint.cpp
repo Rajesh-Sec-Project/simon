@@ -59,12 +59,7 @@ namespace lcomm {
 
     void Endpoint::M_readThread() {
         try {
-            {
-                std::lock_guard<std::mutex> guard(m_socket_mutex);
-                m_socket->connect();
-            }
-
-            std::cout << "Connection OK" << std::endl;
+            m_socket->connect();
 
             // Loop until asked to exit
             while(!m_read_thread_exit) {
@@ -72,10 +67,7 @@ namespace lcomm {
                 bool received = false;
 
                 // Try to read some input data
-                {
-                    std::lock_guard<std::mutex> guard(m_socket_mutex);
-                    received = m_socket->read(&data);
-                }
+                received = m_socket->read(&data);
 
                 if(received) {
                     std::string magic, tag;

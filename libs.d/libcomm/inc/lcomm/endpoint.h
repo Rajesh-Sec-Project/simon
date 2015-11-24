@@ -56,7 +56,6 @@ namespace lcomm {
     private:
         std::chrono::nanoseconds m_latency;
         std::unique_ptr<Socket> m_socket;
-        std::mutex m_socket_mutex;
         std::atomic<bool> m_read_thread_exit;
         std::exception_ptr m_read_thread_exc;
         std::thread m_read_thread;

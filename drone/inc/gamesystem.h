@@ -8,6 +8,7 @@
 #include <thread>
 #include <atomic>
 #include "lcomm/lcomm.h"
+
 #include "gamepadsubscriber.h"
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"

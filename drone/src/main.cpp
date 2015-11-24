@@ -19,8 +19,8 @@ int main() {
 
     GameSystem system;
 
-    for(; system.alive();)
-        ;
+    while(system.alive())
+        std::this_thread::sleep_for(100ms);
 
     return 0;
 }
