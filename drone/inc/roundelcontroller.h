@@ -5,19 +5,19 @@
 
 class NavdataController;
 
-class RoundelController
-{
+class RoundelController {
 public:
-	RoundelController(NavdataController& ctrl);
-	~RoundelController();
+    RoundelController(NavdataController& ctrl);
+    ~RoundelController();
 
-	void init();
-
-private:
-	void M_trace(std::string const& msg) const;
+    void init();
 
 private:
-	NavdataController& m_navctrl;
+    void M_clearAck();
+    void M_trace(std::string const& msg) const;
+
+private:
+    NavdataController& m_navctrl;
 };
 
 #endif // SIMON_ROUNDEL_H

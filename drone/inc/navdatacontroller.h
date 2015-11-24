@@ -186,23 +186,23 @@ namespace navdata {
     };
 
     //! Vision detection navdata option
-    struct vision_detect {
+    struct __attribute__((packed)) vision_detect {
         //!< Normally this should be 'option_vision_detect'
-      uint16_t tag;
-      //!< Size of this struct
-      uint16_t size;
+        uint16_t tag;
+        //!< Size of this struct
+        uint16_t size;
 
-      uint32_t nb_detected;
-      uint32_t type[4];
-      uint32_t xc[4];
-      uint32_t yc[4];
-      uint32_t width[4];
-      uint32_t height[4];
-      uint32_t dist[4];
-      float orientation_angle[4];
-      float rotation[3][3][4];
-      float translation[3][4];
-      uint32_t camera_source[4];
+        uint32_t nb_detected;
+        uint32_t type[4];
+        uint32_t xc[4];
+        uint32_t yc[4];
+        uint32_t width[4];
+        uint32_t height[4];
+        uint32_t dist[4];
+        float orientation_angle[4];
+        float rotation[3][3][4];
+        float translation[3][4];
+        uint32_t camera_source[4];
     };
 }
 

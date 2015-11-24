@@ -13,6 +13,8 @@
 
 #include <stdexcept>
 #include <thread>
+#include <sstream>
+#include <iomanip>
 
 std::string NavdataController::m_fool_ip = "127.0.0.1";
 std::string NavdataController::m_sniff_ip = "127.0.0.2";
@@ -159,6 +161,24 @@ void NavdataController::M_initNavdata() {
     Control::ackControl();
     M_trace("ack clear sent");
 
+    // Wait for the command_ack bit to be cleared
+    for(int tm = 0;;) {
+        // Get some navdata
+        while(!m_available)
+            ;
+        Navdata nav = grab();
+
+        M_trace("waiting for cleared ack #" + std::to_string(tm));
+
+        // Check flag
+        if(!(nav.header.state & navdata::command_ack))
+            break;
+
+        if(++tm > m_timeout)
+            throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
+    }
+    M_trace("command ack cleared");
+
     // Setup options here
     int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_vision_detect);
     Control::config("general:navdata_options", std::to_string(options));
@@ -173,7 +193,13 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     // Get the navdata header
     m_navdata.header = *reinterpret_cast<const header*>(data);
     if(m_navdata.header.magic != 0x55667788) {
-        M_trace("bad navdata magic");
+        M_trace("bad navdata magic, dumping header :");
+        std::ostringstream ss;
+        ss << "  ";
+        for(unsigned int i = 0; i < sizeof(header); ++i) {
+            ss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i] << " ";
+        }
+        M_trace(ss.str());
         return;
     }
 

@@ -23,7 +23,7 @@ namespace lcontrol {
     }
 
     void Control::init() {
-        m_seqNum = 0;
+        m_seqNum = 1;
         m_sock = std::make_unique<ClientSocket>("127.0.0.1", 5556, false);
         m_sock->connect();
         int numAttempt = 0;
@@ -152,9 +152,7 @@ namespace lcontrol {
     }
 
     void Control::config(std::uint32_t seqNum, std::string const& key, std::string const& value, ClientSocket& s) {
-        std::string data("AT*CONFIG=");
-        std::string seqStr = std::to_string(seqNum);
-        data += seqStr + ",\"" + key + "\",\"" + value + "\"\r";
+        std::string data = "AT*CONFIG=" + std::to_string(seqNum) + ",\"" + key + "\",\"" + value + "\"\r";
         M_traceFrame(data);
         s.write(data);
     }

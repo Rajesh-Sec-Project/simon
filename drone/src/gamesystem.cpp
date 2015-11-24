@@ -65,7 +65,7 @@ void GameSystem::M_droneSetup() {
 
 void GameSystem::M_gameLoop() {
 
-    while (!m_inited)
+    while(!m_inited)
         ;
 
     // OK, we're alive !
@@ -94,7 +94,8 @@ void GameSystem::M_gameLoop() {
                   << clr << std::endl;
         std::cout << "vz:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vz
                   << clr << std::endl;
-        std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage << clr << std::endl;
+        std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
+                  << clr << std::endl;
         std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr << std::endl;
         std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
         std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
