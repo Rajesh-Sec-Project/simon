@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <memory>
 #include <chrono>
+#include <memory>
 
 using namespace std::literals;
 
@@ -50,8 +51,8 @@ namespace lcomm {
 
     private:
         void M_readThread();
-        std::unique_ptr<PacketBase> M_extractPacket(json::Node& node);
-        void M_notify(PacketBase const& packet);
+        std::shared_ptr<PacketBase> M_extractPacket(json::Node& node);
+        void M_notify(std::shared_ptr<PacketBase> packet);
 
     private:
         std::chrono::nanoseconds m_latency;

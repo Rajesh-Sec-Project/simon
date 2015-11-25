@@ -17,7 +17,7 @@ namespace lcomm {
         //! \param node The lconf::json representation from which
         //!               to initialize the packet
         //! \return The created packet instance
-        virtual std::unique_ptr<PacketBase> create(json::Node* node) const = 0;
+        virtual std::shared_ptr<PacketBase> create(json::Node* node) const = 0;
     };
 
     //! A generic helper factory for user packet classes.
@@ -28,8 +28,8 @@ namespace lcomm {
         //! Implements the PacketFactoryBase::create() abstract function.
         //! \param node The json data from which to initialize the newly created packet
         //! \return The newly created packet instance
-        std::unique_ptr<PacketBase> create(json::Node* node) const override {
-            return std::make_unique<Derived>(node);
+        std::shared_ptr<PacketBase> create(json::Node* node) const override {
+            return std::make_shared<Derived>(node);
         }
     };
 }

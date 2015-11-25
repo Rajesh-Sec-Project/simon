@@ -1,11 +1,13 @@
 #include "commmanager.h"
 #include <memory>
+#include <QDebug>
 
 std::unique_ptr<CommManager> CommManager::m_self;
 
 CommManager::CommManager()
         : QObject(0)
         , m_ep(std::make_unique<lcomm::Endpoint>(std::make_unique<lcomm::ClientSocket>("192.168.1.1", 50001))) {
+    m_ep->registerSubscriber(*this);
 }
 
 CommManager::~CommManager() {
@@ -29,8 +31,8 @@ bool CommManager::opened() {
     return m_ep->socket().opened();
 }
 
-void CommManager::notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) {
-    emit packetReceived(ep, packet);
+void CommManager::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
+    emit packetReceived(&ep, packet);
 }
 
 void CommManager::reconnect() {

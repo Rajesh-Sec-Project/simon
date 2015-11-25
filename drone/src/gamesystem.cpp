@@ -5,6 +5,7 @@
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
 #include "lcomm/log_packet.h"
+#include "lcomm/info_packet.h"
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include <iomanip>
@@ -12,9 +13,9 @@
 #include <iostream>
 #include <ctime>
 
-//! Set to 1 if you want to also print
+//! Define if you want to also print
 //!   logging messages to stdout / stderr
-#define LOCAL_LOGS 1
+// #define LOCAL_LOGS
 
 using namespace std::literals;
 using namespace lcomm;
@@ -24,9 +25,16 @@ GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
         , m_navctrl(*this)
-        , m_roundelctrl(*this) {
+        , m_roundelctrl(*this)
+        , m_journalist(*this) {
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
+
+    std::cout << "Waiting for host to connect... ";
+    std::cout.flush();
+    while(!m_endpoint.socket().opened())
+        ;
+    std::cout << "OK" << std::endl;
 
     this->M_droneSetup();
 }
@@ -44,58 +52,56 @@ bool GameSystem::alive() const {
     return m_alive;
 }
 
-NavdataController& GameSystem::navdataController()
-{
+NavdataController& GameSystem::navdataController() {
     return m_navctrl;
 }
 
-NavdataController const& GameSystem::navdataController() const
-{
+NavdataController const& GameSystem::navdataController() const {
     return m_navctrl;
 }
 
-void GameSystem::trace(std::string const& nm, std::string const& msg)
-{
-    std::string str = "[" + nm + "] " + msg;
+lcomm::Endpoint& GameSystem::endpoint() {
+    return m_endpoint;
+}
+
+void GameSystem::trace(std::string const& nm, std::string const& msg) {
+    std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
     m_endpoint.write(log);
 
-    #if defined(LOCAL_LOGS)
+#if defined(LOCAL_LOGS)
     std::cout << "[TRACE]  " << str << std::endl;
-    #endif
+#endif
 }
 
-void GameSystem::message(std::string const& nm, std::string const& msg)
-{
-    std::string str = "[" + nm + "] " + msg;
+void GameSystem::message(std::string const& nm, std::string const& msg) {
+    std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Message, str);
     m_endpoint.write(log);
-    
-    #if defined(LOCAL_LOGS)
+
+#if defined(LOCAL_LOGS)
     std::cout << "[INFO]  " << str << std::endl;
-    #endif
+#endif
 }
 
-void GameSystem::warning(std::string const& nm, std::string const& msg)
-{
-    std::string str = "[" + nm + "] " + msg;
+void GameSystem::warning(std::string const& nm, std::string const& msg) {
+    std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
     m_endpoint.write(log);
-    
-    #if defined(LOCAL_LOGS)
-    std::cout << "[WARN]  " << str << std::endl;
-    #endif
+
+#if defined(LOCAL_LOGS)
+    std::cout << "[WARN]   " << str << std::endl;
+#endif
 }
 
-void GameSystem::error(std::string const& nm, std::string const& msg)
-{
-    std::string str = "[" + nm + "] " + msg;
+void GameSystem::error(std::string const& nm, std::string const& msg) {
+    std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Error, str);
     m_endpoint.write(log);
-    
-    #if defined(LOCAL_LOGS)
+
+#if defined(LOCAL_LOGS)
     std::cerr << "[ERROR] " << str << std::endl;
-    #endif
+#endif
 }
 
 void GameSystem::M_droneSetup() {
@@ -133,16 +139,22 @@ void GameSystem::M_gameLoop() {
     m_alive = true;
     message("GameSystem", "starting main game loop");
 
+    // Initialize components
+    message("GameSystem", "initializing components");
+    m_journalist.gameInit();
+
     // Main game loop
     while(m_alive) {
         // Be sure to send the watchdog packet
         Control::watchdog();
 
-        // Print out navdata
+        // Do stuff (regulations loops will go there for ex.)
+        m_journalist.gameLoop();
+
         Navdata nav = m_navctrl.grab();
         std::string clr = "                      ";
 
-        std::cout << "vision:" << nav.header.vision << std::endl;
+        std::cout << "vision:" << nav.header.vision << clr << std::endl;
         std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
                   << nav.demo.theta / 100.0f << clr << std::endl;
         std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')

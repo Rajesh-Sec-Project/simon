@@ -98,8 +98,7 @@ void RoundelController::M_clearAck() {
         if(nav.header.state & navdata::command_ack)
             break;
 
-        if(++tm > 10)
-        {
+        if(++tm > 10) {
             M_error("command ack not set");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
         }
@@ -123,8 +122,7 @@ void RoundelController::M_clearAck() {
         if(!(nav.header.state & navdata::command_ack))
             break;
 
-        if(++tm > 10)
-        {
+        if(++tm > 10) {
             M_error("command ack not cleared");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
         }

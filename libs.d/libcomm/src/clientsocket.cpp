@@ -75,30 +75,19 @@ namespace lcomm {
         if(!data || !m_connected_flag)
             return false;
 
-        try {
-            while(m_connected_flag) {
-                ssize_t len;
-                if((len = ::read(m_fd, &m_buf[0], m_buf.size())) < 0) {
-                    if(errno != EWOULDBLOCK && errno != EAGAIN)
-                        throw std::runtime_error("lcomm::ClientSocket::M_thread: read failed");
-                }
+        ssize_t len;
+        if((len = ::read(m_fd, &m_buf[0], m_buf.size())) < 0) {
+            if(errno != EWOULDBLOCK && errno != EAGAIN)
+                throw std::runtime_error("lcomm::ClientSocket::M_thread: read failed");
+        }
 
-                for(ssize_t i = 0; i < len; ++i) {
-                    char c = m_buf[i];
+        std::string tmp = "";
+        for(int i = 0; i < len; ++i)
+            tmp += m_buf[i];
 
-                    if(c == '\n') {
-                        return true;
-                    }
-
-                    *data += c;
-                }
-
-                std::this_thread::sleep_for(m_latency);
-            }
-
-        } catch(std::exception const& e) {
-            std::cerr << "ClientSocket::M_thread: Received exception! " << e.what() << std::endl;
-            throw;
+        if(tmp.size()) {
+            *data = tmp;
+            return true;
         }
 
         return false;

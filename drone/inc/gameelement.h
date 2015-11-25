@@ -9,27 +9,29 @@ class GameSystem;
 //! Every component of the Game System should
 //!   inherit this class.
 //! It provides (for the moment) logging abstractions
-class GameElement
-{
+class GameElement {
 public:
-	GameElement(GameSystem& system);
-	virtual ~GameElement();
+    GameElement(GameSystem& system);
+    virtual ~GameElement();
+
+    virtual void gameInit();
+    virtual void gameLoop();
 
 protected:
-	//! Send a trace log to the host
-	void M_trace(std::string const& msg);
-	//! Send a message log to the host
-	void M_message(std::string const& msg);
-	//! Send a warning log to the host
-	void M_warning(std::string const& msg);
-	//! Send an error log to the host
-	void M_error(std::string const& msg);
+    //! Send a trace log to the host
+    void M_trace(std::string const& msg);
+    //! Send a message log to the host
+    void M_message(std::string const& msg);
+    //! Send a warning log to the host
+    void M_warning(std::string const& msg);
+    //! Send an error log to the host
+    void M_error(std::string const& msg);
 
 private:
-	std::string M_className() const;
+    std::string M_className() const;
 
 protected:
-	GameSystem& m_system;
+    GameSystem& m_system;
 };
 
 #endif // SIMON_GAMEELEMENT_H

@@ -6,12 +6,7 @@
 namespace lcomm {
     class LogPacket : public Packet<LogPacket> {
     public:
-        enum Level {
-            Trace = 0x01,
-            Message = 0x02,
-            Warning = 0x03,
-            Error = 0x04
-        };
+        enum Level { Trace = 0x01, Message = 0x02, Warning = 0x03, Error = 0x04 };
 
     public:
         LogPacket(lconf::json::Node* node);

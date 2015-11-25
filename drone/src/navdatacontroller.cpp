@@ -26,11 +26,13 @@ NavdataController::NavdataController(GameSystem& system)
         : GameElement(system)
         , m_pcap(&NavdataController::M_setupPcap, this)
         , m_available(false)
-        , m_inited(false) {
+        , m_inited(false)
+        , m_startPcap(false) {
 }
 
 NavdataController::~NavdataController() {
     if(m_pcap_handle) {
+        pcap_breakloop(m_pcap_handle);
         pcap_close(m_pcap_handle);
         m_pcap.join();
     }
@@ -54,6 +56,9 @@ Navdata NavdataController::grab() {
 }
 
 void NavdataController::M_setupPcap() {
+    while(!m_startPcap)
+        ;
+
     M_trace("configuring pcap");
 
     char errbuf[128];
@@ -119,6 +124,9 @@ void NavdataController::M_initNavdata() {
         std::this_thread::sleep_for(std::chrono::milliseconds(250));
     }
 
+    // Start up PCAP
+    m_startPcap = true;
+
     // Wait for the bootstrap bit
     for(int tm = 0;;) {
         // Get some navdata
@@ -132,8 +140,7 @@ void NavdataController::M_initNavdata() {
         if(nav.header.state & navdata::navdata_bootstrap)
             break;
 
-        if(++tm > m_timeout)
-        {
+        if(++tm > m_timeout) {
             M_error("drone not in bootstrap mode");
             throw std::runtime_error("NavdataController::M_initNavdata: drone not in bootstrap mode");
         }
@@ -157,8 +164,7 @@ void NavdataController::M_initNavdata() {
         if(nav.header.state & navdata::command_ack)
             break;
 
-        if(++tm > m_timeout)
-        {
+        if(++tm > m_timeout) {
             M_error("command ack not set");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
         }
@@ -182,8 +188,7 @@ void NavdataController::M_initNavdata() {
         if(!(nav.header.state & navdata::command_ack))
             break;
 
-        if(++tm > m_timeout)
-        {
+        if(++tm > m_timeout) {
             M_error("command ack not cleared");
             throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
         }

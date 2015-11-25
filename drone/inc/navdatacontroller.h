@@ -244,7 +244,7 @@ private:
     std::thread m_pcap;
     pcap_t* m_pcap_handle;
 
-    std::atomic<bool> m_available, m_inited;
+    std::atomic<bool> m_available, m_inited, m_startPcap;
     Navdata m_navdata;
 
     static std::string m_fool_ip;

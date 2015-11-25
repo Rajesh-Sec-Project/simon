@@ -1,6 +1,8 @@
 #ifndef LCOMM_SUBSCRIBER_H
 #define LCOMM_SUBSCRIBER_H
 
+#include <memory>
+
 namespace lcomm {
     class Endpoint;
     class PacketBase;
@@ -18,7 +20,7 @@ namespace lcomm {
         //!   may be registered to several endpoints)
         //! \param packet The received packet. Do **not** free this instance,
         //!   as the endpoint is already taking care of this.
-        virtual void notify(Endpoint& ep, PacketBase const& packet) = 0;
+        virtual void notify(Endpoint& ep, std::shared_ptr<PacketBase> packet) = 0;
     };
 }
 

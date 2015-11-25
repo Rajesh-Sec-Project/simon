@@ -7,11 +7,13 @@
 
 #include <thread>
 #include <atomic>
+#include <vector>
 #include "lcomm/lcomm.h"
 
 #include "gamepadsubscriber.h"
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"
+#include "journalist.h"
 
 //! The game system class, that manages :
 //!   - all the game components
@@ -19,6 +21,8 @@
 //!   - the communication with the host system
 //!     (through an lcomm::Endpoint)
 class GameSystem {
+    friend class GameElement;
+
 public:
     GameSystem();
     ~GameSystem();
@@ -34,6 +38,9 @@ public:
 
     //! Get the system's navdata controller (const version)
     NavdataController const& navdataController() const;
+
+    //! Get the communication endpoint of this game system
+    lcomm::Endpoint& endpoint();
 
     //! Send out a trace log to the host
     void trace(std::string const& nm, std::string const& msg);
@@ -53,7 +60,7 @@ protected:
 
 private:
     lcomm::Endpoint m_endpoint;
-    
+
     std::atomic_bool m_inited = {false};
     std::atomic_bool m_alive = {false};
     std::thread m_gameLoop;
@@ -61,6 +68,7 @@ private:
     GamePadSubscriber m_gamePadSubscriber;
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
+    Journalist m_journalist;
 };
 
 

@@ -6,6 +6,7 @@
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
 #include "lcomm/log_packet.h"
+#include "lcomm/info_packet.h"
 #include "randomsequence.h"
 #include "navdatacontroller.h"
 
@@ -15,6 +16,7 @@ int main() {
     using namespace lcomm;
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::LogPacket>();
+    lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();
 
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");

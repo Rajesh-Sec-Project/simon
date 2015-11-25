@@ -70,23 +70,19 @@ namespace lcomm {
         if(!data || !m_connected_flag)
             return false;
 
-        while(m_connected_flag) {
-            ssize_t len;
-            if((len = ::read(m_cfd, &m_buf[0], m_buf.size())) < 0) {
-                if(errno != EWOULDBLOCK && errno != EAGAIN)
-                    throw std::runtime_error("lcomm::ServerSocket::M_thread: read failed");
-            }
+        ssize_t len;
+        if((len = ::read(m_cfd, &m_buf[0], m_buf.size())) < 0) {
+            if(errno != EWOULDBLOCK && errno != EAGAIN)
+                throw std::runtime_error("lcomm::ServerSocket::read: read failed");
+        }
 
-            for(ssize_t i = 0; i < len; ++i) {
-                char c = m_buf[i];
-                if(c == '\n') {
-                    return true;
-                }
+        std::string tmp = "";
+        for(int i = 0; i < len; ++i)
+            tmp += m_buf[i];
 
-                *data += c;
-            }
-
-            std::this_thread::sleep_for(m_latency);
+        if(tmp.size()) {
+            *data = tmp;
+            return true;
         }
 
         return false;
@@ -98,7 +94,7 @@ namespace lcomm {
             std::lock_guard<std::mutex> guard(m_fd_mutex);
             m_cfd = ::accept(m_fd, 0, 0);
             if(m_cfd < 0)
-                throw std::runtime_error("lcomm::ServerSocket::M_thread: accept failed");
+                throw std::runtime_error("lcomm::ServerSocket::connect: accept failed");
         }
 
         // Set the socket to be non blocking
@@ -106,7 +102,7 @@ namespace lcomm {
         if((flags = fcntl(m_cfd, F_GETFL, 0)) < 0)
             flags = 0;
         if(fcntl(m_cfd, F_SETFL, flags | O_NONBLOCK) < 0)
-            throw std::runtime_error("lcomm::ServerSocket::M_thread: fcntl failed");
+            throw std::runtime_error("lcomm::ServerSocket::connect: fcntl failed");
 
         m_connected_flag = true;
     }

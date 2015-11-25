@@ -25,7 +25,8 @@ private slots:
     void M_takeOff();
     void M_land();
 
-    void M_receivedLog(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
+    void M_receivedLog(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
+    void M_receivedInfo(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
     std::unique_ptr<Ui::MainWindow> m_ui;

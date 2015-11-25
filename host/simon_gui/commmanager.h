@@ -27,10 +27,11 @@ public:
 signals:
     void connected();
     void disconnected();
-    void packetReceived(lcomm::Endpoint& ep, lcomm::PacketBase const& packet);
+    // /!\ Par pitié Rémi, laisse des pointeurs ici sinon le signal ne marche pas
+    void packetReceived(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
-    void notify(lcomm::Endpoint& ep, lcomm::PacketBase const& packet) override;
+    void notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) override;
     static std::unique_ptr<CommManager> M_makeCommManager();
 
 private:

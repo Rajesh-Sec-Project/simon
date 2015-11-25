@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <chrono>
+#include <queue>
 
 namespace lcomm {
     using namespace lconf;
@@ -61,31 +62,48 @@ namespace lcomm {
         try {
             m_socket->connect();
 
-            // Loop until asked to exit
+            std::queue<std::string> messages;
+            std::string incomplete = "";
+
             while(!m_read_thread_exit) {
-                std::string data;
-                bool received = false;
+                std::string frag;
+                bool ok = m_socket->read(&frag);
+                if(!ok)
+                    continue;
 
-                // Try to read some input data
-                received = m_socket->read(&data);
+                frag = incomplete + frag;
 
-                if(received) {
-                    std::string magic, tag;
-                    std::unique_ptr<json::Node> node;
+                // Split messages by new line and enqueue ready packets
+                int start = 0, end = 0;
+                while((end = (int)frag.find('\n', start)) != (int)std::string::npos) {
+                    messages.push(frag.substr(start, end - start));
+                    start = end + 1;
+                }
+
+                // Handle the partial command (if any, otherwise this
+                //   will clear the incomplete command)
+                incomplete = frag.substr(start);
+
+                // Empty the message queue
+                while(messages.size()) {
+                    std::string msg = messages.front();
+                    messages.pop();
 
                     // Parse packet's content
+                    json::Node* node = 0;
                     try {
                         std::istringstream ss;
-                        ss.str(data);
-                        node.reset(json::parse(ss));
-                    } catch(json::Exception const& exc) {
+                        ss.str(msg);
+                        node = json::parse(ss);
+                    } catch(std::exception const& exc) {
                         throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception)");
                     }
 
-                    auto packet = M_extractPacket(*node);
-                    M_notify(*packet);
-                } else {
-                    std::this_thread::sleep_for(m_latency);
+                    // Extract and notify
+                    if(node) {
+                        std::shared_ptr<PacketBase> packet = M_extractPacket(*node);
+                        M_notify(packet);
+                    }
                 }
             }
         } catch(std::exception const& e) {
@@ -94,7 +112,7 @@ namespace lcomm {
         }
     }
 
-    std::unique_ptr<PacketBase> Endpoint::M_extractPacket(json::Node& node) {
+    std::shared_ptr<PacketBase> Endpoint::M_extractPacket(json::Node& node) {
         // Check if it is an object as expected
         json::ObjectNode* obj = node.downcast<json::ObjectNode>();
         if(!obj)
@@ -160,7 +178,7 @@ namespace lcomm {
         return packet;
     }
 
-    void Endpoint::M_notify(PacketBase const& packet) {
+    void Endpoint::M_notify(std::shared_ptr<PacketBase> packet) {
         for(auto subscriber : m_subscribers) {
             subscriber->notify(*this, packet);
         }

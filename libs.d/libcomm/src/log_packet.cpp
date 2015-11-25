@@ -21,7 +21,7 @@ namespace lcomm {
     }
 
     void LogPacket::M_setup() {
-        bind("level", (int&) m_level);
+        bind("level", (int&)m_level);
         bind("message", m_message);
     }
 }
