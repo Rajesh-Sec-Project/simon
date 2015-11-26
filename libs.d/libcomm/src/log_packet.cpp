@@ -9,6 +9,9 @@ namespace lcomm {
     LogPacket::LogPacket(LogPacket::Level level, std::string const& message)
             : m_level(level)
             , m_message(message) {
+        if(level == Level::NoLog) {
+            throw std::runtime_error("Invalid log level!");
+        }
         M_setup();
     }
 

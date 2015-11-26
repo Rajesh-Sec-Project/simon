@@ -13,9 +13,9 @@
 #include <iostream>
 #include <ctime>
 
-//! Define if you want to also print
-//!   logging messages to stdout / stderr
-// #define LOCAL_LOGS
+//! Only messages with the log level specified or the levels above will be output to stdout/stderr
+//! No messages will be output with a min log level of lcomm::LogPacket::NoLog
+#define LOCAL_MIN_LOG_LEVEL lcomm::LogPacket::Trace
 
 using namespace std::literals;
 using namespace lcomm;
@@ -69,9 +69,9 @@ void GameSystem::trace(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[TRACE]  " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Trace >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[TRACE]  " << str << std::endl;
+    }
 }
 
 void GameSystem::message(std::string const& nm, std::string const& msg) {
@@ -79,9 +79,9 @@ void GameSystem::message(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Message, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[INFO]  " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Message >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[INFO]  " << str << std::endl;
+    }
 }
 
 void GameSystem::warning(std::string const& nm, std::string const& msg) {
@@ -89,9 +89,9 @@ void GameSystem::warning(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[WARN]   " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Warning >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[WARN]  " << str << std::endl;
+    }
 }
 
 void GameSystem::error(std::string const& nm, std::string const& msg) {
@@ -99,9 +99,9 @@ void GameSystem::error(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Error, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cerr << "[ERROR] " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Error >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[ERROR]  " << str << std::endl;
+    }
 }
 
 void GameSystem::M_droneSetup() {

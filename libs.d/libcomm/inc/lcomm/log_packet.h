@@ -2,11 +2,12 @@
 #define LCOMM_LOG_PACKET_H
 
 #include "lcomm/packet.h"
+#include <cstdint>
 
 namespace lcomm {
     class LogPacket : public Packet<LogPacket> {
     public:
-        enum Level { Trace = 0x01, Message = 0x02, Warning = 0x03, Error = 0x04 };
+        enum Level : int { Trace = 0x01, Message = 0x02, Warning = 0x03, Error = 0x04, NoLog };
 
     public:
         LogPacket(lconf::json::Node* node);
