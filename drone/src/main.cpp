@@ -13,7 +13,8 @@
 using namespace std::literals;
 
 int main() {
-    using namespace lcomm;
+    srand(time(NULL));
+
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::LogPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();

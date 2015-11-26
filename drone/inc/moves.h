@@ -2,33 +2,33 @@
 #define SIMON_MOVES_H
 
 #include <list>
+#include <iostream>
 
-namespace lmoves {
     // An enum representing all the different moves that the drone is able to produce
-    enum tmove { DOWN = 0, UP, RIGHT, LEFT, NUM_MOVES };
+    enum class tmove { DOWN, UP, RIGHT, LEFT, NUM_MOVES };
 
     // The Moves class contains a sequence of moves (a list)
     class Moves {
-
     public:
-        // constructor
-        Moves();
+        // constructs a random sequence with the specified length
+        Moves(size_t seqLen = 0);
 
         // getter of the sequence
         std::list<tmove> const& getSequence() const;
 
-        // print the sequence of movements.
-        void print() const;
-
-        // add a new move to the sequence
-        void add_move();
-
-        // return a random move among the moves available in the enum tmove.
-        tmove random_move();
+        // add a random move to the sequence
+        void addMove();
 
     private:
+        // return a random move among the moves available in the enum tmove.
+        tmove M_randomMove();
+
         std::list<tmove> sequence;
     };
-}
+
+std::ostream& operator<<(std::ostream& out, tmove value);
+std::ostream& operator<<(std::ostream& out, Moves const &value);
+
+
 
 #endif // SIMON_MOVES_H
