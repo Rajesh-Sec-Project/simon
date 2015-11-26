@@ -2,6 +2,7 @@
 #define SIMON_ROUNDELCONTROLLER_H
 
 #include "gameelement.h"
+#include "lcomm/clientsocket.h"
 #include <string>
 
 class NavdataController;
@@ -11,13 +12,14 @@ public:
     RoundelController(GameSystem& system);
     ~RoundelController();
 
-    void init();
+    void gameInit() override;
 
 private:
     void M_clearAck();
 
 private:
     NavdataController& m_navctrl;
+    lcomm::ClientSocket m_videoSock;
 };
 
 #endif // SIMON_ROUNDEL_H

@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <chrono>
 #include <iostream>
-#include <ctime>
+#include <time.h>
 
 //! Only messages with the log level specified or the levels above will be output to stdout/stderr
 //! No messages will be output with a min log level of lcomm::LogPacket::NoLog
@@ -20,6 +20,8 @@
 using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
+
+unsigned long GameSystem::m_gameLoopActivationTimeNs = 10000;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -112,16 +114,6 @@ void GameSystem::M_droneSetup() {
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
 
-    // Init the navdata system and wait for it to be fully
-    //   initialized
-    m_navctrl.init();
-    while(!m_navctrl.inited())
-        ;
-    trace("GameSystem", "navdata controller ok");
-
-    // Init the roundel system
-    m_roundelctrl.init();
-
     // Start game loop
     m_inited = true;
 
@@ -141,16 +133,26 @@ void GameSystem::M_gameLoop() {
 
     // Initialize components
     message("GameSystem", "initializing components");
+    m_navctrl.gameInit();
+    while(!m_navctrl.inited())
+        ;
+    m_roundelctrl.gameInit();
     m_journalist.gameInit();
+    /*** Add your own elements ***/
 
     // Main game loop
     while(m_alive) {
+        /*timespec loop_start;
+        clock_gettime(CLOCK_REALTIME, &loop_start);*/
+
         // Be sure to send the watchdog packet
         Control::watchdog();
 
         // Do stuff (regulations loops will go there for ex.)
         m_journalist.gameLoop();
+        /*** Add you own elements here ***/
 
+        /****************************************************************************************************************/
         Navdata nav = m_navctrl.grab();
         std::string clr = "                      ";
 
@@ -174,10 +176,21 @@ void GameSystem::M_gameLoop() {
         std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
         std::cout << "xc[0]: " << nav.vision_detect.xc[0] << clr << std::endl;
         std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
+        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr << std::endl;
+        std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
+        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
+        /****************************************************************************************************************/
 
-        //@TODO: fix this time so the loop's
-        //       activation time is accurate
-        std::this_thread::sleep_for(5ms);
+        /*timespec loop_end;
+        clock_gettime(CLOCK_REALTIME, &loop_end);
+        unsigned long loop_time = ((loop_end.tv_sec   * 1000000000UL) + loop_end.tv_nsec)
+                                - ((loop_start.tv_sec * 1000000000UL) + loop_start.tv_nsec);
+        
+        if (loop_time > m_gameLoopActivationTimeNs)
+            continue;
+
+        std::this_thread::sleep_for(std::chrono::nanoseconds(m_gameLoopActivationTimeNs - loop_time));*/
+
+        std::this_thread::sleep_for(10ms);
     }
 }

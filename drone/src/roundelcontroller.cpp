@@ -46,15 +46,20 @@ using namespace lcontrol;
 
 RoundelController::RoundelController(GameSystem& system)
         : GameElement(system)
-        , m_navctrl(system.navdataController()) {
+        , m_navctrl(system.navdataController())
+        , m_videoSock("127.0.0.1", 5555) {
 }
 
 RoundelController::~RoundelController() {
 }
 
-void RoundelController::init() {
+void RoundelController::gameInit() {
     while(!m_navctrl.inited())
         ;
+
+    M_message("Opening video channel...");
+    m_videoSock.connect();
+    M_message("Video channel opened");
 
     Control::config("video:codec_fps", "30");
     M_clearAck();

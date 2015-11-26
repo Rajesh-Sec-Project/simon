@@ -221,7 +221,7 @@ public:
     ~NavdataController();
 
     //! Init the navdata controller
-    void init();
+    void gameInit() override;
 
     //! Check if the navdata controller is initialized
     bool inited() const;

@@ -8,6 +8,7 @@
 #include <thread>
 #include <atomic>
 #include <vector>
+#include <chrono>
 #include "lcomm/lcomm.h"
 
 #include "gamepadsubscriber.h"
@@ -69,6 +70,9 @@ private:
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
     Journalist m_journalist;
+
+private:
+    static unsigned long m_gameLoopActivationTimeNs;
 };
 
 

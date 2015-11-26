@@ -38,7 +38,7 @@ NavdataController::~NavdataController() {
     }
 }
 
-void NavdataController::init() {
+void NavdataController::gameInit() {
     M_initNavdata();
 }
 
