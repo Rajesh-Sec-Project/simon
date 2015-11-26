@@ -21,7 +21,7 @@ using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-unsigned long GameSystem::m_gameLoopActivationTimeNs = 10000;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 2s;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -29,6 +29,8 @@ GameSystem::GameSystem()
         , m_navctrl(*this)
         , m_roundelctrl(*this)
         , m_journalist(*this) {
+    gettimeofday(&m_timeref, 0);
+
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
@@ -140,11 +142,10 @@ void GameSystem::M_gameLoop() {
     m_journalist.gameInit();
     /*** Add your own elements ***/
 
+    auto lastTime = clock();
+    auto last = clock();
     // Main game loop
     while(m_alive) {
-        /*timespec loop_start;
-        clock_gettime(CLOCK_REALTIME, &loop_start);*/
-
         // Be sure to send the watchdog packet
         Control::watchdog();
 
@@ -181,16 +182,19 @@ void GameSystem::M_gameLoop() {
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
         /****************************************************************************************************************/
 
-        /*timespec loop_end;
-        clock_gettime(CLOCK_REALTIME, &loop_end);
-        unsigned long loop_time = ((loop_end.tv_sec   * 1000000000UL) + loop_end.tv_nsec)
-                                - ((loop_start.tv_sec * 1000000000UL) + loop_start.tv_nsec);
-        
-        if (loop_time > m_gameLoopActivationTimeNs)
-            continue;
+        std::this_thread::sleep_for(1s);
 
-        std::this_thread::sleep_for(std::chrono::nanoseconds(m_gameLoopActivationTimeNs - loop_time));*/
-
-        std::this_thread::sleep_for(10ms);
+        auto const now = clock();
+        // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
+        // loop iteration.
+        std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (now - lastTime)));
+        lastTime = now;
     }
+}
+
+std::chrono::nanoseconds GameSystem::clock() {
+    struct timeval tv;
+    gettimeofday(&tv, 0);
+
+    return std::chrono::nanoseconds{(tv.tv_sec - m_timeref.tv_sec) * 1000000000UL + (tv.tv_usec - m_timeref.tv_usec) * 1000};
 }

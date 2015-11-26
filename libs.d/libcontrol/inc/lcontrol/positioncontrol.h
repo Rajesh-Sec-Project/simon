@@ -32,4 +32,4 @@ namespace lcontrol {
     };
 }
 
-#endif //SIMON_POSITIONCONTROL_H
+#endif // SIMON_POSITIONCONTROL_H
