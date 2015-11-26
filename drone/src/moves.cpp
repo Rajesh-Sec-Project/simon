@@ -22,7 +22,7 @@ std::ostream& operator<<(std::ostream& out, const tmove value) {
     return out << strings[value];
 }
 
-std::ostream& operator<<(std::ostream &out, Moves const &seq) {
+std::ostream& operator<<(std::ostream& out, Moves const& seq) {
     for(auto m : seq.getSequence()) {
         out << m << ' ';
     }
