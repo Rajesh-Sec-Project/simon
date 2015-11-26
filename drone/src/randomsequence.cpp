@@ -21,8 +21,8 @@ void RandomSequence::stop() {
 void RandomSequence::M_thread() {
     this->m_alive = true;
     while(m_alive) {
-        this->m_move.add_move();
+        this->m_move.addMove();
         std::this_thread::sleep_for(1000ms);
-        this->m_move.print();
+        std::cout << m_move << std::endl;
     }
 }

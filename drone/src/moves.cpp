@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <sstream>
 #include <stdlib.h>
@@ -9,13 +8,10 @@
 
 #include "moves.h"
 
-using namespace lmoves;
-
-// Overloaded operator <<
 std::ostream& operator<<(std::ostream& out, const tmove value) {
     static std::map<tmove, std::string> strings;
     if(strings.size() == 0) {
-#define INSERT_ELEMENT(p) strings[p] = #p
+#define INSERT_ELEMENT(p) strings[tmove::p] = #p
         INSERT_ELEMENT(DOWN);
         INSERT_ELEMENT(UP);
         INSERT_ELEMENT(RIGHT);
@@ -26,8 +22,19 @@ std::ostream& operator<<(std::ostream& out, const tmove value) {
     return out << strings[value];
 }
 
+std::ostream& operator<<(std::ostream &out, Moves const &seq) {
+    for(auto m : seq.getSequence()) {
+        out << m << ' ';
+    }
+
+    return out;
+}
+
 // constructor
-Moves::Moves() {
+Moves::Moves(size_t seqLen) {
+    while(seqLen-- != 0) {
+        this->addMove();
+    }
 }
 
 // getter
@@ -35,19 +42,11 @@ std::list<tmove> const& Moves::getSequence() const {
     return this->sequence;
 }
 
-void Moves::print() const {
-    std::list<tmove>::const_iterator i;
-    for(i = this->sequence.begin(); i != this->sequence.end(); ++i)
-        std::cout << static_cast<tmove>(*i) << " ";
-    std::cout << '\n';
+tmove Moves::M_randomMove() {
+    return static_cast<tmove>(rand() % static_cast<int>(tmove::NUM_MOVES));
 }
 
-tmove Moves::random_move() {
-    srand(time(NULL));
-    return static_cast<tmove>(rand() % NUM_MOVES);
-}
-
-void Moves::add_move() {
-    tmove new_move = this->random_move();
+void Moves::addMove() {
+    tmove new_move = this->M_randomMove();
     sequence.push_back(new_move);
 }

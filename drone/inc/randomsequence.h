@@ -27,7 +27,7 @@ private:
 private:
     std::atomic_bool m_alive = {false};
     std::thread m_clientComThread;
-    lmoves::Moves m_move;
+    Moves m_move;
 };
 
 #endif // SIMON_RANQOMSEQUENCE_H
