@@ -71,6 +71,11 @@ namespace lcontrol {
         Control::getCfgControl(m_seqNum.fetch_add(1), *m_sock);
     }
 
+    void Control::strangeInit() {
+        Control::pmode(m_seqNum.fetch_add(1), *m_sock);
+        Control::misc(m_seqNum.fetch_add(1), *m_sock);
+    }
+
     // Ask the drone to send the navdata :
     // AT*CONFIG="seqNum",\"general:navdata_demo\",\"TRUE\"\r
     void Control::sendNavData(std::uint32_t seqNum, ClientSocket& s) {
@@ -173,6 +178,20 @@ namespace lcontrol {
         std::string data("AT*CTRL=");
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + ",4,0\r";
+        M_traceFrame(data);
+        s.write(data);
+    }
+
+    void Control::pmode(std::uint32_t seqNum, ClientSocket& s) {
+        std::string data("AT*PMODE=");
+        data += std::to_string(seqNum) + ",2\r";
+        M_traceFrame(data);
+        s.write(data);
+    }
+
+    void Control::misc(std::uint32_t seqNum, ClientSocket& s) {
+        std::string data("AT*MISC=");
+        data += std::to_string(seqNum) + ",2,20,2000,3000\r";
         M_traceFrame(data);
         s.write(data);
     }
