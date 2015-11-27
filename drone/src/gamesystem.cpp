@@ -21,7 +21,7 @@ using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 2s;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 10ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -182,7 +182,7 @@ void GameSystem::M_gameLoop() {
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
         /****************************************************************************************************************/
 
-        std::this_thread::sleep_for(1s);
+        //std::this_thread::sleep_for(1s);
 
         auto const now = clock();
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
