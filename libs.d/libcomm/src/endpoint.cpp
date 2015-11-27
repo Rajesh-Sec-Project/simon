@@ -98,7 +98,8 @@ namespace lcomm {
                     } catch(std::exception const& exc) {
                         std::cerr << "lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception) :" << std::endl;
                         std::cout << "    " << msg << std::endl;
-                        // throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf exception)");
+                        // throw std::runtime_error("lcomm::Endpoint::M_readThread: ill-formed packet (lconf
+                        // exception)");
                     }
 
                     // Extract and notify

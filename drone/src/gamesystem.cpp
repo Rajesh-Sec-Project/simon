@@ -192,12 +192,14 @@ void GameSystem::M_gameLoop() {
         << clr << std::endl;
         std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
         << clr << std::endl;
-        std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr << std::endl;
+        std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr <<
+        std::endl;
         std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
         std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
         std::cout << "xc[0]: " << nav.vision_detect.xc[0] << clr << std::endl;
         std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
-        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr << std::endl;
+        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr <<
+        std::endl;
         std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
         std::cout << std::endl;
 

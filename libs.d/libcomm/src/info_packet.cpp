@@ -26,8 +26,8 @@ namespace lcomm {
     }
 
     void InfoPacket::M_setup() {
-        bind("state", (int&) m_state);
-        bind("detect_x", (int&) m_detect_x);
-        bind("detect_y", (int&) m_detect_y);
+        bind("state", (int&)m_state);
+        bind("detect_x", (int&)m_detect_x);
+        bind("detect_y", (int&)m_detect_y);
     }
 }

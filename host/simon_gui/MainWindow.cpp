@@ -38,15 +38,11 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
     QObject::connect(m_ui->gamepad, SIGNAL(land()), this, SLOT(M_land()));
 
-    QObject::connect(&CommManager::self(),
-                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this,
-                     SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
-    QObject::connect(&CommManager::self(),
-                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this,
-                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 }
 
 MainWindow::~MainWindow() {
@@ -156,10 +152,9 @@ void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketB
     else
         m_ui->droneStateLabel->setText("Flying");
 
-    if (info->state() & InfoPacket::Detection)
-    {
-        QPointF where = QPointF(m_scene->sceneRect().width() - ((qreal) info->detectX() * m_scene->sceneRect().width())  / 1000.0f,
-                               ((qreal) info->detectY() * m_scene->sceneRect().height()) / 1000.0f);
+    if(info->state() & InfoPacket::Detection) {
+        QPointF where = QPointF(m_scene->sceneRect().width() - ((qreal)info->detectX() * m_scene->sceneRect().width()) / 1000.0f,
+                                ((qreal)info->detectY() * m_scene->sceneRect().height()) / 1000.0f);
 
         std::ostringstream ss;
         ss << "Yes : " << info->detectX() << ", " << info->detectY();
@@ -168,9 +163,7 @@ void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketB
         m_dot->setPos(where);
         m_ui->detections->update();
         m_ui->detectionsLabel->setText(QString(ss.str().c_str()));
-    }
-    else
-    {
+    } else {
         m_dot->hide();
         m_ui->detectionsLabel->setText("No");
     }
