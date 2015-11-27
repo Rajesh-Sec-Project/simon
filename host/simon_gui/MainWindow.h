@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
 #include <memory>
 #include "lcomm/lcomm.h"
 
@@ -30,6 +32,8 @@ private slots:
 
 private:
     std::unique_ptr<Ui::MainWindow> m_ui;
+    QGraphicsScene* m_scene;
+    QGraphicsItem* m_dot;
 };
 
 #endif // MAINWINDOW_H

@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QFont>
 #include <QFontDatabase>
+#include <sstream>
 
 using namespace std::literals;
 
@@ -17,6 +18,13 @@ MainWindow::MainWindow(QWidget* parent)
         , m_ui(std::make_unique<Ui::MainWindow>()) {
 
     m_ui->setupUi(this);
+
+    m_scene = new QGraphicsScene(this);
+    m_scene->setSceneRect(0, 0, 400, 250);
+    m_ui->detections->setScene(m_scene);
+    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("yellow")), QBrush(QColor("yellow")));
+    m_dot->setFlags(QGraphicsItem::ItemIsMovable);
+    m_dot->hide();
 
     QFont font("Monospace");
     font.setStyleHint(QFont::TypeWriter);
@@ -94,6 +102,7 @@ void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
 
     switch(log->level()) {
         case LogPacket::Trace:
+            /* */ return;
             prefix = "[TRACE] ";
             text_c = QColor("gray");
             text_fw = QFont::Normal;
@@ -146,4 +155,23 @@ void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketB
         m_ui->droneStateLabel->setText("Landed");
     else
         m_ui->droneStateLabel->setText("Flying");
+
+    if (info->state() & InfoPacket::Detection)
+    {
+        QPointF where = QPointF(m_scene->sceneRect().width() - ((qreal) info->detectX() * m_scene->sceneRect().width())  / 1000.0f,
+                               ((qreal) info->detectY() * m_scene->sceneRect().height()) / 1000.0f);
+
+        std::ostringstream ss;
+        ss << "Yes : " << info->detectX() << ", " << info->detectY();
+
+        m_dot->show();
+        m_dot->setPos(where);
+        m_ui->detections->update();
+        m_ui->detectionsLabel->setText(QString(ss.str().c_str()));
+    }
+    else
+    {
+        m_dot->hide();
+        m_ui->detectionsLabel->setText("No");
+    }
 }
