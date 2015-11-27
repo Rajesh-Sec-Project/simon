@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
     QObject::connect(m_ui->gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
     QObject::connect(m_ui->gamepad, SIGNAL(land()), this, SLOT(M_land()));
+    QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
@@ -85,11 +86,15 @@ void MainWindow::M_land() {
     CommManager::self().write(pkt);
 }
 
+void MainWindow::M_logLevelChanged(int newIndex) {
+    m_logLevel = static_cast<LogPacket::Level>(newIndex);
+}
+
 void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
     LogPacket* log = packet->downcast<LogPacket>();
-    if(!log)
+    if(!log || log->level() < m_logLevel)
         return;
 
     QColor text_c;
@@ -98,7 +103,6 @@ void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
 
     switch(log->level()) {
         case LogPacket::Trace:
-            /* */ return;
             prefix = "[TRACE] ";
             text_c = QColor("gray");
             text_fw = QFont::Normal;
