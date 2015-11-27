@@ -27,8 +27,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "       |   |\n"
                          "       |   |\n"
                          "       |   |\n"
-                         "       |___|\n"
-                      << std::endl;
+                         "       |___|\n" << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Down) {
             std::cout << "Detected a movement to the bottom:\n"
                          "        ___\n"
@@ -39,8 +38,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "     __|   |__\n"
                          "    \\         /\n"
                          "      \\     /\n"
-                         "        \\ /\n"
-                      << std::endl;
+                         "        \\ /\n" << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Left) {
             std::cout << "Detected a movement to the left:\n"
                          "  /|\n"
@@ -48,8 +46,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "/                |\n"
                          "\\   _____________|\n"
                          " \\ |\n"
-                         "  \\|\n"
-                      << std::endl;
+                         "  \\|\n" << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Right) {
             std::cout << "Detected a movement to the right:\n"
                          "              |\\\n"
@@ -57,8 +54,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "|                \\\n"
                          "|_____________   /\n"
                          "              | /\n"
-                         "              |/\n"
-                      << std::endl;
+                         "              |/\n" << std::endl;
         } else if(ctrl->keys() & GamepadPacket::Stop) {
             std::cout << "Stop requested:\n"
                          "         ________________\n"
@@ -79,8 +75,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|\n"
-                      << std::endl;
+                         "              |_|\n" << std::endl;
 
             Control::land();
             m_system.stop();

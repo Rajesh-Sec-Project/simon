@@ -13,6 +13,7 @@ public:
     ~RoundelController();
 
     void gameInit() override;
+    void gameLoop() override;
 
 private:
     void M_clearAck();
