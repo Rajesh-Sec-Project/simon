@@ -15,7 +15,7 @@
 
 //! Define if you want to also print
 //!   logging messages to stdout / stderr
-// #define LOCAL_LOGS
+#define LOCAL_LOGS
 
 using namespace std::literals;
 using namespace lcomm;
@@ -26,6 +26,7 @@ unsigned long GameSystem::m_gameLoopActivationTimeNs = 10000;
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
+        , m_confmgr(*this)
         , m_navctrl(*this)
         , m_roundelctrl(*this)
         , m_journalist(*this) {
@@ -62,6 +63,10 @@ NavdataController const& GameSystem::navdataController() const {
     return m_navctrl;
 }
 
+ConfigManager& GameSystem::configManager() {
+    return m_confmgr;
+}
+
 lcomm::Endpoint& GameSystem::endpoint() {
     return m_endpoint;
 }
@@ -82,7 +87,7 @@ void GameSystem::message(std::string const& nm, std::string const& msg) {
     m_endpoint.write(log);
 
 #if defined(LOCAL_LOGS)
-    std::cout << "[INFO]  " << str << std::endl;
+    std::cout << "[INFO]   " << str << std::endl;
 #endif
 }
 
@@ -102,7 +107,7 @@ void GameSystem::error(std::string const& nm, std::string const& msg) {
     m_endpoint.write(log);
 
 #if defined(LOCAL_LOGS)
-    std::cerr << "[ERROR] " << str << std::endl;
+    std::cerr << "[ERROR]  " << str << std::endl;
 #endif
 }
 
@@ -110,9 +115,18 @@ void GameSystem::M_droneSetup() {
     // Init AT command stuff
     Control::init();
 
-    // Send several FTRIM commands
-    Control::enableStabilization();
-    trace("GameSystem", "stabilization ok");
+    m_navctrl.init();
+    while (!m_navctrl.inited())
+        ;
+    message("GameSystem", "NAVDATA inited");
+
+    m_confmgr.init();
+    message("GameSystem", "configuration OK");
+
+    m_navctrl.configure();
+    while(!m_navctrl.configured())
+        ;
+    message("GameSystem", "NAVDATA configured");
 
     // Start game loop
     m_inited = true;
@@ -133,12 +147,13 @@ void GameSystem::M_gameLoop() {
 
     // Initialize components
     message("GameSystem", "initializing components");
-    m_navctrl.gameInit();
-    while(!m_navctrl.inited())
-        ;
     m_roundelctrl.gameInit();
     m_journalist.gameInit();
     /*** Add your own elements ***/
+
+    // Send several FTRIM commands
+    Control::enableStabilization();
+    trace("GameSystem", "stabilization ok");
 
     // Main game loop
     while(m_alive) {
@@ -149,6 +164,8 @@ void GameSystem::M_gameLoop() {
         Control::watchdog();
 
         // Do stuff (regulations loops will go there for ex.)
+        m_confmgr.gameLoop();
+        m_roundelctrl.gameLoop();
         m_journalist.gameLoop();
         /*** Add you own elements here ***/
 
@@ -178,7 +195,9 @@ void GameSystem::M_gameLoop() {
         std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
         std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr << std::endl;
         std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
+        std::cout << std::endl;
+
+        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
         /****************************************************************************************************************/
 
         /*timespec loop_end;

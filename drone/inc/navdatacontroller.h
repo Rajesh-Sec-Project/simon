@@ -84,6 +84,7 @@ namespace navdata {
     //!   setting general:navdata_demo to FALSE).
     enum option_tag {
         option_demo = 0,
+        option_time,
         option_raw_measures,
         option_phys_measures,
         option_gyros_offsets,
@@ -94,6 +95,7 @@ namespace navdata {
         option_pwm,
         option_altitude,
         option_vision_raw,
+        option_vision_of,
         option_vision,
         option_vision_perf,
         option_trackers_send,
@@ -186,6 +188,31 @@ namespace navdata {
         uint32_t drone_camera_trans[3];
     };
 
+    struct matrix33_t
+    {
+      float m11;
+      float m12;
+      float m13;
+      float m21;
+      float m22;
+      float m23;
+      float m31;
+      float m32;
+      float m33;
+    };
+
+    struct vector31_t {
+      union {
+        float v[3];
+        struct
+        {
+          float x;
+          float y;
+          float z;
+        };
+      };
+    };
+
     //! Vision detection navdata option
     struct __attribute__((packed)) vision_detect {
         //!< Normally this should be 'option_vision_detect'
@@ -201,9 +228,17 @@ namespace navdata {
         uint32_t height[4];
         uint32_t dist[4];
         float orientation_angle[4];
-        float rotation[3][3][4];
-        float translation[3][4];
+        matrix33_t rotation[4];
+        vector31_t translation[4];
         uint32_t camera_source[4];
+    };
+
+    struct __attribute__((packed)) trackers_send {
+        uint16_t tag;
+        uint16_t size;
+
+        int32_t locked[6*5];
+        int32_t point[6*5][2];
     };
 }
 
@@ -211,6 +246,7 @@ struct Navdata {
     navdata::header header;
     navdata::demo demo;
     navdata::vision_detect vision_detect;
+    navdata::trackers_send trackers_send;
 };
 
 class GameSystem;
@@ -220,11 +256,18 @@ public:
     NavdataController(GameSystem& system);
     ~NavdataController();
 
-    //! Init the navdata controller
-    void gameInit() override;
+    //! Init the navdata controller, but don't setup
+    //!   navdata options, leave the drone in bootstrap mode
+    void init();
+
+    //! Configure the navdata (i.e. leave bootstrap mode)
+    void configure();
 
     //! Check if the navdata controller is initialized
     bool inited() const;
+
+    //! Check if the navdata controller is configures
+    bool configured() const;
 
     //! Check if some new navdata is available
     bool available() const;
@@ -238,13 +281,14 @@ private:
     static void M_proxy(unsigned char* self, const pcap_pkthdr* header, const unsigned char* buffer);
 
     void M_initNavdata();
+    void M_configure();
     void M_decode(const unsigned char* data, int size);
 
 private:
     std::thread m_pcap;
     pcap_t* m_pcap_handle;
 
-    std::atomic<bool> m_available, m_inited, m_startPcap;
+    std::atomic<bool> m_available, m_inited, m_startPcap, m_configured;
     Navdata m_navdata;
 
     static std::string m_fool_ip;

@@ -12,6 +12,7 @@
 #include "lcomm/lcomm.h"
 
 #include "gamepadsubscriber.h"
+#include "configmanager.h"
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"
 #include "journalist.h"
@@ -40,6 +41,9 @@ public:
     //! Get the system's navdata controller (const version)
     NavdataController const& navdataController() const;
 
+    //! Get the system's configuration manager
+    ConfigManager& configManager();
+
     //! Get the communication endpoint of this game system
     lcomm::Endpoint& endpoint();
 
@@ -67,6 +71,7 @@ private:
     std::thread m_gameLoop;
 
     GamePadSubscriber m_gamePadSubscriber;
+    ConfigManager m_confmgr;
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
     Journalist m_journalist;

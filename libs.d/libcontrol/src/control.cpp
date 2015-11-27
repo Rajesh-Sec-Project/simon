@@ -2,8 +2,9 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "lcontrol/control.h"
 #include <thread>
+#include <iomanip>
+#include "lcontrol/control.h"
 
 using namespace std::literals;
 using namespace lcomm;
@@ -21,8 +22,24 @@ namespace lcontrol {
     std::string Control::float_to_string(float i) {
         return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
     }
+    
+    // Unique application ID
+    std::string Control::m_app_id = "cafecafe";
+    std::string Control::m_session_id;
 
     void Control::init() {
+        // Initialize random session id
+        srand(time(0));
+        std::uint32_t x;
+        x  = rand() & 0xff;
+        x |= (rand() & 0xff) << 8;
+        x |= (rand() & 0xff) << 16;
+        x |= (rand() & 0xff) << 24;
+        std::ostringstream ss;
+        ss << std::hex << std::setw(8) << std::setfill('0') << x;
+        m_session_id = ss.str();
+        M_trace("initialized with session id '" + m_session_id + "'");
+
         m_seqNum = 1;
         m_sock = std::make_unique<ClientSocket>("127.0.0.1", 5556, false);
         m_sock->connect();
@@ -60,6 +77,7 @@ namespace lcontrol {
     }
 
     void Control::config(std::string const& key, std::string const& value) {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
         Control::config(m_seqNum.fetch_add(1), key, value, *m_sock);
     }
 
@@ -69,6 +87,31 @@ namespace lcontrol {
 
     void Control::getCfgControl() {
         Control::getCfgControl(m_seqNum.fetch_add(1), *m_sock);
+    }
+
+    void Control::clearSessionId() {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
+        Control::sessionid(m_seqNum.fetch_add(1), "-all", *m_sock);
+    }
+
+    void Control::setSessionId() {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
+        Control::sessionid(m_seqNum.fetch_add(1), m_session_id, *m_sock);
+    }
+
+    void Control::setAppId() {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
+        Control::appid(m_seqNum.fetch_add(1), m_app_id, *m_sock);
+    }
+
+    void Control::setAppDesc() {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
+        Control::appdesc(m_seqNum.fetch_add(1), "Simon application", *m_sock);
+    }
+
+    void Control::setSessionDesc() {
+        Control::configids(m_seqNum.fetch_add(1), *m_sock);
+        Control::sessiondesc(m_seqNum.fetch_add(1), "Simon session", *m_sock);
     }
 
     void Control::strangeInit() {
@@ -90,7 +133,7 @@ namespace lcontrol {
     // AT*COMWDG="seqNum"\r
     void Control::watchdog(std::uint32_t, ClientSocket& s) {
         std::string data("AT*COMWDG=1\r");
-        M_traceFrame(data);
+        // M_traceFrame(data);
         s.write(data);
     }
 
@@ -156,12 +199,6 @@ namespace lcontrol {
         s.write(data);
     }
 
-    void Control::config(std::uint32_t seqNum, std::string const& key, std::string const& value, ClientSocket& s) {
-        std::string data = "AT*CONFIG=" + std::to_string(seqNum) + ",\"" + key + "\",\"" + value + "\"\r";
-        M_traceFrame(data);
-        s.write(data);
-    }
-
     // Send a control command ack, this resets the command_ack bit
     //   in the drone's state bitfield
     void Control::ackControl(std::uint32_t seqNum, ClientSocket& s) {
@@ -192,6 +229,34 @@ namespace lcontrol {
     void Control::misc(std::uint32_t seqNum, ClientSocket& s) {
         std::string data("AT*MISC=");
         data += std::to_string(seqNum) + ",2,20,2000,3000\r";
+        M_traceFrame(data);
+        s.write(data);
+    }
+
+    void Control::sessionid(std::uint32_t seqNum, std::string const& id, lcomm::ClientSocket& s) {
+        config(seqNum, "custom:session_id", id, s);
+    }
+
+    void Control::appid(std::uint32_t seqNum, std::string const& id, lcomm::ClientSocket& s) {
+        config(seqNum, "custom:application_id", id, s);
+    }
+
+    void Control::appdesc(std::uint32_t seqNum, std::string const& desc, lcomm::ClientSocket& s) {
+        config(seqNum, "custom:application_desc", desc, s);
+    }
+
+    void Control::sessiondesc(std::uint32_t seqNum, std::string const& desc, lcomm::ClientSocket& s) {
+        config(seqNum, "custom:session_desc", desc, s);
+    }
+
+    void Control::configids(std::uint32_t seqNum, ClientSocket& s) {
+        std::string data = "AT*CONFIG_IDS=" + std::to_string(seqNum) + ",\"" + m_session_id + "\",\"" + "00000000" + "\",\"" + m_app_id + "\"\r";
+        M_traceFrame(data);
+        s.write(data);
+    }
+
+    void Control::config(std::uint32_t seqNum, std::string const& key, std::string const& value, ClientSocket& s) {
+        std::string data = "AT*CONFIG=" + std::to_string(seqNum) + ",\"" + key + "\",\"" + value + "\"\r";
         M_traceFrame(data);
         s.write(data);
     }

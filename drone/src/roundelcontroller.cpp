@@ -61,32 +61,36 @@ void RoundelController::gameInit() {
     m_videoSock.connect();
     M_message("Video channel opened");
 
-    Control::config("video:codec_fps", "30");
-    M_clearAck();
-
     Control::config("video:video_codec", "129");
     M_clearAck();
+}
 
-    Control::config("video:max_bitrate", "1000");
-    M_clearAck();
+void RoundelController::gameLoop()
+{
+    static bool first_time = true;
 
-    Control::config("video:video_channel", "0");
-    M_clearAck();
+    std::string data;
+    if (m_videoSock.read(&data))
+        ; // M_trace("got " + std::to_string(data.size()) + " bytes of video");
 
-    Control::config("detect:groundstripe_colors", "3");
-    M_clearAck();
+    if (first_time)
+    {
+        Control::config("detect:detect_type", "13");
+        M_clearAck();
 
-    Control::config("detect:detect_type", "13");
-    M_clearAck();
+        Control::config("detect:groundstripe_colors", "3");
+        M_clearAck();
 
-    Control::config("detect:detections_select_h", "32");
-    M_clearAck();
+        Control::config("detect:enemy_colors", "3");
+        M_clearAck();
 
-    Control::config("detect:detections_select_v_hsync", "0");
-    M_clearAck();
+        Control::config("detect:enemy_without_shell", "0");
+        M_clearAck();
 
-    Control::config("detect:detections_select_v", "0");
-    M_clearAck();
+        first_time = false;
+
+        M_message(m_system.configManager().getConfig());
+    }
 }
 
 void RoundelController::M_clearAck() {
@@ -105,7 +109,7 @@ void RoundelController::M_clearAck() {
 
         if(++tm > 10) {
             M_error("command ack not set");
-            throw std::runtime_error("NavdataController::M_initNavdata: ack not sent !");
+            throw std::runtime_error("RoundelController::M_clearAck: ack not sent !");
         }
     }
     M_trace("got command ack");
@@ -129,7 +133,7 @@ void RoundelController::M_clearAck() {
 
         if(++tm > 10) {
             M_error("command ack not cleared");
-            throw std::runtime_error("NavdataController::M_initNavdata: ack not cleared !");
+            throw std::runtime_error("RoundelController::M_clearAck: ack not cleared !");
         }
     }
     M_trace("command ack cleared");

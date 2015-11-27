@@ -27,7 +27,8 @@ NavdataController::NavdataController(GameSystem& system)
         , m_pcap(&NavdataController::M_setupPcap, this)
         , m_available(false)
         , m_inited(false)
-        , m_startPcap(false) {
+        , m_startPcap(false)
+        , m_configured(false) {
 }
 
 NavdataController::~NavdataController() {
@@ -38,12 +39,20 @@ NavdataController::~NavdataController() {
     }
 }
 
-void NavdataController::gameInit() {
+void NavdataController::init() {
     M_initNavdata();
+}
+
+void NavdataController::configure() {
+    M_configure();
 }
 
 bool NavdataController::inited() const {
     return m_inited;
+}
+
+bool NavdataController::configured() const {
+    return m_configured;
 }
 
 bool NavdataController::available() const {
@@ -147,6 +156,12 @@ void NavdataController::M_initNavdata() {
     }
     M_trace("drone in bootstrap mode");
 
+    m_inited = true;
+}
+
+void NavdataController::M_configure() {
+    using namespace lcontrol;
+
     // Setup navdata bits, either demo or option_flags
     Control::config("general:navdata_demo", "TRUE");
     M_trace("navdata_demo set");
@@ -197,10 +212,10 @@ void NavdataController::M_initNavdata() {
 
     // Setup options here
     int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_vision_detect);
-    Control::config("general:navdata_options", std::to_string(options));
+    Control::config("general:navdata_options", std::to_string(options)); // "268435455"
     M_trace("options sets up, good to go !");
 
-    m_inited = true;
+    m_configured = true;
 }
 
 void NavdataController::M_decode(const unsigned char* data, int size) {
@@ -220,9 +235,35 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     }
 
     // Loop on all navdata options
+    /*int h = 0;*/
     int pos = sizeof(header);
     while(pos <= size) {
         const option_header* header = reinterpret_cast<const option_header*>(data + pos);
+
+        /*std::cout << std::dec;
+        std::cout << "opt tag: " << header->tag << std::endl;
+        std::cout << "opt len: " << header->size << std::endl;
+        
+        int w = 16;
+        h += 2;
+        if (header->tag == option_vision_detect || header->tag == 16)
+        {
+            for (int i = 0; i < header->size; ++i)
+            {
+                std::cout << std::hex << std::setw(2) << std::setfill('0') << (unsigned int) ((unsigned char*) header)[i] << " ";
+                if (!((i+1)%w) || i == (header->size-1))
+                {
+                    ++h;
+                    std::cout << std::endl;
+                }
+            }
+        }
+
+        if (header->tag == option_cks)
+            break;
+        pos += header->size;
+        for (int i = 0; i < h; ++i)
+            std::cout << "\e[A";*/
 
         // Handle navdata options here
         if(header->tag == option_cks) {
@@ -231,6 +272,9 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
         } else if(header->tag == option_vision_detect) {
             m_navdata.vision_detect = *reinterpret_cast<const vision_detect*>(header);
+        }
+        else if (header->tag == option_trackers_send) {
+            m_navdata.trackers_send = *reinterpret_cast<const trackers_send*>(header);
         }
 
         pos += header->size;

@@ -78,7 +78,7 @@ namespace lcomm {
         ssize_t len;
         if((len = ::read(m_fd, &m_buf[0], m_buf.size())) < 0) {
             if(errno != EWOULDBLOCK && errno != EAGAIN)
-                throw std::runtime_error("lcomm::ClientSocket::M_thread: read failed");
+                throw std::runtime_error("lcomm::ClientSocket::read: read failed");
         }
 
         std::string tmp = "";
@@ -99,10 +99,10 @@ namespace lcomm {
 
             // Set the socket to be non blocking
             if(fcntl(m_fd, F_SETFL, fcntl(m_fd, F_GETFL, 0) | O_NONBLOCK) < 0)
-                throw std::runtime_error("lcomm::ClientSocket::M_thread: fcntl failed");
+                throw std::runtime_error("lcomm::ClientSocket::connect: fcntl failed");
 
             while(::connect(m_fd, (struct sockaddr*)&m_addr, sizeof(m_addr)) < 0) {
-                std::cerr << "lcomm::ClientSocket::M_thread: connect failed. Retrying..." << std::endl;
+                std::cerr << "lcomm::ClientSocket::connect: connect failed. Retrying..." << std::endl;
                 std::this_thread::sleep_for(1s);
             }
         }
