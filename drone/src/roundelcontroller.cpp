@@ -86,8 +86,6 @@ void RoundelController::gameLoop() {
         M_clearAck();
 
         first_time = false;
-
-        M_message(m_system.configManager().getConfig());
     }
 }
 

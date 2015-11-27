@@ -22,7 +22,7 @@ using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 10ms;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 5ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -162,6 +162,8 @@ void GameSystem::M_gameLoop() {
     auto lastTime = clock();
     // Main game loop
     while(m_alive) {
+        auto lastTime = clock();
+
         // Be sure to send the watchdog packet
         Control::watchdog();
 
@@ -171,7 +173,7 @@ void GameSystem::M_gameLoop() {
         m_journalist.gameLoop();
         /*** Add you own elements here ***/
 
-        /****************************************************************************************************************/
+        /*
         Navdata nav = m_navctrl.grab();
         std::string clr = "                      ";
 
@@ -200,7 +202,7 @@ void GameSystem::M_gameLoop() {
         std::cout << std::endl;
 
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
-        /****************************************************************************************************************/
+        */
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.

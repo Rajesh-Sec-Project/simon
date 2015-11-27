@@ -34,7 +34,6 @@ NavdataController::NavdataController(GameSystem& system)
 NavdataController::~NavdataController() {
     if(m_pcap_handle) {
         pcap_breakloop(m_pcap_handle);
-        pcap_close(m_pcap_handle);
         m_pcap.join();
     }
 }
@@ -81,6 +80,8 @@ void NavdataController::M_setupPcap() {
     M_trace("pcap session started");
 
     pcap_loop(m_pcap_handle, -1, &M_proxy, reinterpret_cast<unsigned char*>(this));
+
+    pcap_close(m_pcap_handle);
 
     M_trace("pcap session finished");
 }
@@ -212,7 +213,7 @@ void NavdataController::M_configure() {
 
     // Setup options here
     int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_vision_detect);
-    Control::config("general:navdata_options", std::to_string(options)); // "268435455"
+    Control::config("general:navdata_options", std::to_string(options));
     M_trace("options sets up, good to go !");
 
     m_configured = true;
@@ -224,47 +225,20 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     // Get the navdata header
     m_navdata.header = *reinterpret_cast<const header*>(data);
     if(m_navdata.header.magic != 0x55667788) {
-        M_warning("bad navdata magic, dumping header :");
+        M_trace("bad navdata magic, dumping header :");
         std::ostringstream ss;
         ss << "  ";
         for(unsigned int i = 0; i < sizeof(header); ++i) {
             ss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i] << " ";
         }
-        M_warning(ss.str());
+        M_trace(ss.str());
         return;
     }
 
     // Loop on all navdata options
-    /*int h = 0;*/
     int pos = sizeof(header);
     while(pos <= size) {
         const option_header* header = reinterpret_cast<const option_header*>(data + pos);
-
-        /*std::cout << std::dec;
-        std::cout << "opt tag: " << header->tag << std::endl;
-        std::cout << "opt len: " << header->size << std::endl;
-
-        int w = 16;
-        h += 2;
-        if (header->tag == option_vision_detect || header->tag == 16)
-        {
-            for (int i = 0; i < header->size; ++i)
-            {
-                std::cout << std::hex << std::setw(2) << std::setfill('0') << (unsigned int) ((unsigned char*)
-        header)[i] << " ";
-                if (!((i+1)%w) || i == (header->size-1))
-                {
-                    ++h;
-                    std::cout << std::endl;
-                }
-            }
-        }
-
-        if (header->tag == option_cks)
-            break;
-        pos += header->size;
-        for (int i = 0; i < h; ++i)
-            std::cout << "\e[A";*/
 
         // Handle navdata options here
         if(header->tag == option_cks) {
@@ -273,8 +247,6 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
         } else if(header->tag == option_vision_detect) {
             m_navdata.vision_detect = *reinterpret_cast<const vision_detect*>(header);
-        } else if(header->tag == option_trackers_send) {
-            m_navdata.trackers_send = *reinterpret_cast<const trackers_send*>(header);
         }
 
         pos += header->size;
