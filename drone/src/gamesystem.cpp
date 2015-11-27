@@ -21,7 +21,7 @@ using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 10ms;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 20ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -143,7 +143,6 @@ void GameSystem::M_gameLoop() {
     /*** Add your own elements ***/
 
     auto lastTime = clock();
-    auto last = clock();
     // Main game loop
     while(m_alive) {
         // Be sure to send the watchdog packet
@@ -182,13 +181,10 @@ void GameSystem::M_gameLoop() {
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
         /****************************************************************************************************************/
 
-        //std::this_thread::sleep_for(1s);
-
-        auto const now = clock();
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.
-        std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (now - lastTime)));
-        lastTime = now;
+        std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (clock() - lastTime)));
+        lastTime = clock();
     }
 }
 
@@ -196,5 +192,5 @@ std::chrono::nanoseconds GameSystem::clock() {
     struct timeval tv;
     gettimeofday(&tv, 0);
 
-    return std::chrono::nanoseconds{(tv.tv_sec - m_timeref.tv_sec) * 1000000000UL + (tv.tv_usec - m_timeref.tv_usec) * 1000};
+    return std::chrono::nanoseconds{(tv.tv_sec - m_timeref.tv_sec) * 1000000000ULL + (tv.tv_usec - m_timeref.tv_usec) * 1000};
 }
