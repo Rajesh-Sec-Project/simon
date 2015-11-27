@@ -15,12 +15,12 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();
 
     qDebug() << "Waiting for connection...";
-    //while(!CommManager::self().opened())
-    //    ;
+    while(!CommManager::self().opened())
+        ;
     qDebug() << "Connected !";
 
     MainWindow w;
     w.show();
 
-    std::exit(a.exec());
+    a.exec();
 }
