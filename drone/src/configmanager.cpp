@@ -6,68 +6,66 @@
 #include <chrono>
 
 ConfigManager::ConfigManager(GameSystem& system)
-	: GameElement(system)
-	, m_control("127.0.0.1", 5559)
-{}
+        : GameElement(system)
+        , m_control("127.0.0.1", 5559) {
+}
 
-ConfigManager::~ConfigManager()
-{}
+ConfigManager::~ConfigManager() {
+}
 
-void ConfigManager::init()
-{
-	using namespace lcontrol;
+void ConfigManager::init() {
+    using namespace lcontrol;
 
-	M_trace("Opening control port...");
-	m_control.connect();
-	M_trace("OK");
+    M_trace("Opening control port...");
+    m_control.connect();
+    M_trace("OK");
 
-	M_trace("Sending init sequence");
-	Control::strangeInit();
+    M_trace("Sending init sequence");
+    Control::strangeInit();
 
-	M_trace("Clearing session id");
-	Control::clearSessionId();
-	M_clearAck();
+    M_trace("Clearing session id");
+    Control::clearSessionId();
+    M_clearAck();
 
-	M_trace("Setting session id");
-	Control::setSessionId();
-	M_clearAck();
+    M_trace("Setting session id");
+    Control::setSessionId();
+    M_clearAck();
 
-	M_trace("Setting app id");
-	Control::setAppId();
-	M_clearAck();
+    M_trace("Setting app id");
+    Control::setAppId();
+    M_clearAck();
 
-	M_trace("Setting session desc");
-	Control::setSessionDesc();
-	M_clearAck();
+    M_trace("Setting session desc");
+    Control::setSessionDesc();
+    M_clearAck();
 
-	M_trace("Setting app desc");
-	Control::setAppDesc();
-	M_clearAck();
+    M_trace("Setting app desc");
+    Control::setAppDesc();
+    M_clearAck();
 
-	getConfig();
+    getConfig();
 }
 
 std::string ConfigManager::getConfig() {
-	using namespace lcontrol;
+    using namespace lcontrol;
 
-	M_trace("Asking for the configuration");
-	Control::getCfgControl();
+    M_trace("Asking for the configuration");
+    Control::getCfgControl();
 
-	std::string config = "";
-	std::string data = "";
-	while (!m_control.read(&data))
-		;
+    std::string config = "";
+    std::string data = "";
+    while(!m_control.read(&data))
+        ;
 
-	do
-	{
-		config += data;
-	} while (m_control.read(&data));
+    do {
+        config += data;
+    } while(m_control.read(&data));
 
-	return config;
+    return config;
 }
 
 void ConfigManager::M_clearAck() {
-	using namespace lcontrol;
+    using namespace lcontrol;
 
     // Wait for the command_ack bit
     for(int tm = 0;;) {

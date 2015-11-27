@@ -188,29 +188,27 @@ namespace navdata {
         uint32_t drone_camera_trans[3];
     };
 
-    struct matrix33_t
-    {
-      float m11;
-      float m12;
-      float m13;
-      float m21;
-      float m22;
-      float m23;
-      float m31;
-      float m32;
-      float m33;
+    struct matrix33_t {
+        float m11;
+        float m12;
+        float m13;
+        float m21;
+        float m22;
+        float m23;
+        float m31;
+        float m32;
+        float m33;
     };
 
     struct vector31_t {
-      union {
-        float v[3];
-        struct
-        {
-          float x;
-          float y;
-          float z;
+        union {
+            float v[3];
+            struct {
+                float x;
+                float y;
+                float z;
+            };
         };
-      };
     };
 
     //! Vision detection navdata option
@@ -237,8 +235,8 @@ namespace navdata {
         uint16_t tag;
         uint16_t size;
 
-        int32_t locked[6*5];
-        int32_t point[6*5][2];
+        int32_t locked[6 * 5];
+        int32_t point[6 * 5][2];
     };
 }
 

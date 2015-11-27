@@ -13,7 +13,6 @@ RandomSequence::~RandomSequence() {
     m_clientComThread.join();
 }
 
-
 void RandomSequence::stop() {
     this->m_alive = false;
 }

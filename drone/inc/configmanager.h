@@ -6,20 +6,19 @@
 
 class GameSystem;
 
-class ConfigManager : public GameElement
-{
+class ConfigManager : public GameElement {
 public:
-	ConfigManager(GameSystem& system);
-	~ConfigManager();
+    ConfigManager(GameSystem& system);
+    ~ConfigManager();
 
-	void init();
-	std::string getConfig();
-
-private:
-	void M_clearAck();
+    void init();
+    std::string getConfig();
 
 private:
-	lcomm::ClientSocket m_control;
+    void M_clearAck();
+
+private:
+    lcomm::ClientSocket m_control;
 };
 
 #endif // SIMON_CONFIGMANAGER_H

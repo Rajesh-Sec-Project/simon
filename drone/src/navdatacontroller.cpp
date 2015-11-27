@@ -243,14 +243,15 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
         /*std::cout << std::dec;
         std::cout << "opt tag: " << header->tag << std::endl;
         std::cout << "opt len: " << header->size << std::endl;
-        
+
         int w = 16;
         h += 2;
         if (header->tag == option_vision_detect || header->tag == 16)
         {
             for (int i = 0; i < header->size; ++i)
             {
-                std::cout << std::hex << std::setw(2) << std::setfill('0') << (unsigned int) ((unsigned char*) header)[i] << " ";
+                std::cout << std::hex << std::setw(2) << std::setfill('0') << (unsigned int) ((unsigned char*)
+        header)[i] << " ";
                 if (!((i+1)%w) || i == (header->size-1))
                 {
                     ++h;
@@ -272,8 +273,7 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
         } else if(header->tag == option_vision_detect) {
             m_navdata.vision_detect = *reinterpret_cast<const vision_detect*>(header);
-        }
-        else if (header->tag == option_trackers_send) {
+        } else if(header->tag == option_trackers_send) {
             m_navdata.trackers_send = *reinterpret_cast<const trackers_send*>(header);
         }
 

@@ -10,6 +10,8 @@
 #include <vector>
 #include <chrono>
 #include "lcomm/lcomm.h"
+#include <ctime>
+#include <sys/time.h>
 
 #include "gamepadsubscriber.h"
 #include "configmanager.h"
@@ -59,6 +61,9 @@ public:
     //! Send out an error log to the host
     void error(std::string const& nm, std::string const& msg);
 
+    //! Return the elasped time since the creation of the game system.
+    std::chrono::nanoseconds clock();
+
 protected:
     void M_droneSetup();
     void M_gameLoop();
@@ -76,8 +81,9 @@ private:
     RoundelController m_roundelctrl;
     Journalist m_journalist;
 
-private:
-    static unsigned long m_gameLoopActivationTimeNs;
+    struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};
+
+    static std::chrono::nanoseconds const m_gameLoopActivationTime;
 };
 
 

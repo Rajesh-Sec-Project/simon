@@ -13,15 +13,16 @@
 #include <iostream>
 #include <time.h>
 
-//! Define if you want to also print
-//!   logging messages to stdout / stderr
-#define LOCAL_LOGS
+
+//! Only messages with the log level specified or the levels above will be output to stdout/stderr
+//! No messages will be output with a min log level of lcomm::LogPacket::NoLog
+#define LOCAL_MIN_LOG_LEVEL lcomm::LogPacket::Trace
 
 using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
 
-unsigned long GameSystem::m_gameLoopActivationTimeNs = 10000;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 10ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -30,6 +31,8 @@ GameSystem::GameSystem()
         , m_navctrl(*this)
         , m_roundelctrl(*this)
         , m_journalist(*this) {
+    gettimeofday(&m_timeref, 0);
+
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
 
@@ -76,9 +79,9 @@ void GameSystem::trace(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[TRACE]  " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Trace >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[TRACE]  " << str << std::endl;
+    }
 }
 
 void GameSystem::message(std::string const& nm, std::string const& msg) {
@@ -86,9 +89,10 @@ void GameSystem::message(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Message, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[INFO]   " << str << std::endl;
-#endif
+
+    if(lcomm::LogPacket::Message >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[INFO]   " << str << std::endl;
+    }
 }
 
 void GameSystem::warning(std::string const& nm, std::string const& msg) {
@@ -96,9 +100,9 @@ void GameSystem::warning(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cout << "[WARN]   " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Warning >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[WARN]  " << str << std::endl;
+    }
 }
 
 void GameSystem::error(std::string const& nm, std::string const& msg) {
@@ -106,9 +110,9 @@ void GameSystem::error(std::string const& nm, std::string const& msg) {
     lcomm::LogPacket log(lcomm::LogPacket::Error, str);
     m_endpoint.write(log);
 
-#if defined(LOCAL_LOGS)
-    std::cerr << "[ERROR]  " << str << std::endl;
-#endif
+    if(lcomm::LogPacket::Error >= LOCAL_MIN_LOG_LEVEL) {
+        std::cout << "[ERROR]  " << str << std::endl;
+    }
 }
 
 void GameSystem::M_droneSetup() {
@@ -116,7 +120,7 @@ void GameSystem::M_droneSetup() {
     Control::init();
 
     m_navctrl.init();
-    while (!m_navctrl.inited())
+    while(!m_navctrl.inited())
         ;
     message("GameSystem", "NAVDATA inited");
 
@@ -155,11 +159,10 @@ void GameSystem::M_gameLoop() {
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
 
+    auto lastTime = clock();
+    auto last = clock();
     // Main game loop
     while(m_alive) {
-        /*timespec loop_start;
-        clock_gettime(CLOCK_REALTIME, &loop_start);*/
-
         // Be sure to send the watchdog packet
         Control::watchdog();
 
@@ -200,16 +203,19 @@ void GameSystem::M_gameLoop() {
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
         /****************************************************************************************************************/
 
-        /*timespec loop_end;
-        clock_gettime(CLOCK_REALTIME, &loop_end);
-        unsigned long loop_time = ((loop_end.tv_sec   * 1000000000UL) + loop_end.tv_nsec)
-                                - ((loop_start.tv_sec * 1000000000UL) + loop_start.tv_nsec);
-        
-        if (loop_time > m_gameLoopActivationTimeNs)
-            continue;
+        // std::this_thread::sleep_for(1s);
 
-        std::this_thread::sleep_for(std::chrono::nanoseconds(m_gameLoopActivationTimeNs - loop_time));*/
-
-        std::this_thread::sleep_for(10ms);
+        auto const now = clock();
+        // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
+        // loop iteration.
+        std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (now - lastTime)));
+        lastTime = now;
     }
+}
+
+std::chrono::nanoseconds GameSystem::clock() {
+    struct timeval tv;
+    gettimeofday(&tv, 0);
+
+    return std::chrono::nanoseconds{(tv.tv_sec - m_timeref.tv_sec) * 1000000000UL + (tv.tv_usec - m_timeref.tv_usec) * 1000};
 }

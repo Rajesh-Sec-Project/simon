@@ -22,7 +22,7 @@ namespace lcontrol {
     std::string Control::float_to_string(float i) {
         return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
     }
-    
+
     // Unique application ID
     std::string Control::m_app_id = "cafecafe";
     std::string Control::m_session_id;
@@ -31,7 +31,7 @@ namespace lcontrol {
         // Initialize random session id
         srand(time(0));
         std::uint32_t x;
-        x  = rand() & 0xff;
+        x = rand() & 0xff;
         x |= (rand() & 0xff) << 8;
         x |= (rand() & 0xff) << 16;
         x |= (rand() & 0xff) << 24;
@@ -250,7 +250,8 @@ namespace lcontrol {
     }
 
     void Control::configids(std::uint32_t seqNum, ClientSocket& s) {
-        std::string data = "AT*CONFIG_IDS=" + std::to_string(seqNum) + ",\"" + m_session_id + "\",\"" + "00000000" + "\",\"" + m_app_id + "\"\r";
+        std::string data = "AT*CONFIG_IDS=" + std::to_string(seqNum) + ",\"" + m_session_id + "\",\"" + "00000000" +
+                           "\",\"" + m_app_id + "\"\r";
         M_traceFrame(data);
         s.write(data);
     }

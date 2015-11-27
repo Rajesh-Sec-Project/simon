@@ -65,16 +65,14 @@ void RoundelController::gameInit() {
     M_clearAck();
 }
 
-void RoundelController::gameLoop()
-{
+void RoundelController::gameLoop() {
     static bool first_time = true;
 
     std::string data;
-    if (m_videoSock.read(&data))
+    if(m_videoSock.read(&data))
         ; // M_trace("got " + std::to_string(data.size()) + " bytes of video");
 
-    if (first_time)
-    {
+    if(first_time) {
         Control::config("detect:detect_type", "13");
         M_clearAck();
 
