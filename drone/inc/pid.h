@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
  
-typedef struct PositionControl {
+typedef struct Position_Control {
 	float set_x ; 
 	float set_y ;
 	float set_z ; 
@@ -25,10 +25,10 @@ typedef struct PositionControl {
 	float output_x ; 
 	float output_y ; 
 	float output_z ; 
-}PositionControl;
+}Position_Control;
 
-PositionControl SpeedIntegrate(float vx, float vy, float altitude) ; 
-PositionControl PIDcal(PositionControl) ;
-void print_PositionControl(PositionControl) ;
+Position_Control SpeedIntegrate(float vx, float vy, float altitude) ; 
+Position_Control PIDcal(Position_Control) ;
+void print_Position_Control(Position_Control) ;
 
 #endif /*PID_H_*/

@@ -11,9 +11,9 @@
 	#define Kd 0.01
 	#define Ki 0.005
 
-PositionControl SpeedIntegrate(float vx, float vy, float altitude)
+Position_Control SpeedIntegrate(float vx, float vy, float altitude)
 {	
-	PositionControl pos_con ;
+	Position_Control pos_con ;
 	//on event or every 80ms FOR X 
 	float pre_vx = 0 ; 
 	float pos_x = 0 ; 
@@ -42,10 +42,10 @@ return actual_position ;
 */
 }
 //user has to give a 1 dim set point with up down left right
-//UI puts info in structure PositionControl under set_x, set_y, set_z 
+//UI puts info in structure Position_Control under set_x, set_y, set_z 
 //SpeedIntegrate transforms vx, vy and altitude into real_x, real_y, real_z 
  
-PositionControl PIDcal(PositionControl pos_con)
+Position_Control PIDcal(Position_Control pos_con)
 {
 
 	float pre_error_x= 0 ;float pre_error_y= 0 ;float pre_error_z= 0 ;
@@ -90,7 +90,7 @@ PositionControl PIDcal(PositionControl pos_con)
 	return pos_con ; 
 }
 
-void print_PositionControl(PositionControl pos_con){
+void print_Position_Control(Position_Control pos_con){
 
 	printf("set_x : %f   ", pos_con.set_x);
 	printf("real_x: %f \n",pos_con.real_x);

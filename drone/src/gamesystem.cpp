@@ -32,6 +32,7 @@ GameSystem::GameSystem()
         , m_navctrl(*this)
         , m_roundelctrl(*this)
         , m_journalist(*this)
+        , m_mouvement_stalker(*this)
         , user(0) {
     gettimeofday(&m_timeref, 0);
 
@@ -161,9 +162,10 @@ void GameSystem::M_gameLoop() {
     // Initialize components
     message("GameSystem", "initializing components");
     m_roundelctrl.gameInit();
+    m_mouvement_stalker.gameInit() ;
     m_journalist.gameInit();
     /*** Add your own elements ***/
-
+     
     // Send several FTRIM commands
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
@@ -184,6 +186,11 @@ void GameSystem::M_gameLoop() {
         m_roundelctrl.gameLoop();
         m_journalist.gameLoop();
 
+        Navdata nav_temp = m_navctrl.grab();
+        if((nav_temp.header.state & navdata::fly)) {
+            //m_landed = false;
+            m_mouvement_stalker.gameLoop() ; 
+        }
 
 	if(this->new_move) {
 
@@ -210,7 +217,7 @@ void GameSystem::M_gameLoop() {
 
         /*** Add you own elements here ***/
 
-        /*
+        
         Navdata nav = m_navctrl.grab();
         std::string clr = "                      ";
 
@@ -241,7 +248,7 @@ void GameSystem::M_gameLoop() {
         std::cout << std::endl;
 
         std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
-        */
+        
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.
