@@ -175,6 +175,7 @@ void GameSystem::M_gameLoop() {
     Moves seq(1);
     this->new_move = false;
     int i = 0 ;
+    int print_test = 0 ;
     //std::list<tmove>::iterator i ;
     // Main game loop
     while(m_alive) {
@@ -194,21 +195,25 @@ void GameSystem::M_gameLoop() {
             m_mouvement_stalker.gameLoop() ; 
         }
         
+	if(print_test == 0 ) {
+	    for (int j=0; j<seq.getSequence().size();i++){
+    		std::cout << seq.getSequence()[i] << '\n';
+		usleep(100);
+  	    }
+	    print_test += 1 ;
+	}
     
 
 	if(this->new_move) {
         trace("game systeme","new move");
 		this->new_move = false;
 		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
-			trace("game systeme","apres comparaison ");
 			if ( i == seq.getSequence().size()){
 				seq.addRandomMove();
 				user.clearSequence();
+				print_test = 0 ;
 				i = 0 ;
-				for (int j=0; j<seq.getSequence().size();i++){
-    					std::cout << seq.getSequence()[i] << '\n';
-					usleep(100);
-  				}
+				
 				//i = seq.getSequence().begin() ;		
 			}
 			else {
