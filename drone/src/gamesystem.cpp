@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iostream>
 #include <time.h>
+#include <unistd.h>
 
 
 //! Only messages with the log level specified or the levels above will be output to stdout/stderr
@@ -194,6 +195,10 @@ void GameSystem::M_gameLoop() {
 				seq.addRandomMove();
 				user.clearSequence();
 				i = 0 ;
+				for (int j=0; j<seq.getSequence().size();i++){
+    					std::cout << seq.getSequence()[i] << '\n';
+					usleep(100);
+  				}
 				//i = seq.getSequence().begin() ;		
 			}
 			else {
