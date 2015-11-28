@@ -87,7 +87,7 @@ void MainWindow::M_land() {
 }
 
 void MainWindow::M_logLevelChanged(int newIndex) {
-    m_logLevel = static_cast<LogPacket::Level>(newIndex);
+    m_logLevel = static_cast<lcomm::LogPacket::Level>(newIndex);
 }
 
 void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {

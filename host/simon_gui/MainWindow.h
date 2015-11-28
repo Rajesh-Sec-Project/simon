@@ -7,6 +7,7 @@
 #include <memory>
 #include "lcomm/lcomm.h"
 #include <atomic>
+#include "lcomm/log_packet.h"
 
 namespace Ui {
     class MainWindow;
@@ -37,7 +38,7 @@ private:
     std::unique_ptr<Ui::MainWindow> m_ui;
     QGraphicsScene* m_scene;
     QGraphicsItem* m_dot;
-    std::atomic<LogPacket::Level> m_logLevel;
+    std::atomic<lcomm::LogPacket::Level> m_logLevel;
 };
 
 #endif // MAINWINDOW_H
