@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>728</width>
-    <height>487</height>
+    <height>545</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,6 +47,36 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QGraphicsView" name="detections">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>420</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Detection :</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="detectionsLabel">
+         <property name="text">
+          <string>?</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -55,12 +85,71 @@
       <property name="title">
        <string>Log</string>
       </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
+       <item row="1" column="0" colspan="2">
         <widget class="QTextEdit" name="log">
          <property name="readOnly">
           <bool>true</bool>
          </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QWidget" name="widget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <widget class="QComboBox" name="minLogLevel">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>0</y>
+            <width>90</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>Trace</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Info</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Warn</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Error</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QLabel" name="label_3">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>5</y>
+            <width>111</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Min logging level</string>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -74,7 +163,7 @@
      <x>0</x>
      <y>0</y>
      <width>728</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAwesome_GUI_Client">

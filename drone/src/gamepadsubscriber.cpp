@@ -25,8 +25,8 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
         } else if(ctrl->keys() & GamepadPacket::TakeOff) {
             Control::takeoff();
         } else if(ctrl->keys() & GamepadPacket::Up) {
-            this->m_gs.lock_mtx1();
-	    this->m_gs.set_last_move(tmove::UP) ;
+
+	    this->m_gs.user.addMove(tmove::UP) ;
             std::cout << "Detected a movement to the top:\n"
                          "        / \\\n"
                          "      /     \\\n"
@@ -37,10 +37,10 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "       |   |\n"
                          "       |___|\n"
                       << std::endl;
-             this->m_gs.unlock_mtx2();
+		this->m_gs.set_new_move(true);
+
         } else if(ctrl->keys() & GamepadPacket::Down) {
-            this->m_gs.lock_mtx1();
-	    this->m_gs.set_last_move(tmove::DOWN) ;
+	    this->m_gs.user.addMove(tmove::DOWN) ;
             std::cout << "Detected a movement to the bottom:\n"
                          "        ___\n"
                          "       |   |\n"
@@ -52,10 +52,10 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "      \\     /\n"
                          "        \\ /\n"
                       << std::endl;
-             this->m_gs.unlock_mtx2();
+	    this->m_gs.set_new_move(true);
+
         } else if(ctrl->keys() & GamepadPacket::Left) {
-            this->m_gs.lock_mtx1();
-	    this->m_gs.set_last_move(tmove::LEFT) ;
+	    this->m_gs.user.addMove(tmove::LEFT) ;
             std::cout << "Detected a movement to the left:\n"
                          "  /|\n"
                          " / |_____________\n"
@@ -64,10 +64,11 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          " \\ |\n"
                          "  \\|\n"
                       << std::endl;
-             this->m_gs.unlock_mtx2();
+	    this->m_gs.set_new_move(true);
+
         } else if(ctrl->keys() & GamepadPacket::Right) {
-            this->m_gs.lock_mtx1();
-	    this->m_gs.set_last_move(tmove::RIGHT) ;
+
+	    this->m_gs.user.addMove(tmove::RIGHT) ;
             std::cout << "Detected a movement to the right:\n"
                          "              |\\\n"
                          " _____________| \\\n"
@@ -76,7 +77,8 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "              | /\n"
                          "              |/\n"
                       << std::endl;
-             this->m_gs.unlock_mtx2();
+	    this->m_gs.set_new_move(true);
+
         } else if(ctrl->keys() & GamepadPacket::Stop) {
             std::cout << "Stop requested:\n"
                          "         ________________\n"

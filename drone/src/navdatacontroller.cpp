@@ -27,23 +27,31 @@ NavdataController::NavdataController(GameSystem& system)
         , m_pcap(&NavdataController::M_setupPcap, this)
         , m_available(false)
         , m_inited(false)
-        , m_startPcap(false) {
+        , m_startPcap(false)
+        , m_configured(false) {
 }
 
 NavdataController::~NavdataController() {
     if(m_pcap_handle) {
         pcap_breakloop(m_pcap_handle);
-        pcap_close(m_pcap_handle);
         m_pcap.join();
     }
 }
 
-void NavdataController::gameInit() {
+void NavdataController::init() {
     M_initNavdata();
+}
+
+void NavdataController::configure() {
+    M_configure();
 }
 
 bool NavdataController::inited() const {
     return m_inited;
+}
+
+bool NavdataController::configured() const {
+    return m_configured;
 }
 
 bool NavdataController::available() const {
@@ -72,6 +80,8 @@ void NavdataController::M_setupPcap() {
     M_trace("pcap session started");
 
     pcap_loop(m_pcap_handle, -1, &M_proxy, reinterpret_cast<unsigned char*>(this));
+
+    pcap_close(m_pcap_handle);
 
     M_trace("pcap session finished");
 }
@@ -147,6 +157,12 @@ void NavdataController::M_initNavdata() {
     }
     M_trace("drone in bootstrap mode");
 
+    m_inited = true;
+}
+
+void NavdataController::M_configure() {
+    using namespace lcontrol;
+
     // Setup navdata bits, either demo or option_flags
     Control::config("general:navdata_demo", "TRUE");
     M_trace("navdata_demo set");
@@ -200,7 +216,7 @@ void NavdataController::M_initNavdata() {
     Control::config("general:navdata_options", std::to_string(options));
     M_trace("options sets up, good to go !");
 
-    m_inited = true;
+    m_configured = true;
 }
 
 void NavdataController::M_decode(const unsigned char* data, int size) {
@@ -209,13 +225,13 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
     // Get the navdata header
     m_navdata.header = *reinterpret_cast<const header*>(data);
     if(m_navdata.header.magic != 0x55667788) {
-        M_warning("bad navdata magic, dumping header :");
+        M_trace("bad navdata magic, dumping header :");
         std::ostringstream ss;
         ss << "  ";
         for(unsigned int i = 0; i < sizeof(header); ++i) {
             ss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i] << " ";
         }
-        M_warning(ss.str());
+        M_trace(ss.str());
         return;
     }
 

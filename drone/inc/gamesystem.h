@@ -11,8 +11,11 @@
 #include <chrono>
 #include <mutex>
 #include "lcomm/lcomm.h"
+#include <ctime>
+#include <sys/time.h>
 
 #include "gamepadsubscriber.h"
+#include "configmanager.h"
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"
 #include "journalist.h"
@@ -42,6 +45,9 @@ public:
     //! Get the system's navdata controller (const version)
     NavdataController const& navdataController() const;
 
+    //! Get the system's configuration manager
+    ConfigManager& configManager();
+
     //! Get the communication endpoint of this game system
     lcomm::Endpoint& endpoint();
 
@@ -57,23 +63,13 @@ public:
     //! Send out an error log to the host
     void error(std::string const& nm, std::string const& msg);
 
-    //getter last move ;
-    lmoves::tmove get_last_move() ;
+    //setter new move ;
+    void set_new_move(bool value) ;
 
-    //setter last move ;
-    void set_last_move(lmoves::tmove new_move);
+    //! Return the elasped time since the creation of the game system.
+    std::chrono::nanoseconds clock();
 
-    //lock mutex 1
-    void lock_mtx1() ;
-
-    //lock mutex 2
-    void lock_mtx2() ;
-
-    //unlock mutex 1
-    void unlock_mtx1() ;
-
-    //lock mutex 2
-    void unlock_mtx2() ;
+    lmoves::Moves user ;
 
 protected:
     void M_droneSetup();
@@ -87,17 +83,16 @@ private:
     std::thread m_gameLoop;
 
     GamePadSubscriber m_gamePadSubscriber;
+    ConfigManager m_confmgr;
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
     Journalist m_journalist;
-    lmoves::Moves m_move ;
-    lmoves::tmove last_move ;
 
-    std::mutex mtx1 ;
-    std::mutex mtx2 ;
+    bool new_move ;
 
-private:
-    static unsigned long m_gameLoopActivationTimeNs;
+    struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};
+
+    static std::chrono::nanoseconds const m_gameLoopActivationTime;
 };
 
 

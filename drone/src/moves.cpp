@@ -35,20 +35,26 @@ std::ostream& operator<<(std::ostream& out, Moves const& seq) {
 // constructor
 Moves::Moves(size_t seqLen) {
     while(seqLen-- != 0) {
-        this->addMove();
+        this->addRandomMove();
     }
 }
 
 // getter
-std::list<tmove> const& Moves::getSequence() const {
+std::vector<tmove> const& Moves::getSequence() const {
     return this->sequence;
+}
+
+void Moves::clearSequence() {
+	this->sequence.clear();
 }
 
 tmove Moves::M_randomMove() {
     return static_cast<tmove>(rand() % static_cast<int>(tmove::NUM_MOVES));
 }
-
-void Moves::addMove() {
+void Moves::addMove(tmove m){
+    sequence.push_back(m);
+}
+void Moves::addRandomMove() {
     tmove new_move = this->M_randomMove();
     sequence.push_back(new_move);
 }

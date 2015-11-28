@@ -1,7 +1,7 @@
 #ifndef SIMON_MOVES_H
 #define SIMON_MOVES_H
 
-#include <list>
+#include <vector>
 #include <iostream>
 namespace lmoves {
 // An enum representing all the different moves that the drone is able to produce
@@ -14,16 +14,20 @@ public:
     Moves(size_t seqLen = 0);
 
     // getter of the sequence
-    std::list<tmove> const& getSequence() const;
+    std::vector<tmove> const& getSequence() const;
 
     // add a random move to the sequence
-    void addMove();
+    void addRandomMove();
+
+    void addMove(tmove m) ;
+
+    void clearSequence() ;
 
 private:
     // return a random move among the moves available in the enum tmove.
     tmove M_randomMove();
 
-    std::list<tmove> sequence;
+    std::vector<tmove> sequence;
 };
 
 std::ostream& operator<<(std::ostream& out, tmove value);

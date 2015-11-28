@@ -17,7 +17,8 @@ private:
     void M_sendInfoPacket();
 
 private:
-    bool m_landed;
+    bool m_landed, m_detect;
+    int m_detect_x, m_detect_y;
 };
 
 #endif // SIMON_JOURNALIST_H

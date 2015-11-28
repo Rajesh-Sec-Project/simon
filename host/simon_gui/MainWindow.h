@@ -2,8 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
 #include <memory>
 #include "lcomm/lcomm.h"
+#include <atomic>
+#include "lcomm/log_packet.h"
 
 namespace Ui {
     class MainWindow;
@@ -25,11 +29,16 @@ private slots:
     void M_takeOff();
     void M_land();
 
+    void M_logLevelChanged(int newIndex);
+
     void M_receivedLog(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
     void M_receivedInfo(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
     std::unique_ptr<Ui::MainWindow> m_ui;
+    QGraphicsScene* m_scene;
+    QGraphicsItem* m_dot;
+    std::atomic<lcomm::LogPacket::Level> m_logLevel;
 };
 
 #endif // MAINWINDOW_H
