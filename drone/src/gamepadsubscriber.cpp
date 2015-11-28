@@ -1,7 +1,9 @@
 #include "gamepadsubscriber.h"
 #include "lcontrol/control.h"
+#include "lcontrol/positioncontrol.h"
 #include "lcomm/lcomm.h"
 #include "lcomm/gamepad_packet.h"
+#include "lcomm/gamepad_position_packet.h"
 #include "gamesystem.h"
 
 using namespace lcontrol;
@@ -12,8 +14,21 @@ GamePadSubscriber::GamePadSubscriber(GameSystem& system)
 }
 
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
-    GamepadPacket* ctrl = packet->downcast<GamepadPacket>();
-    if(ctrl) {
+    if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
+        if(ctrl->keys() & GamepadPacket::Up) {
+            PositionControl::up(50);
+        }
+        else if(ctrl->keys() & GamepadPacket::Down) {
+            PositionControl::down(50);
+        }
+        else if(ctrl->keys() & GamepadPacket::Left) {
+            PositionControl::left(50);
+        }
+        else if(ctrl->keys() & GamepadPacket::Right) {
+            PositionControl::right(50);
+        }
+    }
+    else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
         if(ctrl->keys() & GamepadPacket::Land) {
             Control::land();
         } else if(ctrl->keys() & GamepadPacket::TakeOff) {

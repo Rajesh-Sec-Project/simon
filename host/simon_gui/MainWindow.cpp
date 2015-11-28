@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "lcomm/gamepad_packet.h"
+#include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
 #include "commmanager.h"
@@ -37,6 +38,12 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
     QObject::connect(m_ui->gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
     QObject::connect(m_ui->gamepad, SIGNAL(land()), this, SLOT(M_land()));
+
+    QObject::connect(m_ui->positionControl, SIGNAL(up()), this, SLOT(M_positionUp()));
+    QObject::connect(m_ui->positionControl, SIGNAL(down()), this, SLOT(M_positionDown()));
+    QObject::connect(m_ui->positionControl, SIGNAL(left()), this, SLOT(M_positionLeft()));
+    QObject::connect(m_ui->positionControl, SIGNAL(right()), this, SLOT(M_positionRight()));
+
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
@@ -83,6 +90,26 @@ void MainWindow::M_takeOff() {
 
 void MainWindow::M_land() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
+    CommManager::self().write(pkt);
+}
+
+void MainWindow::M_positionUp() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Up);
+    CommManager::self().write(pkt);
+}
+
+void MainWindow::M_positionDown() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Down);
+    CommManager::self().write(pkt);
+}
+
+void MainWindow::M_positionLeft() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Left);
+    CommManager::self().write(pkt);
+}
+
+void MainWindow::M_positionRight() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Right);
     CommManager::self().write(pkt);
 }
 
