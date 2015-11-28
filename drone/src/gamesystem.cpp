@@ -20,6 +20,7 @@
 using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
+using namespace lmoves ;
 
 unsigned long GameSystem::m_gameLoopActivationTimeNs = 10000;
 
@@ -31,6 +32,8 @@ GameSystem::GameSystem()
         , m_journalist(*this) {
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
+    lock_mtx1();
+    unlock_mtx2();
 
     std::cout << "Waiting for host to connect... ";
     std::cout.flush();
@@ -122,6 +125,37 @@ void GameSystem::M_droneSetup() {
         ;
 }
 
+//getter last move
+lmoves::tmove GameSystem::get_last_move() {
+    return this->last_move;
+}
+
+//setter last_move
+void GameSystem::set_last_move(lmoves::tmove new_move){
+    this->last_move = new_move ;
+}
+
+//lock mutex 1
+void GameSystem::lock_mtx1() {
+    this->mtx1.lock();
+}
+
+//lock mutex 2
+void GameSystem::lock_mtx2(){
+    this->mtx2.lock();
+}
+//unlock mutex 1
+void GameSystem::unlock_mtx1() {
+    this->mtx1.unlock();
+}
+
+//unlock mutex 2
+void GameSystem::unlock_mtx2() {
+    this->mtx2.unlock();
+}
+
+
+
 void GameSystem::M_gameLoop() {
 
     while(!m_inited)
@@ -142,6 +176,26 @@ void GameSystem::M_gameLoop() {
 
     // Main game loop
     while(m_alive) {
+
+        this->m_move.addMove();
+	std::list<tmove>::const_iterator i;
+	for( i = this->m_move.getSequence().begin(); i != this->m_move.getSequence().end(); ++i){
+	    lock_mtx2();
+	    if(this->get_last_move() == static_cast<tmove>(*i) ) {
+	        std::cout << "Move OKAY !"<< '\n' ;
+		unlock_mtx1();
+	    }    
+	    else {
+		std::cout << "Error, the right movement was " << static_cast<tmove>(*i) << '\n' ;
+		std::cout << "GAME OVER" << '\n' ;
+		this->stop();
+		break;
+	    }
+
+	}
+	
+
+
         /*timespec loop_start;
         clock_gettime(CLOCK_REALTIME, &loop_start);*/
 

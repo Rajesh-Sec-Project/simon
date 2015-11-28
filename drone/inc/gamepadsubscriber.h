@@ -4,6 +4,8 @@
 #include "lcomm/lcomm.h"
 #include "gameelement.h"
 #include <memory>
+#include "../inc/moves.h"
+
 
 class GameSystem;
 
@@ -14,6 +16,12 @@ public:
     GamePadSubscriber(GameSystem& system);
 
     void notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) override;
+
+    //get m_gr
+    //GenerateRound& GamePadSubscriber::get_m_gr() ;
+
+private:
+    GameSystem& m_gs;
 };
 
 #endif // SIMON_GAMEPADSUBSCRIBER_H

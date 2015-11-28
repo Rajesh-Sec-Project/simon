@@ -8,7 +8,8 @@
 
 #include "moves.h"
 
-std::ostream& operator<<(std::ostream& out, const tmove value) {
+using namespace lmoves ;
+std::ostream& lmoves::operator<<(std::ostream& out, tmove value) {
     static std::map<tmove, std::string> strings;
     if(strings.size() == 0) {
 #define INSERT_ELEMENT(p) strings[tmove::p] = #p
@@ -21,6 +22,7 @@ std::ostream& operator<<(std::ostream& out, const tmove value) {
 
     return out << strings[value];
 }
+
 
 std::ostream& operator<<(std::ostream& out, Moves const& seq) {
     for(auto m : seq.getSequence()) {

@@ -3,7 +3,7 @@
 
 #include <list>
 #include <iostream>
-
+namespace lmoves {
 // An enum representing all the different moves that the drone is able to produce
 enum class tmove { DOWN, UP, RIGHT, LEFT, NUM_MOVES };
 
@@ -28,6 +28,6 @@ private:
 
 std::ostream& operator<<(std::ostream& out, tmove value);
 std::ostream& operator<<(std::ostream& out, Moves const& value);
-
+}
 
 #endif // SIMON_MOVES_H
