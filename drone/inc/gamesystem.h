@@ -20,7 +20,7 @@
 #include "roundelcontroller.h"
 #include "journalist.h"
 #include "../inc/moves.h"
-
+#include "mouvement_stalker.h"
 //! The game system class, that manages :
 //!   - all the game components
 //!   - the main game loop
@@ -87,7 +87,7 @@ private:
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
     Journalist m_journalist;
-
+    Mouvement_Stalker m_mouvement_stalker ; 
     bool new_move ;
 
     struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};

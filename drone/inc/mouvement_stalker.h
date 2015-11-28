@@ -14,7 +14,7 @@ public:
 
     void gameInit() override;
     void gameLoop() override;
-    void fill_pos_con(Navdata,PositionControl&) ;
+	void fill_pos_con(Navdata nav, Position_Control& pos_con) ;
 };
 
 #endif // MOUVEMENT_STALKER_H
