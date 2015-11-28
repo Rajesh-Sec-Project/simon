@@ -29,6 +29,11 @@ private slots:
     void M_takeOff();
     void M_land();
 
+    void M_positionUp();
+    void M_positionDown();
+    void M_positionLeft();
+    void M_positionRight();
+
     void M_logLevelChanged(int newIndex);
 
     void M_receivedLog(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
