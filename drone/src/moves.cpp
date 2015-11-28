@@ -44,6 +44,7 @@ std::vector<tmove> const& Moves::getSequence() const {
     return this->sequence;
 }
 
+
 void Moves::clearSequence() {
 	this->sequence.clear();
 }
