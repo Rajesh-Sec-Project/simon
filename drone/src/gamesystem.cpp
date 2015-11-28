@@ -173,12 +173,12 @@ void GameSystem::M_gameLoop() {
 
     auto lastTime = clock();
     Moves seq(1);
+    this->new_move = false;
     int i = 0 ;
     //std::list<tmove>::iterator i ;
     // Main game loop
     while(m_alive) {
         auto lastTime = clock();
-	
         // Be sure to send the watchdog packet
         Control::watchdog();
 
@@ -188,16 +188,19 @@ void GameSystem::M_gameLoop() {
         m_journalist.gameLoop();
 
         Navdata nav_temp = m_navctrl.grab();
+        
         if((nav_temp.header.state & navdata::fly)) {
             //m_landed = false;
             m_mouvement_stalker.gameLoop() ; 
         }
+        
+    
 
 	if(this->new_move) {
-
+        trace("game systeme","new move");
 		this->new_move = false;
 		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
-			
+			trace("game systeme","apres comparaison ");
 			if ( i == seq.getSequence().size()){
 				seq.addRandomMove();
 				user.clearSequence();
