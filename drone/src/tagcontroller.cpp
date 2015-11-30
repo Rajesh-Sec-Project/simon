@@ -1,4 +1,4 @@
-#include "roundelcontroller.h"
+#include "tagcontroller.h"
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include "gamesystem.h"
@@ -44,16 +44,16 @@ enum Tag {
 
 using namespace lcontrol;
 
-RoundelController::RoundelController(GameSystem& system)
+TagController::TagController(GameSystem& system)
         : GameElement(system)
         , m_navctrl(system.navdataController())
         , m_videoSock("127.0.0.1", 5555) {
 }
 
-RoundelController::~RoundelController() {
+TagController::~TagController() {
 }
 
-void RoundelController::gameInit() {
+void TagController::gameInit() {
     while(!m_navctrl.inited())
         ;
 
@@ -65,7 +65,7 @@ void RoundelController::gameInit() {
     M_clearAck();
 }
 
-void RoundelController::gameLoop() {
+void TagController::gameLoop() {
     static bool first_time = true;
 
     std::string data;
@@ -89,7 +89,7 @@ void RoundelController::gameLoop() {
     }
 }
 
-void RoundelController::M_clearAck() {
+void TagController::M_clearAck() {
     // Wait for the command_ack bit
     for(int tm = 0;;) {
         // Get some navdata
@@ -105,7 +105,7 @@ void RoundelController::M_clearAck() {
 
         if(++tm > 10) {
             M_error("command ack not set");
-            throw std::runtime_error("RoundelController::M_clearAck: ack not sent !");
+            throw std::runtime_error("TagController::M_clearAck: ack not sent !");
         }
     }
     M_trace("got command ack");
@@ -129,7 +129,7 @@ void RoundelController::M_clearAck() {
 
         if(++tm > 10) {
             M_error("command ack not cleared");
-            throw std::runtime_error("RoundelController::M_clearAck: ack not cleared !");
+            throw std::runtime_error("TagController::M_clearAck: ack not cleared !");
         }
     }
     M_trace("command ack cleared");

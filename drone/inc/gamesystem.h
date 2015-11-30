@@ -17,7 +17,7 @@
 #include "gamepadsubscriber.h"
 #include "configmanager.h"
 #include "navdatacontroller.h"
-#include "roundelcontroller.h"
+#include "tagcontroller.h"
 #include "journalist.h"
 #include "moves.h"
 #include "mouvement_stalker.h"
@@ -82,7 +82,7 @@ private:
     GamePadSubscriber m_gamePadSubscriber;
     ConfigManager m_confmgr;
     NavdataController m_navctrl;
-    RoundelController m_roundelctrl;
+    TagController m_tagctrl;
     Journalist m_journalist;
     Mouvement_Stalker m_mouvement_stalker;
     RoundManager m_roundmgr;

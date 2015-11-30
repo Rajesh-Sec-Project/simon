@@ -31,7 +31,7 @@ GameSystem::GameSystem()
         , m_gamePadSubscriber(*this)
         , m_confmgr(*this)
         , m_navctrl(*this)
-        , m_roundelctrl(*this)
+        , m_tagctrl(*this)
         , m_journalist(*this)
         , m_mouvement_stalker(*this)
         , m_roundmgr(*this) {
@@ -156,7 +156,7 @@ void GameSystem::M_gameLoop() {
 
     // Initialize components
     message("GameSystem", "initializing components");
-    m_roundelctrl.gameInit();
+    m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
     m_roundmgr.gameInit();
@@ -174,7 +174,7 @@ void GameSystem::M_gameLoop() {
 
         // Do stuff (regulations loops will go there for ex.)
         m_confmgr.gameLoop();
-        m_roundelctrl.gameLoop();
+        m_tagctrl.gameLoop();
         m_journalist.gameLoop();
         m_roundmgr.gameLoop();
 

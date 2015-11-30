@@ -1,5 +1,5 @@
-#ifndef SIMON_ROUNDELCONTROLLER_H
-#define SIMON_ROUNDELCONTROLLER_H
+#ifndef SIMON_TAGCONTROLLER_H
+#define SIMON_TAGCONTROLLER_H
 
 #include "gameelement.h"
 #include "lcomm/clientsocket.h"
@@ -7,10 +7,10 @@
 
 class NavdataController;
 
-class RoundelController : public GameElement {
+class TagController : public GameElement {
 public:
-    RoundelController(GameSystem& system);
-    ~RoundelController();
+    TagController(GameSystem& system);
+    ~TagController();
 
     void gameInit() override;
     void gameLoop() override;
@@ -23,4 +23,4 @@ private:
     lcomm::ClientSocket m_videoSock;
 };
 
-#endif // SIMON_ROUNDEL_H
+#endif // SIMON_TAGCONTROLLER_H
