@@ -36,13 +36,14 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(left()), this, SLOT(M_left()));
     QObject::connect(m_ui->gamepad, SIGNAL(right()), this, SLOT(M_right()));
     QObject::connect(m_ui->gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
-    QObject::connect(m_ui->gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
-    QObject::connect(m_ui->gamepad, SIGNAL(land()), this, SLOT(M_land()));
 
     QObject::connect(m_ui->positionControl, SIGNAL(up()), this, SLOT(M_positionUp()));
     QObject::connect(m_ui->positionControl, SIGNAL(down()), this, SLOT(M_positionDown()));
     QObject::connect(m_ui->positionControl, SIGNAL(left()), this, SLOT(M_positionLeft()));
     QObject::connect(m_ui->positionControl, SIGNAL(right()), this, SLOT(M_positionRight()));
+
+    QObject::connect(m_ui->button_takeOff, SIGNAL(clicked()), this, SLOT(M_takeOff()));
+    QObject::connect(m_ui->button_land, SIGNAL(clicked()), this, SLOT(M_land()));
 
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 

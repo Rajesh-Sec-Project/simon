@@ -14,12 +14,30 @@
    <string>Game pad</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <property name="margin">
+     <property name="leftMargin">
+      <number>4</number>
+     </property>
+     <property name="topMargin">
+      <number>4</number>
+     </property>
+     <property name="rightMargin">
+      <number>4</number>
+     </property>
+     <property name="bottomMargin">
       <number>4</number>
      </property>
      <item row="0" column="0">
@@ -182,44 +200,6 @@ color: black;</string>
        </property>
        <property name="text">
         <string>^</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QToolButton" name="button_takeOff">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>Take off the drone</string>
-       </property>
-       <property name="statusTip">
-        <string>Take off the drone</string>
-       </property>
-       <property name="text">
-        <string>Take off</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="4">
-      <widget class="QToolButton" name="button_land">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>Land the drone</string>
-       </property>
-       <property name="statusTip">
-        <string>Land the drone</string>
-       </property>
-       <property name="text">
-        <string>Land</string>
        </property>
       </widget>
      </item>
