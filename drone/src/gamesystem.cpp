@@ -22,7 +22,7 @@
 using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
-using namespace lmoves ;
+using namespace lmoves;
 
 std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 5ms;
 
@@ -34,13 +34,12 @@ GameSystem::GameSystem()
         , m_roundelctrl(*this)
         , m_journalist(*this)
         , m_mouvement_stalker(*this)
-        , user(0) {
+        , m_roundmgr(*this) {
     gettimeofday(&m_timeref, 0);
 
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
-
-
+    m_endpoint.registerSubscriber(m_roundmgr);
 
     std::cout << "Waiting for host to connect... ";
     std::cout.flush();
@@ -146,11 +145,6 @@ void GameSystem::M_droneSetup() {
         ;
 }
 
-//setter new move ;
-void GameSystem::set_new_move(bool value) {
-    this->new_move = value ;
-}
-
 void GameSystem::M_gameLoop() {
 
     while(!m_inited)
@@ -163,21 +157,16 @@ void GameSystem::M_gameLoop() {
     // Initialize components
     message("GameSystem", "initializing components");
     m_roundelctrl.gameInit();
-    m_mouvement_stalker.gameInit() ;
+    m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
-    /*** Add your own elements ***/
-     
+    m_roundmgr.gameInit();
+
     // Send several FTRIM commands
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
 
-    auto lastTime = clock();
-    Moves seq(1);
-    this->new_move = false;
-    int i = 0 ;
-    int print_test = 0 ;
-    //std::list<tmove>::iterator i ;
     // Main game loop
+    auto lastTime = clock();
     while(m_alive) {
         auto lastTime = clock();
         // Be sure to send the watchdog packet
@@ -187,65 +176,36 @@ void GameSystem::M_gameLoop() {
         m_confmgr.gameLoop();
         m_roundelctrl.gameLoop();
         m_journalist.gameLoop();
+        m_roundmgr.gameLoop();
 
+        // KAD
         Navdata nav_temp = m_navctrl.grab();
-        
         if((nav_temp.header.state & navdata::fly)) {
-            //m_landed = false;
-            m_mouvement_stalker.gameLoop() ; 
+            // m_landed = false;
+            m_mouvement_stalker.gameLoop();
         }
-
-        if (print_test == 0 ) {
-	       std::cout << seq << '\n';
-           print_test += 1 ;
-        }
-
-    
-    	if(this->new_move) {
-            trace("game systeme","new move");
-    		this->new_move = false;
-    		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
-    			if ( i == seq.getSequence().size()){
-    				seq.addRandomMove();
-    				user.clearSequence();
-    				print_test = 0 ;
-    				i = 0 ;
-    				
-    				//i = seq.getSequence().begin() ;		
-    			}
-    			else {
-    				i++;
-    			}
-    		}
-    		else {
-    			std::cout << "GAME OVER" << '\n' ;
-    			this->stop();
-    			break;
-    		}
-    	}
-
 
         /*** Add you own elements here ***/
 
-        
-        Navdata nav = m_navctrl.grab();
+
+        /*Navdata nav = m_navctrl.grab();
         std::string clr = "                      ";
 
         std::cout << "vision:" << nav.header.vision << clr << std::endl;
         std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.theta / 100.0f << clr << std::endl;
+                  << nav.demo.theta / 100.0f << clr << std::endl;
         std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.phi / 100.0f << clr << std::endl;
+                  << nav.demo.phi / 100.0f << clr << std::endl;
         std::cout << "psi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.psi / 100.0f << clr << std::endl;
+                  << nav.demo.psi / 100.0f << clr << std::endl;
         std::cout << "vx:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vx
-        << clr << std::endl;
+                  << clr << std::endl;
         std::cout << "vy:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vy
-        << clr << std::endl;
+                  << clr << std::endl;
         std::cout << "vz:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vz
-        << clr << std::endl;
+                  << clr << std::endl;
         std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
-        << clr << std::endl;
+                  << clr << std::endl;
         std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr <<
         std::endl;
         std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
@@ -257,8 +217,8 @@ void GameSystem::M_gameLoop() {
         std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
         std::cout << std::endl;
 
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
-        
+        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";*/
+
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.

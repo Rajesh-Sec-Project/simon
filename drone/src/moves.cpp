@@ -48,13 +48,17 @@ namespace lmoves {
 
 
     void Moves::clearSequence() {
-    	this->sequence.clear();
+        this->sequence.clear();
+    }
+
+    unsigned int Moves::size() const {
+        return sequence.size();
     }
 
     tmove Moves::M_randomMove() {
         return static_cast<tmove>(rand() % static_cast<int>(tmove::NUM_MOVES));
     }
-    void Moves::addMove(tmove m){
+    void Moves::addMove(tmove m) {
         sequence.push_back(m);
     }
     void Moves::addRandomMove() {

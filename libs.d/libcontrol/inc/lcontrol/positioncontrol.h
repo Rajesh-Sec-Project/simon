@@ -29,10 +29,11 @@ namespace lcontrol {
         static Distance yPos();
         //! Distance between the drone and the origin along the y axis (i.e. from hell to heaven).
         static Distance zPos();
-    private : 
-            static Distance m_x ; 
-            static Distance m_y ; 
-            static Distance m_z ; 
+
+    private:
+        static Distance m_x;
+        static Distance m_y;
+        static Distance m_z;
     };
 }
 

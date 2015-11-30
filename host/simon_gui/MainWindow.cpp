@@ -46,11 +46,15 @@ MainWindow::MainWindow(QWidget* parent)
 
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 }
 
 MainWindow::~MainWindow() {
@@ -121,7 +125,7 @@ void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     using namespace lcomm;
 
     LogPacket* log = packet->downcast<LogPacket>();
-    if(!log || log->level() < m_logLevel)
+    if(!log /* || log->level() < m_logLevel*/)
         return;
 
     QColor text_c;
