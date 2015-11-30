@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget* parent)
     m_scene = new QGraphicsScene(this);
     m_scene->setSceneRect(0, 0, 400, 250);
     m_ui->detections->setScene(m_scene);
-    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("yellow")), QBrush(QColor("yellow")));
+    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
     m_dot->hide();
 
