@@ -194,38 +194,35 @@ void GameSystem::M_gameLoop() {
             //m_landed = false;
             m_mouvement_stalker.gameLoop() ; 
         }
-        
-	if(print_test == 0 ) {
-	    for (int j=0; j<seq.getSequence().size();i++){
-    		std::cout << seq.getSequence()[i] << '\n';
-		usleep(100);
-  	    }
-	    print_test += 1 ;
-	}
-    
 
-	if(this->new_move) {
-        trace("game systeme","new move");
-		this->new_move = false;
-		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
-			if ( i == seq.getSequence().size()){
-				seq.addRandomMove();
-				user.clearSequence();
-				print_test = 0 ;
-				i = 0 ;
-				
-				//i = seq.getSequence().begin() ;		
-			}
-			else {
-				i++;
-			}
-		}
-		else {
-			std::cout << "GAME OVER" << '\n' ;
-			this->stop();
-			break;
-		}
-	}
+        if (print_test == 0 ) {
+	       std::cout << seq << '\n';
+           print_test += 1 ;
+        }
+
+    
+    	if(this->new_move) {
+            trace("game systeme","new move");
+    		this->new_move = false;
+    		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
+    			if ( i == seq.getSequence().size()){
+    				seq.addRandomMove();
+    				user.clearSequence();
+    				print_test = 0 ;
+    				i = 0 ;
+    				
+    				//i = seq.getSequence().begin() ;		
+    			}
+    			else {
+    				i++;
+    			}
+    		}
+    		else {
+    			std::cout << "GAME OVER" << '\n' ;
+    			this->stop();
+    			break;
+    		}
+    	}
 
 
         /*** Add you own elements here ***/

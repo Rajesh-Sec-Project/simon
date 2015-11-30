@@ -29,9 +29,10 @@ private:
 
     std::vector<tmove> sequence;
 };
-
-std::ostream& operator<<(std::ostream& out, tmove value);
-std::ostream& operator<<(std::ostream& out, Moves const& value);
 }
+
+
+std::ostream& operator<<(std::ostream& out, lmoves::tmove value);
+std::ostream& operator<<(std::ostream& out, lmoves::Moves const& value);
 
 #endif // SIMON_MOVES_H
