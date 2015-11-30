@@ -20,7 +20,7 @@ public:
 private:
     bool m_new_move;
     lmoves::Moves m_seq, m_user;
-    unsigned int m_current_move;
+    std::size_t m_current_move;
     bool m_needs_print;
 };
 

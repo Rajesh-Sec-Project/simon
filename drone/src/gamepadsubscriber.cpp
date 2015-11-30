@@ -54,7 +54,8 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|\n" << std::endl;
+                         "              |_|\n"
+                      << std::endl;
 
             Control::land();
             m_system.stop();

@@ -8,7 +8,7 @@
 #include "lcomm/packet.h"
 
 namespace lcomm {
-    template<typename PacketType>
+    template <typename PacketType>
     class GamepadPacketBase : public Packet<PacketType> {
     public:
         enum Keys {
@@ -25,10 +25,11 @@ namespace lcomm {
     public:
         GamepadPacketBase(lconf::json::Node* node) {
             M_setup();
-            this->fromJson(node);
+            this->Packet<PacketType>::fromJson(node);
         }
 
-        GamepadPacketBase(Keys keys) : m_keys(keys) {
+        GamepadPacketBase(Keys keys)
+                : m_keys(keys) {
             M_setup();
         }
 
@@ -41,7 +42,7 @@ namespace lcomm {
 
     private:
         void M_setup() {
-            this->bind("keys", (int&)m_keys);
+            this->Packet<PacketType>::bind("keys", (int&)m_keys);
         }
 
     private:
@@ -49,4 +50,4 @@ namespace lcomm {
     };
 }
 
-#endif //SIMON_GAMEPAD_PACKET_BASE_H
+#endif // SIMON_GAMEPAD_PACKET_BASE_H
