@@ -19,8 +19,10 @@
 #include "navdatacontroller.h"
 #include "roundelcontroller.h"
 #include "journalist.h"
-#include "../inc/moves.h"
+#include "moves.h"
 #include "mouvement_stalker.h"
+#include "roundmanager.h"
+
 //! The game system class, that manages :
 //!   - all the game components
 //!   - the main game loop
@@ -63,13 +65,8 @@ public:
     //! Send out an error log to the host
     void error(std::string const& nm, std::string const& msg);
 
-    //setter new move ;
-    void set_new_move(bool value) ;
-
     //! Return the elasped time since the creation of the game system.
     std::chrono::nanoseconds clock();
-
-    lmoves::Moves user ;
 
 protected:
     void M_droneSetup();
@@ -87,11 +84,10 @@ private:
     NavdataController m_navctrl;
     RoundelController m_roundelctrl;
     Journalist m_journalist;
-    Mouvement_Stalker m_mouvement_stalker ; 
-    bool new_move ;
+    Mouvement_Stalker m_mouvement_stalker;
+    RoundManager m_roundmgr;
 
     struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};
-
     static std::chrono::nanoseconds const m_gameLoopActivationTime;
 };
 
