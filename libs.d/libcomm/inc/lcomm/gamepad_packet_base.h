@@ -11,7 +11,7 @@ namespace lcomm {
     template <typename PacketType>
     class GamepadPacketBase : public Packet<PacketType> {
     public:
-        enum Keys {
+        enum Keys : std::int32_t {
             Up = 0x01,
             Down = 0x02,
             Left = 0x04,
@@ -25,7 +25,7 @@ namespace lcomm {
     public:
         GamepadPacketBase(lconf::json::Node* node) {
             M_setup();
-            this->Packet<PacketType>::fromJson(node);
+            this->fromJson(node);
         }
 
         GamepadPacketBase(Keys keys)
@@ -34,7 +34,7 @@ namespace lcomm {
         }
 
         Keys keys() const {
-            return m_keys;
+            return static_cast<Keys>(m_keys);
         }
         void setKeys(Keys keys) {
             m_keys = keys;
@@ -42,11 +42,11 @@ namespace lcomm {
 
     private:
         void M_setup() {
-            this->Packet<PacketType>::bind("keys", (int&)m_keys);
+            this->bind("keys", m_keys);
         }
 
     private:
-        Keys m_keys;
+        int m_keys;
     };
 }
 
