@@ -1,0 +1,30 @@
+           ^
+         / | \
+        / \a/ \
+       /   |   \
+      /    |    \
+     /     | d   \
+    /      |      \
+   /       |       \
+  /        | l/2    \
+  +--------+--------+
+
+On a l = 2d*sin(a)
+D'ou, si x = pos en pixel du tag (sur H la largeur
+de l'image en pixels), on a :
+x[cm] = (2d*sin(a))/H * x[pix]
+Ici, on a H=1000 (cf SDK), et d en cm.
+
+Pour déterminer l'angle 'a', on mesure la taille d'un objet déterminé
+(le tag) p.r. à la distance à la caméra, on trouve (pour d = 210 cm) :
+ - lx = 243 cm
+ - ly = 138 cm
+On obtient ça avec un tag de 10.5 cm, qui représente :
+ - 0.7 / 16.2 % de l'image en largeur
+ - 0.7 / 9.2  % de l'image en hauteur
+Puis on a a{x,y} = l{x,y}/(2*d), soit :
+ - sin(ax) = 0.579
+ - sin(ay) = 0.329
+D'où :
+ - x [cm] = 0.001158*d*(x - 500) [pix]
+ - y [cm] = 0.000658*d*(y - 500) [pix]
