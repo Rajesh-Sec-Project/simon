@@ -6,10 +6,12 @@ namespace lcomm {
         fromJson(node);
     }
 
-    InfoPacket::InfoPacket(InfoPacket::State state, int detect_x, int detect_y)
+    InfoPacket::InfoPacket(InfoPacket::State state, int detect_x, int detect_y, float speed_x, float speed_y)
             : m_state(state)
             , m_detect_x(detect_x)
-            , m_detect_y(detect_y) {
+            , m_detect_y(detect_y)
+            , m_speed_x(speed_x)
+            , m_speed_y(speed_y) {
         M_setup();
     }
 
@@ -25,9 +27,19 @@ namespace lcomm {
         return m_detect_y;
     }
 
+    float InfoPacket::speedX() const {
+        return m_speed_x;
+    }
+
+    float InfoPacket::speedY() const {
+        return m_speed_y;
+    }
+
     void InfoPacket::M_setup() {
         bind("state", (int&)m_state);
         bind("detect_x", (int&)m_detect_x);
         bind("detect_y", (int&)m_detect_y);
+        bind("speed_x", m_speed_x);
+        bind("speed_y", m_speed_y);
     }
 }

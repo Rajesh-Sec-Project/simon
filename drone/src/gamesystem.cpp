@@ -24,7 +24,7 @@ using namespace lcomm;
 using namespace lcontrol;
 using namespace lmoves;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 5ms;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 30ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -73,6 +73,10 @@ NavdataController const& GameSystem::navdataController() const {
 
 ConfigManager& GameSystem::configManager() {
     return m_confmgr;
+}
+
+TagController& GameSystem::tagController() {
+    return m_tagctrl;
 }
 
 lcomm::Endpoint& GameSystem::endpoint() {
@@ -172,6 +176,9 @@ void GameSystem::M_gameLoop() {
         // Be sure to send the watchdog packet
         Control::watchdog();
 
+        // Wait for new navdata (only slightly blocking)
+        while (!m_navctrl.available());
+
         // Do stuff (regulations loops will go there for ex.)
         m_confmgr.gameLoop();
         m_tagctrl.gameLoop();
@@ -179,19 +186,15 @@ void GameSystem::M_gameLoop() {
         m_roundmgr.gameLoop();
 
         // KAD
-        Navdata nav_temp = m_navctrl.grab();
+        /*Navdata nav_temp = m_navctrl.grab();
         if((nav_temp.header.state & navdata::fly)) {
             // m_landed = false;
             m_mouvement_stalker.gameLoop();
-        }
+        }*/
 
         /*** Add you own elements here ***/
 
-
-        /*Navdata nav = m_navctrl.grab();
-        std::string clr = "                      ";
-
-        std::cout << "vision:" << nav.header.vision << clr << std::endl;
+        /*std::cout << "vision:" << nav.header.vision << clr << std::endl;
         std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
                   << nav.demo.theta / 100.0f << clr << std::endl;
         std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')

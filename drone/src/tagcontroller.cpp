@@ -4,6 +4,8 @@
 #include "gamesystem.h"
 
 #include <thread>
+#include <iostream>
+#include <iomanip>
 #include <chrono>
 
 enum DetectionMode {
@@ -46,8 +48,7 @@ using namespace lcontrol;
 
 TagController::TagController(GameSystem& system)
         : GameElement(system)
-        , m_navctrl(system.navdataController())
-        , m_videoSock("127.0.0.1", 5555) {
+        , m_navctrl(system.navdataController()) {
 }
 
 TagController::~TagController() {
@@ -57,36 +58,102 @@ void TagController::gameInit() {
     while(!m_navctrl.inited())
         ;
 
-    M_message("Opening video channel...");
-    m_videoSock.connect();
-    M_message("Video channel opened");
-
-    Control::config("video:video_codec", "129");
+    Control::config("control:flight_without_shell", "FALSE");
     M_clearAck();
+    Control::config("control:outdoor", "FALSE");
+    M_clearAck();
+
+    Control::config("detect:detect_type", std::to_string(Mode_Multiple));
+    M_clearAck();
+
+    Control::config("detect:detections_select_h", std::to_string((0x01 << (Tag_ShellsV2-1))));
+    M_clearAck();
+
+    Control::config("detect:enemy_colors", "3");
+    M_clearAck();
+
+    Control::config("detect:enemy_without_shell", "0");
+    M_clearAck();
+
+    m_avg_update = 0.75f;
+    m_avg_corr_update = 0.25f;
+    m_tag_x = 0.0f;
+    m_tag_y = 0.0f;
+    m_avg_vx = 0.0f;
+    m_avg_vy = 0.0f;
+    m_avg_cor_vx = 0.0f;
+    m_avg_cor_vy = 0.0f;
+}
+
+bool TagController::hasDetection() const
+{
+    return m_has_detection;
+}
+
+float TagController::tagPositionX() const
+{
+    return m_tag_x;
+}
+
+float TagController::tagPositionY() const
+{
+    return m_tag_y;
+}
+
+float TagController::tagSpeedX() const
+{
+    return m_avg_cor_vx;
+}
+
+float TagController::tagSpeedY() const
+{
+    return m_avg_cor_vy;
 }
 
 void TagController::gameLoop() {
-    static bool first_time = true;
+    Navdata nav = m_system.navdataController().grab();
+    m_has_detection = nav.vision_detect.nb_detected != 0;
 
-    std::string data;
-    if(m_videoSock.read(&data))
-        ; // M_trace("got " + std::to_string(data.size()) + " bytes of video");
+    /**/ std::string clr = "                      ";
+    /**/ int nlines = 0;
+    /**/ #define FMT std::fixed << std::setw(3) << std::setprecision(2) << std::setfill('0')
+    /**/ #define ENDL clr << std::endl; nlines++;
 
-    if(first_time) {
-        Control::config("detect:detect_type", "13");
-        M_clearAck();
+    if (m_has_detection)
+    {
+        // Get detection results (that's all we have..)
+        float x = nav.vision_detect.xc[0];
+        float y = nav.vision_detect.yc[0];
+        float d = nav.vision_detect.dist[0];
 
-        Control::config("detect:groundstripe_colors", "3");
-        M_clearAck();
+        // Convert tag position into centimeters (see docs.d/tag_calibration.md
+        //   for explanations on this black magic)
+        x = 1e-3 * (1.158 * d * (x - 500.0f));
+        y = 1e-3 * (0.658 * d * (y - 500.0f));
 
-        Control::config("detect:enemy_colors", "3");
-        M_clearAck();
+        // Compute average speeds (in mm/s)
+        m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update
+                 * (10.0 * (x - m_tag_x));
+        m_avg_vy = (1.0f - m_avg_update) * m_avg_vy + m_avg_update
+                 * (10.0 * (y - m_tag_y));
 
-        Control::config("detect:enemy_without_shell", "0");
-        M_clearAck();
+        // Compute average corrected speeds (in mm/s)
+        m_avg_cor_vx = (1.0f - m_avg_corr_update) * m_avg_cor_vx + m_avg_corr_update
+                     * (m_avg_vx - nav.demo.vx / 10.0f);
+        m_avg_cor_vy = (1.0f - m_avg_corr_update) * m_avg_cor_vy + m_avg_corr_update
+                     * (m_avg_vy - nav.demo.vz / 10.0f);
 
-        first_time = false;
+        // Update internal state
+        m_tag_x = x;
+        m_tag_y = y;
+
+        // Debug prints
+        std::cout << "vx:  " << FMT << m_avg_cor_vx << ENDL;
+        std::cout << "vy:  " << FMT << m_avg_cor_vy << ENDL;
     }
+
+    /**/ for (int i = 0; i < nlines; ++i)
+    /**/     std::cout << "\e[A";
 }
 
 void TagController::M_clearAck() {
