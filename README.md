@@ -29,4 +29,10 @@ Embedded deployment
 If you want to put the application on the drone, run ```cd drone; make push```. This target manages on its own the FTP connection to the drone and the push of the executable.
 This assumes that your are on the drone's WiFi network, that its DHCP server has given you an IP and that you can ```ping 192.168.1.1``` without issue.
 
+
+The ```make push``` command usually takes a few seconds to copy the executable. If it returns immediately, it means that an error occurred (even if none is reported).
+If this is happening, it can mean 2 things: either you did not meet the above preconditions, or the ```drone``` command is running (preventing you to overwrite the executable).
+
+Just run the command ```killall -9 program.elf; killall -9 drone``` to terminate the ```drone``` application and turn back in a restartable state. Note that you may want to execute the previous command each time you want to relaunch the ```drone``` application.
+
 The deployment puts the executable in the drone filesystem's ```/data/video/``` directory, and you can run the app by opening a shell on the drone: ```telnet 192.168.1.1```.
