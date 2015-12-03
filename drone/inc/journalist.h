@@ -19,6 +19,7 @@ private:
 private:
     bool m_landed, m_detect;
     int m_detect_x, m_detect_y;
+    float m_speed_x, m_speed_y;
 };
 
 #endif // SIMON_JOURNALIST_H

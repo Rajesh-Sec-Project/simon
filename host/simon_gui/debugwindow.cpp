@@ -21,8 +21,9 @@ DebugWindow::DebugWindow(QWidget* parent)
     m_ui->setupUi(this);
 
     m_scene = std::make_unique<QGraphicsScene>(this);
-    m_scene->setSceneRect(0, 0, 400, 250);
+    m_scene->setSceneRect(0, 0, 243, 138);
     m_ui->detections->setScene(m_scene.get());
+
     m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
     m_dot->hide();
@@ -185,8 +186,8 @@ void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::Packet
         m_ui->droneStateLabel->setText("Flying");
 
     if(info->state() & InfoPacket::Detection) {
-        QPointF where = QPointF(m_scene->sceneRect().width() - ((qreal)info->detectX() * m_scene->sceneRect().width()) / 1000.0f,
-                                ((qreal)info->detectY() * m_scene->sceneRect().height()) / 1000.0f);
+        QPointF where = QPointF((243.0f/2.0f) - info->detectX(),
+                                (138.0f/2.0f) - info->detectY());
 
         std::ostringstream ss;
         ss << "Yes : " << info->detectX() << ", " << info->detectY();
@@ -195,6 +196,12 @@ void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::Packet
         m_dot->setPos(where);
         m_ui->detections->update();
         m_ui->detectionsLabel->setText(QString(ss.str().c_str()));
+
+        qreal speed_x = std::max(-1.0f, std::min(1.0f, info->speedX() / 100.0f));
+        qreal speed_y = std::max(-1.0f, std::min(1.0f, info->speedY() / 100.0f));
+
+        m_ui->speed_x_pos->setValue(fabs(speed_x)*100);
+        m_ui->speed_y_pos->setValue(fabs(speed_y)*100);
     } else {
         m_dot->hide();
         m_ui->detectionsLabel->setText("No");

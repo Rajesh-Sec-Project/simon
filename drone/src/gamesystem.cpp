@@ -9,6 +9,7 @@
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include <iomanip>
+#include <fstream>   // file I/O
 #include <chrono>
 #include <iostream>
 #include <time.h>
@@ -24,7 +25,7 @@ using namespace lcomm;
 using namespace lcontrol;
 using namespace lmoves;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 5ms;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 30ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
@@ -73,6 +74,10 @@ NavdataController const& GameSystem::navdataController() const {
 
 ConfigManager& GameSystem::configManager() {
     return m_confmgr;
+}
+
+TagController& GameSystem::tagController() {
+    return m_tagctrl;
 }
 
 lcomm::Endpoint& GameSystem::endpoint() {
@@ -159,7 +164,14 @@ void GameSystem::M_gameLoop() {
     m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
+
+    std::ofstream f1("samples.txt");
+
+    /*** Add your own elements ***/
+     
+
     m_roundmgr.gameInit();
+
 
     // Send several FTRIM commands
     Control::enableStabilization();
@@ -172,53 +184,22 @@ void GameSystem::M_gameLoop() {
         // Be sure to send the watchdog packet
         Control::watchdog();
 
+        // Wait for new navdata (only slightly blocking)
+        while (!m_navctrl.available());
+
         // Do stuff (regulations loops will go there for ex.)
         m_confmgr.gameLoop();
         m_tagctrl.gameLoop();
         m_journalist.gameLoop();
         m_roundmgr.gameLoop();
-
-        // KAD
-        Navdata nav_temp = m_navctrl.grab();
-        if((nav_temp.header.state & navdata::fly)) {
-            // m_landed = false;
-            m_mouvement_stalker.gameLoop();
-        }
+        m_mouvement_stalker.gameLoop();
 
         /*** Add you own elements here ***/
 
-
-        /*Navdata nav = m_navctrl.grab();
-        std::string clr = "                      ";
-
-        std::cout << "vision:" << nav.header.vision << clr << std::endl;
-        std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.theta / 100.0f << clr << std::endl;
-        std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.phi / 100.0f << clr << std::endl;
-        std::cout << "psi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.psi / 100.0f << clr << std::endl;
-        std::cout << "vx:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vx
-                  << clr << std::endl;
-        std::cout << "vy:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vy
-                  << clr << std::endl;
-        std::cout << "vz:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vz
-                  << clr << std::endl;
-        std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
-                  << clr << std::endl;
-        std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr <<
-        std::endl;
-        std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
-        std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
-        std::cout << "xc[0]: " << nav.vision_detect.xc[0] << clr << std::endl;
-        std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
-        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr <<
-        std::endl;
-        std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
-        std::cout << std::endl;
-
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";*/
-
+        
+        Navdata nav = m_navctrl.grab();
+         
+        f1<<nav.demo.vx<<" "<<nav.demo.vy<<" "<<nav.demo.vz<<" "<<nav.demo.altitude<<" "<<nav.demo.theta<<" "<<nav.demo.phi<<" "<<nav.demo.psi<<" "<<"\n";
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.

@@ -50,6 +50,9 @@ public:
     //! Get the system's configuration manager
     ConfigManager& configManager();
 
+    //! Get the system's tag detection manager
+    TagController& tagController();
+
     //! Get the communication endpoint of this game system
     lcomm::Endpoint& endpoint();
 
