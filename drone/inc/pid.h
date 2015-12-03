@@ -1,4 +1,4 @@
-#ifndef PID_H_
+/*#ifndef PID_H_
 #define PID_H_
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,5 +30,5 @@ typedef struct Position_Control {
 Position_Control SpeedIntegrate(float vx, float vy, float altitude) ; 
 Position_Control PIDcal(Position_Control) ;
 void print_Position_Control(Position_Control) ;
-
-#endif /*PID_H_*/
+*/
+//#endif /*PID_H_*/

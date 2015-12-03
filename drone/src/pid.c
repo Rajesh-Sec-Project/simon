@@ -1,4 +1,4 @@
-	#include "pid.h"
+/*	#include "pid.h"
 	
 	//Define parameter
 	#define epsilon 0.01 //max error acceptable
@@ -40,7 +40,7 @@ Position_Control SpeedIntegrate(float vx, float vy, float altitude)
 //1 dim position with crude left right, down above 
 return actual_position ; 
 */
-}
+/*}
 //user has to give a 1 dim set point with up down left right
 //UI puts info in structure Position_Control under set_x, set_y, set_z 
 //SpeedIntegrate transforms vx, vy and altitude into real_x, real_y, real_z 
@@ -105,3 +105,4 @@ void print_Position_Control(Position_Control pos_con){
 	printf("error_y: %f \n",pos_con.error_y);
 	printf("error_z: %f \n",pos_con.error_z);
 }
+*/

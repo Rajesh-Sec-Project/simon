@@ -22,10 +22,10 @@ GenerateRound& GamePadSubscriber::get_m_gs(){
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
         if(ctrl->keys() & GamepadPacket::Up) {
-            PositionControl::up(50);
+            PositionControl::up(100);
         }
         else if(ctrl->keys() & GamepadPacket::Down) {
-            PositionControl::down(50);
+            PositionControl::down(100);
         }
         else if(ctrl->keys() & GamepadPacket::Left) {
             PositionControl::left(50);
