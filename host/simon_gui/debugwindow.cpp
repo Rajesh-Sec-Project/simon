@@ -186,8 +186,7 @@ void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::Packet
         m_ui->droneStateLabel->setText("Flying");
 
     if(info->state() & InfoPacket::Detection) {
-        QPointF where = QPointF((243.0f/2.0f) - info->detectX(),
-                                (138.0f/2.0f) - info->detectY());
+        QPointF where = QPointF((243.0f / 2.0f) - info->detectX(), (138.0f / 2.0f) - info->detectY());
 
         std::ostringstream ss;
         ss << "Yes : " << info->detectX() << ", " << info->detectY();
@@ -200,8 +199,8 @@ void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::Packet
         qreal speed_x = std::max(-1.0f, std::min(1.0f, info->speedX() / 100.0f));
         qreal speed_y = std::max(-1.0f, std::min(1.0f, info->speedY() / 100.0f));
 
-        m_ui->speed_x_pos->setValue(fabs(speed_x)*100);
-        m_ui->speed_y_pos->setValue(fabs(speed_y)*100);
+        m_ui->speed_x_pos->setValue(fabs(speed_x) * 100);
+        m_ui->speed_y_pos->setValue(fabs(speed_y) * 100);
     } else {
         m_dot->hide();
         m_ui->detectionsLabel->setText("No");

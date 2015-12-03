@@ -66,7 +66,7 @@ void TagController::gameInit() {
     Control::config("detect:detect_type", std::to_string(Mode_Multiple));
     M_clearAck();
 
-    Control::config("detect:detections_select_h", std::to_string((0x01 << (Tag_ShellsV2-1))));
+    Control::config("detect:detections_select_h", std::to_string((0x01 << (Tag_ShellsV2 - 1))));
     M_clearAck();
 
     Control::config("detect:enemy_colors", "3");
@@ -85,28 +85,23 @@ void TagController::gameInit() {
     m_avg_cor_vy = 0.0f;
 }
 
-bool TagController::hasDetection() const
-{
+bool TagController::hasDetection() const {
     return m_has_detection;
 }
 
-float TagController::tagPositionX() const
-{
+float TagController::tagPositionX() const {
     return m_tag_x;
 }
 
-float TagController::tagPositionY() const
-{
+float TagController::tagPositionY() const {
     return m_tag_y;
 }
 
-float TagController::tagSpeedX() const
-{
+float TagController::tagSpeedX() const {
     return m_avg_cor_vx;
 }
 
-float TagController::tagSpeedY() const
-{
+float TagController::tagSpeedY() const {
     return m_avg_cor_vy;
 }
 
@@ -117,10 +112,10 @@ void TagController::gameLoop() {
     /**/ std::string clr = "                      ";
     /**/ int nlines = 0;
     /**/ #define FMT std::fixed << std::setw(3) << std::setprecision(2) << std::setfill('0')
-    /**/ #define ENDL clr << std::endl; nlines++;
+        /**/ #define ENDL clr << std::endl;
+    nlines++;
 
-    if (m_has_detection)
-    {
+    if(m_has_detection) {
         // Get detection results (that's all we have..)
         float x = nav.vision_detect.xc[0];
         float y = nav.vision_detect.yc[0];
@@ -132,16 +127,12 @@ void TagController::gameLoop() {
         y = 1e-3 * (0.658 * d * (y - 500.0f));
 
         // Compute average speeds (in mm/s)
-        m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update
-                 * (10.0 * (x - m_tag_x));
-        m_avg_vy = (1.0f - m_avg_update) * m_avg_vy + m_avg_update
-                 * (10.0 * (y - m_tag_y));
+        m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update * (10.0 * (x - m_tag_x));
+        m_avg_vy = (1.0f - m_avg_update) * m_avg_vy + m_avg_update * (10.0 * (y - m_tag_y));
 
         // Compute average corrected speeds (in mm/s)
-        m_avg_cor_vx = (1.0f - m_avg_corr_update) * m_avg_cor_vx + m_avg_corr_update
-                     * (m_avg_vx - nav.demo.vx / 10.0f);
-        m_avg_cor_vy = (1.0f - m_avg_corr_update) * m_avg_cor_vy + m_avg_corr_update
-                     * (m_avg_vy - nav.demo.vz / 10.0f);
+        m_avg_cor_vx = (1.0f - m_avg_corr_update) * m_avg_cor_vx + m_avg_corr_update * (m_avg_vx - nav.demo.vx / 10.0f);
+        m_avg_cor_vy = (1.0f - m_avg_corr_update) * m_avg_cor_vy + m_avg_corr_update * (m_avg_vy - nav.demo.vz / 10.0f);
 
         // Update internal state
         m_tag_x = x;
@@ -152,8 +143,8 @@ void TagController::gameLoop() {
         std::cout << "vy:  " << FMT << m_avg_cor_vy << ENDL;
     }
 
-    /**/ for (int i = 0; i < nlines; ++i)
-    /**/     std::cout << "\e[A";
+    /**/ for(int i = 0; i < nlines; ++i)
+        /**/ std::cout << "\e[A";
 }
 
 void TagController::M_clearAck() {

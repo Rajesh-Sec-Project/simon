@@ -9,7 +9,7 @@
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include <iomanip>
-#include <fstream>   // file I/O
+#include <fstream> // file I/O
 #include <chrono>
 #include <iostream>
 #include <time.h>
@@ -30,6 +30,7 @@ std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 30ms;
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
+        , m_gameControlSubscriber(*this)
         , m_confmgr(*this)
         , m_navctrl(*this)
         , m_tagctrl(*this)
@@ -40,6 +41,7 @@ GameSystem::GameSystem()
 
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
+    m_endpoint.registerSubscriber(m_gameControlSubscriber);
     m_endpoint.registerSubscriber(m_roundmgr);
 
     std::cout << "Waiting for host to connect... ";
@@ -164,14 +166,9 @@ void GameSystem::M_gameLoop() {
     m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
-
-    std::ofstream f1("samples.txt");
-
-    /*** Add your own elements ***/
-     
-
     m_roundmgr.gameInit();
-
+    m_confmgr.gameInit();
+    m_navctrl.gameInit();
 
     // Send several FTRIM commands
     Control::enableStabilization();
@@ -185,21 +182,20 @@ void GameSystem::M_gameLoop() {
         Control::watchdog();
 
         // Wait for new navdata (only slightly blocking)
-        while (!m_navctrl.available());
+        while(!m_navctrl.available())
+            ;
 
         // Do stuff (regulations loops will go there for ex.)
+        /*** Add you own elements here ***/
         m_confmgr.gameLoop();
         m_tagctrl.gameLoop();
         m_journalist.gameLoop();
         m_roundmgr.gameLoop();
         m_mouvement_stalker.gameLoop();
+        m_navctrl.gameLoop();
 
-        /*** Add you own elements here ***/
-
-        
         Navdata nav = m_navctrl.grab();
-         
-        f1<<nav.demo.vx<<" "<<nav.demo.vy<<" "<<nav.demo.vz<<" "<<nav.demo.altitude<<" "<<nav.demo.theta<<" "<<nav.demo.phi<<" "<<nav.demo.psi<<" "<<"\n";
+        (void)nav;
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.

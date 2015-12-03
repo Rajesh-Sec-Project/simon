@@ -28,7 +28,7 @@ typedef struct Position_Control {
 } Position_Control;
 
 <<<<<<< HEAD
-Position_Control SpeedIntegrate(float vx, float vy, float altitude) ; 
+Position_Control SpeedIntegrate(float vx, float vy, float altitude) ;
 Position_Control PIDcal(Position_Control) ;
 void print_Position_Control(Position_Control) ;
 */

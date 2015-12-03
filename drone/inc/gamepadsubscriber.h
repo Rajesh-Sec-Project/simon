@@ -6,9 +6,6 @@
 #include <memory>
 #include "../inc/moves.h"
 
-
-class GameSystem;
-
 //! A simple gamepad subscriber class, that responds
 //!   to host's gamepad messages
 class GamePadSubscriber : public GameElement, public lcomm::Subscriber {
