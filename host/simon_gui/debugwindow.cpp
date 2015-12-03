@@ -1,5 +1,5 @@
-#include "MainWindow.h"
-#include "ui_MainWindow.h"
+#include "debugwindow.h"
+#include "ui_debugwindow.h"
 #include "lcomm/gamepad_packet.h"
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
@@ -14,15 +14,15 @@
 
 using namespace std::literals;
 
-MainWindow::MainWindow(QWidget* parent)
+DebugWindow::DebugWindow(QWidget* parent)
         : QMainWindow(parent)
-        , m_ui(std::make_unique<Ui::MainWindow>()) {
+        , m_ui(std::make_unique<Ui::DebugWindow>()) {
 
     m_ui->setupUi(this);
 
-    m_scene = new QGraphicsScene(this);
+    m_scene = std::make_unique<QGraphicsScene>(this);
     m_scene->setSceneRect(0, 0, 400, 250);
-    m_ui->detections->setScene(m_scene);
+    m_ui->detections->setScene(m_scene.get());
     m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
     m_dot->hide();
@@ -54,71 +54,71 @@ MainWindow::MainWindow(QWidget* parent)
                      this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 }
 
-MainWindow::~MainWindow() {
+DebugWindow::~DebugWindow() {
 }
 
-void MainWindow::M_up() {
+void DebugWindow::M_up() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Up);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_down() {
+void DebugWindow::M_down() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Down);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_left() {
+void DebugWindow::M_left() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Left);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_right() {
+void DebugWindow::M_right() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Right);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_stop() {
+void DebugWindow::M_stop() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Stop);
     CommManager::self().write(pkt);
     std::this_thread::sleep_for(200ms);
     CommManager::self().reconnect();
 }
 
-void MainWindow::M_takeOff() {
+void DebugWindow::M_takeOff() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_land() {
+void DebugWindow::M_land() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_positionUp() {
+void DebugWindow::M_positionUp() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Up);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_positionDown() {
+void DebugWindow::M_positionDown() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Down);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_positionLeft() {
+void DebugWindow::M_positionLeft() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Left);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_positionRight() {
+void DebugWindow::M_positionRight() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Right);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_logLevelChanged(int newIndex) {
+void DebugWindow::M_logLevelChanged(int newIndex) {
     m_logLevel = static_cast<lcomm::LogPacket::Level>(newIndex);
 }
 
-void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+void DebugWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
     LogPacket* log = packet->downcast<LogPacket>();
@@ -172,7 +172,7 @@ void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     m_ui->log->setTextColor(tc);
 }
 
-void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
     InfoPacket* info = packet->downcast<InfoPacket>();

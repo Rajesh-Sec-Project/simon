@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef DEBUGWINDOW_H
+#define DEBUGWINDOW_H
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -10,15 +10,15 @@
 #include "lcomm/log_packet.h"
 
 namespace Ui {
-    class MainWindow;
+    class DebugWindow;
 }
 
-class MainWindow : public QMainWindow {
+class DebugWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
+    explicit DebugWindow(QWidget* parent = nullptr);
+    ~DebugWindow();
 
 private slots:
     void M_up();
@@ -40,10 +40,10 @@ private slots:
     void M_receivedInfo(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
-    std::unique_ptr<Ui::MainWindow> m_ui;
-    QGraphicsScene* m_scene;
-    QGraphicsItem* m_dot;
+    std::unique_ptr<Ui::DebugWindow> m_ui;
+    std::unique_ptr<QGraphicsScene> m_scene;
+    QGraphicsItem *m_dot;
     std::atomic<lcomm::LogPacket::Level> m_logLevel;
 };
 
-#endif // MAINWINDOW_H
+#endif // DEBUGWINDOW_H

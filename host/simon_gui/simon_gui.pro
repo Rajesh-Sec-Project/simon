@@ -12,17 +12,20 @@ TARGET = simon_gui
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    MainWindow.cpp \
+    debugwindow.cpp \
+    gamewindow.cpp \
     gamepad.cpp \
     commmanager.cpp
 
 HEADERS  += \
-    MainWindow.h \
+    debugwindow.h \
+    gamewindow.h \
     gamepad.h \
     commmanager.h
 
 FORMS    += \
-    MainWindow.ui \
+    debugwindow.ui \
+    gamewindow.ui \
     gamepad.ui
 
 CONFIG += c++14
