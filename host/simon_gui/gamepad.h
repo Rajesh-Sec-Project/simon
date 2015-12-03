@@ -12,7 +12,7 @@ class GamePad : public QWidget {
     Q_OBJECT
 
 public:
-    explicit GamePad(QWidget* parent = 0);
+    explicit GamePad(QWidget* parent = nullptr);
     ~GamePad();
 
 signals:
@@ -21,8 +21,6 @@ signals:
     void left();
     void right();
     void stop();
-    void takeOff();
-    void land();
 
 private slots:
     void M_up();
@@ -30,13 +28,11 @@ private slots:
     void M_left();
     void M_right();
     void M_stop();
-    void M_takeOff();
-    void M_land();
 
-private:
+protected:
     void keyPressEvent(QKeyEvent* evt) override;
 
-private:
+protected:
     std::unique_ptr<Ui::GamePad> m_ui;
 };
 

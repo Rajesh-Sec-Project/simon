@@ -48,6 +48,7 @@ public:
 
     void gameInit() override;
     void gameLoop() override;
+
 	void fill_pos_con(Navdata nav) ;
 	void SpeedIntegrate() ;
 	
@@ -59,6 +60,9 @@ private:
 	Position_Control pos_con ;
 	SpeedMemory speed_mem ; 
 	ErrorMemory err_mem ; 
+
+
+    void fill_pos_con(Navdata nav, Position_Control& pos_con);
 
 };
 

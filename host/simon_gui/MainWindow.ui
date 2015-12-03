@@ -15,6 +15,118 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="2">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>Drone</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="4" column="1" colspan="3">
+        <widget class="QProgressBar" name="speed_y_pos">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="format">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="3">
+        <widget class="QProgressBar" name="speed_x_pos">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="format">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Detection :</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="detectionsLabel">
+         <property name="text">
+          <string>?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="4">
+        <widget class="QGraphicsView" name="detections">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>420</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>X speed</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Y speed</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="droneStateLabel">
+         <property name="text">
+          <string>?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>State :</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="2" colspan="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>298</width>
+           <height>28</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
@@ -90,67 +202,35 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="title">
-       <string>Drone</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>State :</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="droneStateLabel">
-         <property name="text">
-          <string>?</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QGraphicsView" name="detections">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>420</width>
-           <height>200</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Detection :</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="detectionsLabel">
-         <property name="text">
-          <string>?</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="0" column="0">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
-       <string>Gamepad</string>
+       <string>Position control</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <item>
+          <widget class="QPushButton" name="button_takeOff">
+           <property name="text">
+            <string>Take off</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_land">
+           <property name="text">
+            <string>Land</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="0" column="1">
-        <widget class="GamePad" name="gamepad" native="true"/>
+        <widget class="GamePad" name="positionControl" native="true"/>
        </item>
       </layout>
      </widget>
@@ -158,11 +238,11 @@
     <item row="0" column="1">
      <widget class="QGroupBox" name="groupBox_4">
       <property name="title">
-       <string>Position control</string>
+       <string>Gamepad</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
-        <widget class="GamePad" name="positionControl" native="true"/>
+        <widget class="GamePad" name="gamepad" native="true"/>
        </item>
       </layout>
      </widget>
@@ -175,7 +255,7 @@
      <x>0</x>
      <y>0</y>
      <width>879</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAwesome_GUI_Client">

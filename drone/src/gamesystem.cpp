@@ -23,25 +23,24 @@
 using namespace std::literals;
 using namespace lcomm;
 using namespace lcontrol;
-using namespace lmoves ;
+using namespace lmoves;
 
-std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 5ms;
+std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 30ms;
 
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
         , m_confmgr(*this)
         , m_navctrl(*this)
-        , m_roundelctrl(*this)
+        , m_tagctrl(*this)
         , m_journalist(*this)
         , m_mouvement_stalker(*this)
-        , user(0) {
+        , m_roundmgr(*this) {
     gettimeofday(&m_timeref, 0);
 
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
-
-
+    m_endpoint.registerSubscriber(m_roundmgr);
 
     std::cout << "Waiting for host to connect... ";
     std::cout.flush();
@@ -75,6 +74,10 @@ NavdataController const& GameSystem::navdataController() const {
 
 ConfigManager& GameSystem::configManager() {
     return m_confmgr;
+}
+
+TagController& GameSystem::tagController() {
+    return m_tagctrl;
 }
 
 lcomm::Endpoint& GameSystem::endpoint() {
@@ -147,11 +150,6 @@ void GameSystem::M_droneSetup() {
         ;
 }
 
-//setter new move ;
-void GameSystem::set_new_move(bool value) {
-    this->new_move = value ;
-}
-
 void GameSystem::M_gameLoop() {
 
     while(!m_inited)
@@ -163,75 +161,39 @@ void GameSystem::M_gameLoop() {
 
     // Initialize components
     message("GameSystem", "initializing components");
-    m_roundelctrl.gameInit();
-    m_mouvement_stalker.gameInit() ;
+    m_tagctrl.gameInit();
+    m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
 
     std::ofstream f1("samples.txt");
 
     /*** Add your own elements ***/
      
+
+    m_roundmgr.gameInit();
+
+
     // Send several FTRIM commands
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
 
-    auto lastTime = clock();
-    Moves seq(1);
-    this->new_move = false;
-    int i = 0 ;
-    int print_test = 0 ;
-    //std::list<tmove>::iterator i ;
     // Main game loop
+    auto lastTime = clock();
     while(m_alive) {
         auto lastTime = clock();
         // Be sure to send the watchdog packet
         Control::watchdog();
 
+        // Wait for new navdata (only slightly blocking)
+        while (!m_navctrl.available());
+
         // Do stuff (regulations loops will go there for ex.)
         m_confmgr.gameLoop();
-        m_roundelctrl.gameLoop();
+        m_tagctrl.gameLoop();
         m_journalist.gameLoop();
+        m_roundmgr.gameLoop();
+        m_mouvement_stalker.gameLoop();
 
-        Navdata nav_temp = m_navctrl.grab();
-        
-        if((nav_temp.header.state & navdata::fly)) {
-            //m_landed = false;
-            m_mouvement_stalker.gameLoop() ; 
-        }
-   /*     
-	if(print_test == 0 ) {
-	    for (int j=0; j<seq.getSequence().size();i++){
-    		std::cout << seq.getSequence()[i] << '\n';
-		usleep(100);
-  	    }
-	    print_test += 1 ;
-	}
-    
-
-	if(this->new_move) {
-        trace("game systeme","new move");
-		this->new_move = false;
-		if ( seq.getSequence()[i] == this->user.getSequence()[i] ){
-			if ( i == seq.getSequence().size()){
-				seq.addRandomMove();
-				user.clearSequence();
-				print_test = 0 ;
-				i = 0 ;
-				
-				//i = seq.getSequence().begin() ;		
-			}
-			else {
-				i++;
-			}
-		}
-		else {
-			std::cout << "GAME OVER" << '\n' ;
-			this->stop();
-			break;
-		}
-	}
-
-*/
         /*** Add you own elements here ***/
 
         
@@ -239,41 +201,10 @@ void GameSystem::M_gameLoop() {
          
         f1<<nav.demo.vx<<" "<<nav.demo.vy<<" "<<nav.demo.vz<<" "<<nav.demo.altitude<<" "<<nav.demo.theta<<" "<<nav.demo.phi<<" "<<nav.demo.psi<<" "<<"\n";
 
-       /*
-        std::string clr = "                      ";
-
-        std::cout << "vision:" << nav.header.vision << clr << std::endl;
-        std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.theta / 100.0f << clr << std::endl;
-        std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.phi / 100.0f << clr << std::endl;
-        std::cout << "psi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-        << nav.demo.psi / 100.0f << clr << std::endl;
-        std::cout << "vx:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vx
-        << clr << std::endl;
-        std::cout << "vy:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vy
-        << clr << std::endl;
-        std::cout << "vz:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vz
-        << clr << std::endl;
-        std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
-        << clr << std::endl;
-        std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr <<
-        std::endl;
-        std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
-        std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
-        std::cout << "xc[0]: " << nav.vision_detect.xc[0] << clr << std::endl;
-        std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
-        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr <<
-        std::endl;
-        std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
-        std::cout << std::endl;
-
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";
-        
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.
         std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (clock() - lastTime)));
-        lastTime = clock();*/
+        lastTime = clock();
     }
 }
 

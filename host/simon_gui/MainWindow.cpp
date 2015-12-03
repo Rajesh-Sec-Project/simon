@@ -21,9 +21,9 @@ MainWindow::MainWindow(QWidget* parent)
     m_ui->setupUi(this);
 
     m_scene = new QGraphicsScene(this);
-    m_scene->setSceneRect(0, 0, 400, 250);
+    m_scene->setSceneRect(0, 0, 243, 138);
     m_ui->detections->setScene(m_scene);
-    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("yellow")), QBrush(QColor("yellow")));
+    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
     m_dot->hide();
 
@@ -36,13 +36,14 @@ MainWindow::MainWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(left()), this, SLOT(M_left()));
     QObject::connect(m_ui->gamepad, SIGNAL(right()), this, SLOT(M_right()));
     QObject::connect(m_ui->gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
-    QObject::connect(m_ui->gamepad, SIGNAL(takeOff()), this, SLOT(M_takeOff()));
-    QObject::connect(m_ui->gamepad, SIGNAL(land()), this, SLOT(M_land()));
 
     QObject::connect(m_ui->positionControl, SIGNAL(up()), this, SLOT(M_positionUp()));
     QObject::connect(m_ui->positionControl, SIGNAL(down()), this, SLOT(M_positionDown()));
     QObject::connect(m_ui->positionControl, SIGNAL(left()), this, SLOT(M_positionLeft()));
     QObject::connect(m_ui->positionControl, SIGNAL(right()), this, SLOT(M_positionRight()));
+
+    QObject::connect(m_ui->button_takeOff, SIGNAL(clicked()), this, SLOT(M_takeOff()));
+    QObject::connect(m_ui->button_land, SIGNAL(clicked()), this, SLOT(M_land()));
 
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
@@ -121,7 +122,7 @@ void MainWindow::M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     using namespace lcomm;
 
     LogPacket* log = packet->downcast<LogPacket>();
-    if(!log || log->level() < m_logLevel)
+    if(!log /* || log->level() < m_logLevel*/)
         return;
 
     QColor text_c;
@@ -184,8 +185,8 @@ void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketB
         m_ui->droneStateLabel->setText("Flying");
 
     if(info->state() & InfoPacket::Detection) {
-        QPointF where = QPointF(m_scene->sceneRect().width() - ((qreal)info->detectX() * m_scene->sceneRect().width()) / 1000.0f,
-                                ((qreal)info->detectY() * m_scene->sceneRect().height()) / 1000.0f);
+        QPointF where = QPointF((243.0f/2.0f) - info->detectX(),
+                                (138.0f/2.0f) - info->detectY());
 
         std::ostringstream ss;
         ss << "Yes : " << info->detectX() << ", " << info->detectY();
@@ -194,6 +195,12 @@ void MainWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketB
         m_dot->setPos(where);
         m_ui->detections->update();
         m_ui->detectionsLabel->setText(QString(ss.str().c_str()));
+
+        qreal speed_x = std::max(-1.0f, std::min(1.0f, info->speedX() / 100.0f));
+        qreal speed_y = std::max(-1.0f, std::min(1.0f, info->speedY() / 100.0f));
+
+        m_ui->speed_x_pos->setValue(fabs(speed_x)*100);
+        m_ui->speed_y_pos->setValue(fabs(speed_y)*100);
     } else {
         m_dot->hide();
         m_ui->detectionsLabel->setText("No");

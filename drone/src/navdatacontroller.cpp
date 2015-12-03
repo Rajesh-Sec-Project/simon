@@ -77,6 +77,19 @@ void NavdataController::M_setupPcap() {
         return;
     }
 
+    bpf_program fp;
+    if (pcap_compile(m_pcap_handle, &fp, "udp port 5554 and src 127.0.0.2", 0, PCAP_NETMASK_UNKNOWN) < 0)
+    {
+        M_error("unable to compile pcap filter");
+        return;
+    }
+
+    if (pcap_setfilter(m_pcap_handle, &fp) < 0)
+    {
+        M_error("unable to apply pcap filter");
+        return;
+    }
+
     M_trace("pcap session started");
 
     pcap_loop(m_pcap_handle, -1, &M_proxy, reinterpret_cast<unsigned char*>(this));
@@ -213,6 +226,7 @@ void NavdataController::M_configure() {
 
     // Setup options here
     int options = (0x01 << navdata::option_demo) | (0x01 << navdata::option_vision_detect);
+    //          | (0x01 << navdata::option_references);
     Control::config("general:navdata_options", std::to_string(options));
     M_trace("options sets up, good to go !");
 
@@ -247,6 +261,8 @@ void NavdataController::M_decode(const unsigned char* data, int size) {
             m_navdata.demo = *reinterpret_cast<const demo*>(header);
         } else if(header->tag == option_vision_detect) {
             m_navdata.vision_detect = *reinterpret_cast<const vision_detect*>(header);
+        } else if(header->tag == option_references) {
+            m_navdata.references = *reinterpret_cast<const references*>(header);
         }
 
         pos += header->size;

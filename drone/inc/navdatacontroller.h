@@ -231,12 +231,34 @@ namespace navdata {
         uint32_t camera_source[4];
     };
 
-    struct __attribute__((packed)) trackers_send {
+    struct __attribute__((packed)) references {
         uint16_t tag;
         uint16_t size;
 
-        int32_t locked[6 * 5];
-        int32_t point[6 * 5][2];
+        int32_t ref_theta;
+        int32_t ref_phi;
+        int32_t ref_theta_I;
+        int32_t ref_phi_I;
+        int32_t ref_pitch;
+        int32_t ref_roll;
+        int32_t ref_yaw;
+        int32_t ref_psi;
+
+        float vx_ref;
+        float vy_ref;
+        float theta_mod;
+        float phi_mod;
+
+        float k_v_x;
+        float k_v_y;
+        uint32_t k_mode;
+
+        float ui_time;
+        float ui_theta;
+        float ui_phi;
+        float ui_psi;
+        float ui_psi_accuracy;
+        int32_t ui_seq;
     };
 }
 
@@ -244,7 +266,7 @@ struct Navdata {
     navdata::header header;
     navdata::demo demo;
     navdata::vision_detect vision_detect;
-    navdata::trackers_send trackers_send;
+    navdata::references references;
 };
 
 class GameSystem;
