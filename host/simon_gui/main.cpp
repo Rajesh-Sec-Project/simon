@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
     DebugWindow dw;
     dw.show();
 
-    /*GameWindow gw;
-    gw.show();*/
+    GameWindow gw;
+    gw.show();
 
     return a.exec();
 }

@@ -66,4 +66,7 @@ void GameWindow::M_updateState() {
             m_ui->stopButton->setEnabled(true);
             break;
     }
+
+    lcomm::GameControlPacket pkt(m_state);
+    CommManager::self().write(pkt);
 }
