@@ -42,7 +42,7 @@ private slots:
 private:
     std::unique_ptr<Ui::DebugWindow> m_ui;
     std::unique_ptr<QGraphicsScene> m_scene;
-    QGraphicsItem *m_dot;
+    QGraphicsItem* m_dot;
     std::atomic<lcomm::LogPacket::Level> m_logLevel;
 };
 

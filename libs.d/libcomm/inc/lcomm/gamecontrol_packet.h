@@ -8,7 +8,7 @@
 #include "lcomm/packet.h"
 
 namespace lcomm {
-    enum class GameState : int {Stopped, Running, Paused};
+    enum class GameState : int { Stopped, Running, Paused };
 
     class GameControlPacket : public Packet<GameControlPacket> {
     public:
