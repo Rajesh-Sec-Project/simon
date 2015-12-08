@@ -10,7 +10,7 @@
 #include "lcomm/info_packet.h"
 #include "navdatacontroller.h"
 #include "lcomm/gamecontrol_packet.h"
-
+#include "lcomm/pid_packet.h"
 
 using namespace std::literals;
 
@@ -22,6 +22,7 @@ int main() {
     lcomm::PacketManager::registerPacketClass<lcomm::LogPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::GameControlPacket>();
+    lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
 
     std::cout << "App's per-thread stack size (kB): " << std::endl;
     std::system("ulimit -s");

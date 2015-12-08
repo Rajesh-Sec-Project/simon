@@ -2,9 +2,10 @@
 #define MOUVEMENT_STALKER_H
 
 #include "gameelement.h"
+#include "lcomm/lcomm.h"
 #include <fstream>
 #include <iostream>
-//#include "pid.h"
+#include <memory>
 #include "navdatacontroller.h"
 
 struct SetOrigin {
@@ -47,12 +48,20 @@ struct ErrorMemory {
     float pre_error_z;
 };
 
+struct Gains {
+    struct {
+        float kp, kd, ki;
+    } xy, z;
+};
+
 class GameSystem;
 
-class Mouvement_Stalker : public GameElement {
+class Mouvement_Stalker : public GameElement, public lcomm::Subscriber {
 public:
     Mouvement_Stalker(GameSystem& system);
     ~Mouvement_Stalker();
+
+    void notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) override;
 
     void gameInit() override;
     void gameLoop() override;
@@ -65,12 +74,16 @@ public:
     void print_Position_Control();
     void speed_command_output();
 
+    Gains& gains();
+    Gains const& gains() const;
+
 private:
+    Gains m_gains;
     SetOrigin org;
     Position_Control pos_con;
     SpeedMemory speed_mem;
     ErrorMemory err_mem;
-    std::ifstream file;
+    std::ofstream file;
 };
 
 #endif // MOUVEMENT_STALKER_H

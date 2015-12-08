@@ -17,8 +17,6 @@ GamePadSubscriber::GamePadSubscriber(GameSystem& system)
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
 
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
-
-
         if(ctrl->keys() & GamepadPacket::Land) {
 
             Control::land();
@@ -26,13 +24,13 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
             Control::takeoff();
         } else if(ctrl->keys() & GamepadPacket::Up) {
 
-            PositionControl::up(50);
+            PositionControl::up(5);
         } else if(ctrl->keys() & GamepadPacket::Down) {
-            PositionControl::down(50);
+            PositionControl::down(5);
         } else if(ctrl->keys() & GamepadPacket::Left) {
-            PositionControl::left(50);
+            PositionControl::left(5);
         } else if(ctrl->keys() & GamepadPacket::Right) {
-            PositionControl::right(50);
+            PositionControl::right(5);
         }
     } else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
         if(ctrl->keys() & GamepadPacket::Stop) {

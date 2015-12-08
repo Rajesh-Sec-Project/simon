@@ -4,6 +4,7 @@
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+#include "lcomm/pid_packet.h"
 #include "commmanager.h"
 #include <iostream>
 
@@ -58,6 +59,13 @@ DebugWindow::DebugWindow(QWidget* parent)
                      SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this,
                      SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
+    QObject::connect(m_ui->kp_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->ki_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kd_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kp, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->ki, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kd, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
 }
 
 DebugWindow::~DebugWindow() {
@@ -90,12 +98,12 @@ void DebugWindow::M_stop() {
     CommManager::self().reconnect();
 }
 
-void MainWindow::M_takeOff() {
+void DebugWindow::M_takeOff() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::TakeOff);
     CommManager::self().write(pkt);
 }
 
-void MainWindow::M_land() {
+void DebugWindow::M_land() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Land);
     CommManager::self().write(pkt);
 }
@@ -117,6 +125,14 @@ void DebugWindow::M_positionLeft() {
 
 void DebugWindow::M_positionRight() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Right);
+    CommManager::self().write(pkt);
+}
+
+void DebugWindow::M_pidUpdated(double)
+{
+    using namespace lcomm;
+    PIDPacket pkt(m_ui->kp_z->value(), m_ui->ki_z->value(), m_ui->kd_z->value(),
+                  m_ui->kp->value(), m_ui->ki->value(), m_ui->kd->value());
     CommManager::self().write(pkt);
 }
 

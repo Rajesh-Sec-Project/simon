@@ -8,6 +8,7 @@
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
 #include "lcomm/gamecontrol_packet.h"
+#include "lcomm/pid_packet.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -18,6 +19,7 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::LogPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::GameControlPacket>();
+    lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
 
     qDebug() << "Waiting for connection...";
     while(!CommManager::self().opened())

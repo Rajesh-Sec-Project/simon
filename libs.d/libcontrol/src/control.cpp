@@ -13,7 +13,7 @@ using namespace lcomm;
 #define SLEEP_DELAY 20ms
 
 // Define to 1 if you want the frames sent to the drone to be printed on stdout.
-#define PRINT_FRAMES 1
+#define PRINT_FRAMES 0
 
 namespace lcontrol {
     std::atomic<std::uint32_t> Control::m_seqNum;
@@ -70,7 +70,6 @@ namespace lcontrol {
     void Control::takeoff() {
         for(int i = 0; i < NUM_ITER; ++i) {
             Control::takeoff(m_seqNum.fetch_add(1), *m_sock);
-            std::cout << "elle take off bien\n" << std::endl;
             std::this_thread::sleep_for(SLEEP_DELAY);
         }
     }
@@ -78,7 +77,6 @@ namespace lcontrol {
     void Control::land() {
         for(int i = 0; i < NUM_ITER; ++i) {
             Control::land(m_seqNum.fetch_add(1), *m_sock);
-            std::cout << "elle land bien\n" << std::endl;
             std::this_thread::sleep_for(SLEEP_DELAY);
         }
     }
