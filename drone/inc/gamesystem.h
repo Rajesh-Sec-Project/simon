@@ -22,6 +22,7 @@
 #include "moves.h"
 #include "mouvement_stalker.h"
 #include "roundmanager.h"
+#include "gamecontrolsubscriber.h"
 
 //! The game system class, that manages :
 //!   - all the game components
@@ -86,6 +87,8 @@ private:
     std::thread m_gameLoop;
 
     GamePadSubscriber m_gamePadSubscriber;
+    GameControlSubscriber m_gameControlSubscriber;
+
     ConfigManager m_confmgr;
     NavdataController m_navctrl;
     TagController m_tagctrl;

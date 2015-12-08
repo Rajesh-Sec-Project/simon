@@ -61,26 +61,22 @@ void RoundManager::gameLoop() {
     }
 }
 
-void RoundManager::userUp()
-{
+void RoundManager::userUp() {
     m_user.addMove(lmoves::tmove::UP);
     m_new_move = true;
 }
 
-void RoundManager::userDown()
-{
+void RoundManager::userDown() {
     m_user.addMove(lmoves::tmove::DOWN);
     m_new_move = true;
 }
 
-void RoundManager::userLeft()
-{
+void RoundManager::userLeft() {
     m_user.addMove(lmoves::tmove::LEFT);
     m_new_move = true;
 }
 
-void RoundManager::userRight()
-{
+void RoundManager::userRight() {
     m_user.addMove(lmoves::tmove::RIGHT);
     m_new_move = true;
 }

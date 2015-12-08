@@ -1,4 +1,5 @@
-#include "MainWindow.h"
+#include "debugwindow.h"
+#include "gamewindow.h"
 #include <QApplication>
 #include "commmanager.h"
 #include "lcomm/lcomm.h"
@@ -6,6 +7,7 @@
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+#include "lcomm/gamecontrol_packet.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -15,14 +17,18 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::LogPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::InfoPacket>();
+    lcomm::PacketManager::registerPacketClass<lcomm::GameControlPacket>();
 
     qDebug() << "Waiting for connection...";
     while(!CommManager::self().opened())
         ;
     qDebug() << "Connected !";
 
-    MainWindow w;
-    w.show();
+    DebugWindow dw;
+    dw.show();
 
-    a.exec();
+    GameWindow gw;
+    gw.show();
+
+    return a.exec();
 }

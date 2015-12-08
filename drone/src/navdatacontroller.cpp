@@ -78,14 +78,12 @@ void NavdataController::M_setupPcap() {
     }
 
     bpf_program fp;
-    if (pcap_compile(m_pcap_handle, &fp, "udp port 5554 and src 127.0.0.2", 0, PCAP_NETMASK_UNKNOWN) < 0)
-    {
+    if(pcap_compile(m_pcap_handle, &fp, "udp port 5554 and src 127.0.0.2", 0, PCAP_NETMASK_UNKNOWN) < 0) {
         M_error("unable to compile pcap filter");
         return;
     }
 
-    if (pcap_setfilter(m_pcap_handle, &fp) < 0)
-    {
+    if(pcap_setfilter(m_pcap_handle, &fp) < 0) {
         M_error("unable to apply pcap filter");
         return;
     }

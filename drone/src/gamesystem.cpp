@@ -9,6 +9,7 @@
 #include "lcontrol/control.h"
 #include "navdatacontroller.h"
 #include <iomanip>
+#include <fstream> // file I/O
 #include <chrono>
 #include <iostream>
 #include <time.h>
@@ -29,6 +30,7 @@ std::chrono::nanoseconds const GameSystem::m_gameLoopActivationTime = 30ms;
 GameSystem::GameSystem()
         : m_endpoint(std::make_unique<ServerSocket>(50001))
         , m_gamePadSubscriber(*this)
+        , m_gameControlSubscriber(*this)
         , m_confmgr(*this)
         , m_navctrl(*this)
         , m_tagctrl(*this)
@@ -39,6 +41,7 @@ GameSystem::GameSystem()
 
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
+    m_endpoint.registerSubscriber(m_gameControlSubscriber);
     m_endpoint.registerSubscriber(m_roundmgr);
 
     std::cout << "Waiting for host to connect... ";
@@ -168,6 +171,8 @@ void GameSystem::M_gameLoop() {
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
     m_roundmgr.gameInit();
+    m_confmgr.gameInit();
+    m_navctrl.gameInit();
 
     // Send several FTRIM commands
     Control::enableStabilization();
@@ -181,51 +186,20 @@ void GameSystem::M_gameLoop() {
         Control::watchdog();
 
         // Wait for new navdata (only slightly blocking)
-        while (!m_navctrl.available());
+        while(!m_navctrl.available())
+            ;
 
         // Do stuff (regulations loops will go there for ex.)
+        /*** Add you own elements here ***/
         m_confmgr.gameLoop();
         m_tagctrl.gameLoop();
         m_journalist.gameLoop();
         m_roundmgr.gameLoop();
+        m_mouvement_stalker.gameLoop();
+        m_navctrl.gameLoop();
 
-        // KAD
-        /*Navdata nav_temp = m_navctrl.grab();
-        if((nav_temp.header.state & navdata::fly)) {
-            // m_landed = false;
-            m_mouvement_stalker.gameLoop();
-        }*/
-
-        /*** Add you own elements here ***/
-
-        /*std::cout << "vision:" << nav.header.vision << clr << std::endl;
-        std::cout << "theta: " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.theta / 100.0f << clr << std::endl;
-        std::cout << "phi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.phi / 100.0f << clr << std::endl;
-        std::cout << "psi:   " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')
-                  << nav.demo.psi / 100.0f << clr << std::endl;
-        std::cout << "vx:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vx
-                  << clr << std::endl;
-        std::cout << "vy:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vy
-                  << clr << std::endl;
-        std::cout << "vz:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0') << nav.demo.vz
-                  << clr << std::endl;
-        std::cout << "vbat:  " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.vbat_flying_percentage
-                  << clr << std::endl;
-        std::cout << "alt:   " << std::fixed << std::setw(4) << std::setfill('0') << nav.demo.altitude << clr <<
-        std::endl;
-        std::cout << "tag:   " << nav.demo.detection_camera_type << clr << std::endl;
-        std::cout << "nb:    " << nav.vision_detect.nb_detected << clr << std::endl;
-        std::cout << "xc[0]: " << nav.vision_detect.xc[0] << clr << std::endl;
-        std::cout << "yc[0]: " << nav.vision_detect.yc[0] << clr << std::endl;
-        std::cout << "video_thread: " << ((nav.header.state & navdata::video_thread) ? "yes" : "no") << clr <<
-        std::endl;
-        std::cout << "acq_thread: " << ((nav.header.state & navdata::acq_thread) ? "yes" : "no") << clr << std::endl;
-        std::cout << std::endl;
-
-        std::cout << "\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A\e[A";*/
-
+        Navdata nav = m_navctrl.grab();
+        (void)nav;
 
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.

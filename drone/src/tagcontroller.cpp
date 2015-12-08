@@ -67,11 +67,11 @@ void TagController::gameInit() {
     Control::config("control:outdoor", "FALSE");
     M_clearAck();
 
-    Control::config("detect:detect_type", std::to_string(Mode_F_HShellsV2)); //Mode_Multiple));
+    Control::config("detect:detect_type", std::to_string(Mode_F_HShellsV2)); // Mode_Multiple));
     M_clearAck();
 
-    /*Control::config("detect:detections_select_h", std::to_string((0x01 << (Tag_ShellsV2-1))));
-    M_clearAck();*/
+    Control::config("detect:detections_select_h", std::to_string((0x01 << (Tag_ShellsV2 - 1))));
+    M_clearAck();
 
     Control::config("detect:enemy_colors", "3");
     M_clearAck();
@@ -94,28 +94,23 @@ void TagController::gameInit() {
     M_initMoveDetection();
 }
 
-bool TagController::hasDetection() const
-{
+bool TagController::hasDetection() const {
     return m_has_detection;
 }
 
-float TagController::tagPositionX() const
-{
+float TagController::tagPositionX() const {
     return m_tag_x;
 }
 
-float TagController::tagPositionY() const
-{
+float TagController::tagPositionY() const {
     return m_tag_y;
 }
 
-float TagController::tagSpeedX() const
-{
+float TagController::tagSpeedX() const {
     return m_avg_cor_vx;
 }
 
-float TagController::tagSpeedY() const
-{
+float TagController::tagSpeedY() const {
     return m_avg_cor_vy;
 }
 
@@ -123,8 +118,7 @@ void TagController::gameLoop() {
     Navdata nav = m_system.navdataController().grab();
     m_has_detection = nav.vision_detect.nb_detected != 0;
 
-    if (m_has_detection)
-    {
+    if(m_has_detection) {
         // Get detection results (that's all we have..)
         float x = nav.vision_detect.xc[0];
         float y = nav.vision_detect.yc[0];
@@ -136,16 +130,12 @@ void TagController::gameLoop() {
         y = 1e-3 * (0.658 * d * (y - 500.0f));
 
         // Compute average speeds (in mm/s)
-        m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update
-                 * (10.0 * (x - m_tag_x));
-        m_avg_vy = (1.0f - m_avg_update) * m_avg_vy + m_avg_update
-                 * (10.0 * (y - m_tag_y));
+        m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update * (10.0 * (x - m_tag_x));
+        m_avg_vy = (1.0f - m_avg_update) * m_avg_vy + m_avg_update * (10.0 * (y - m_tag_y));
 
         // Compute average corrected speeds (in mm/s)
-        m_avg_cor_vx = (1.0f - m_avg_corr_update) * m_avg_cor_vx + m_avg_corr_update
-                     * (m_avg_vx - nav.demo.vx / 10.0f);
-        m_avg_cor_vy = (1.0f - m_avg_corr_update) * m_avg_cor_vy + m_avg_corr_update
-                     * (m_avg_vy - nav.demo.vz / 10.0f);
+        m_avg_cor_vx = (1.0f - m_avg_corr_update) * m_avg_cor_vx + m_avg_corr_update * (m_avg_vx - nav.demo.vx / 10.0f);
+        m_avg_cor_vy = (1.0f - m_avg_corr_update) * m_avg_cor_vy + m_avg_corr_update * (m_avg_vy - nav.demo.vz / 10.0f);
 
         // Update internal state
         m_tag_x = x;
@@ -155,20 +145,19 @@ void TagController::gameLoop() {
         int h = M_moveDetection(m_horiz_detect, m_avg_vx);
         int v = M_moveDetection(m_vert_detect, m_avg_vy);
 
-        if (++m_delayCounter > m_delay)
-        {
-            if (h < 0)
+        if(++m_delayCounter > m_delay) {
+            if(h < 0)
                 m_system.roundManager().userLeft();
-            else if (h > 0)
+            else if(h > 0)
                 m_system.roundManager().userRight();
 
-            if (v < 0)
+            if(v < 0)
                 m_system.roundManager().userDown();
-            else if (v > 0)
+            else if(v > 0)
                 m_system.roundManager().userUp();
         }
 
-        if (h || v)
+        if(h || v)
             m_delayCounter = 0;
     }
 }
@@ -219,51 +208,66 @@ void TagController::M_clearAck() {
     M_trace("command ack cleared");
 }
 
-void TagController::M_initMoveDetection()
-{
+void TagController::M_initMoveDetection() {
     m_horiz_detect.window = 20;
     m_horiz_detect.step = m_horiz_detect.window / 8;
     m_horiz_detect.amplitude = 50.0f;
     m_horiz_detect.data = std::vector<float>(m_horiz_detect.window, 0.0f);
-    m_horiz_detect.reference_pattern =
-    {
-        0.000000, 0.111111, 0.222222,
-        0.333333, 0.444444, 0.555556,
-        0.666667, 0.777778, 0.888889,
-        1.000000, 0.888889, 0.777778,
-        0.666667, 0.555556, 0.444444,
-        0.333333, 0.222222, 0.111111,
-        0.000000, 0.000000
-    };
+    m_horiz_detect.reference_pattern = {0.000000,
+                                        0.111111,
+                                        0.222222,
+                                        0.333333,
+                                        0.444444,
+                                        0.555556,
+                                        0.666667,
+                                        0.777778,
+                                        0.888889,
+                                        1.000000,
+                                        0.888889,
+                                        0.777778,
+                                        0.666667,
+                                        0.555556,
+                                        0.444444,
+                                        0.333333,
+                                        0.222222,
+                                        0.111111,
+                                        0.000000,
+                                        0.000000};
     m_horiz_detect.step_counter = 0;
 
     m_vert_detect.window = 20;
     m_vert_detect.step = m_vert_detect.window / 8;
     m_vert_detect.amplitude = 50.0f;
     m_vert_detect.data = std::vector<float>(m_vert_detect.window, 0.0f);
-    m_vert_detect.reference_pattern =
-    {
-        0.000000, 0.111111, 0.222222,
-        0.333333, 0.444444, 0.555556,
-        0.666667, 0.777778, 0.888889,
-        1.000000, 0.888889, 0.777778,
-        0.666667, 0.555556, 0.444444,
-        0.333333, 0.222222, 0.111111,
-        0.000000, 0.000000
-    };
+    m_vert_detect.reference_pattern = {0.000000,
+                                       0.111111,
+                                       0.222222,
+                                       0.333333,
+                                       0.444444,
+                                       0.555556,
+                                       0.666667,
+                                       0.777778,
+                                       0.888889,
+                                       1.000000,
+                                       0.888889,
+                                       0.777778,
+                                       0.666667,
+                                       0.555556,
+                                       0.444444,
+                                       0.333333,
+                                       0.222222,
+                                       0.111111,
+                                       0.000000,
+                                       0.000000};
     m_vert_detect.step_counter = 0;
 }
 
-int TagController::M_moveDetection(TagController::DContext& context, float v)
-{
+int TagController::M_moveDetection(TagController::DContext& context, float v) {
     // Shift data vector and set new value
-    std::rotate(context.data.begin(),
-                context.data.begin()+1,
-                context.data.end());
+    std::rotate(context.data.begin(), context.data.begin() + 1, context.data.end());
     context.data.back() = v;
 
-    if (++context.step_counter >= context.step)
-    {
+    if(++context.step_counter >= context.step) {
         context.step_counter = 0;
 
         // Compute the cross-correlation
@@ -273,14 +277,10 @@ int TagController::M_moveDetection(TagController::DContext& context, float v)
         int max = M_localMax(corr, 100.0f);
         int min = M_localMin(corr, -1.0f);
 
-        if (max >= 0 && min >= 0)
-        {
-            if (max < min)
-            {
+        if(max >= 0 && min >= 0) {
+            if(max < min) {
                 return 1;
-            }
-            else
-            {
+            } else {
                 return -1;
             }
         }
@@ -289,42 +289,37 @@ int TagController::M_moveDetection(TagController::DContext& context, float v)
     return 0;
 }
 
-float TagController::M_xcorr(std::vector<float> const& d, std::vector<float> const& p, int i)
-{
+float TagController::M_xcorr(std::vector<float> const& d, std::vector<float> const& p, int i) {
     int N = d.size();
     int k = i - N;
-    
-    if (k < 0)
-        return M_xcorr(d, p, 2*N - i);
+
+    if(k < 0)
+        return M_xcorr(d, p, 2 * N - i);
 
     float acc = 0.0f;
-    for (int l = 0; l < N-k; ++l)
-        acc += d[l+k] * p[k];
+    for(int l = 0; l < N - k; ++l)
+        acc += d[l + k] * p[k];
 
     return acc;
 }
 
-std::vector<float>& TagController::M_xcorr(std::vector<float> const& d, std::vector<float> const& p)
-{
+std::vector<float>& TagController::M_xcorr(std::vector<float> const& d, std::vector<float> const& p) {
     static std::vector<float> xcorr;
 
-    if (!xcorr.size())
-        xcorr = std::vector<float>(2*d.size(), 0.0f);
+    if(!xcorr.size())
+        xcorr = std::vector<float>(2 * d.size(), 0.0f);
 
-    for (int i = 0; i < (int) xcorr.size(); ++i)
+    for(int i = 0; i < (int)xcorr.size(); ++i)
         xcorr[i] = M_xcorr(d, p, i);
 
     return xcorr;
 }
 
-int TagController::M_localMax(std::vector<float>& v, float minval)
-{
+int TagController::M_localMax(std::vector<float>& v, float minval) {
     float max = minval;
     int maxid = -1;
-    for (int i = 0; i < (int) v.size(); ++i)
-    {
-        if (v[i] > max)
-        {
+    for(int i = 0; i < (int)v.size(); ++i) {
+        if(v[i] > max) {
             maxid = i;
             max = v[i];
         }
@@ -333,14 +328,11 @@ int TagController::M_localMax(std::vector<float>& v, float minval)
     return maxid;
 }
 
-int TagController::M_localMin(std::vector<float>& v, float maxval)
-{
+int TagController::M_localMin(std::vector<float>& v, float maxval) {
     float min = maxval;
     int minid = -1;
-    for (int i = 0; i < (int) v.size(); ++i)
-    {
-        if (v[i] < min)
-        {
+    for(int i = 0; i < (int)v.size(); ++i) {
+        if(v[i] < min) {
             minid = i;
             min = v[i];
         }

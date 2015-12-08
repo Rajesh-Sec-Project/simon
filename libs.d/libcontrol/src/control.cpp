@@ -20,7 +20,12 @@ namespace lcontrol {
     std::unique_ptr<lcomm::ClientSocket> Control::m_sock;
 
     std::string Control::float_to_string(float i) {
-        return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
+        union {
+            std::uint32_t as_uint;
+            float as_float;
+        };
+        as_float = i;
+        return std::to_string(as_uint);
     }
 
     // Unique application ID
@@ -118,7 +123,9 @@ namespace lcontrol {
         Control::pmode(m_seqNum.fetch_add(1), *m_sock);
         Control::misc(m_seqNum.fetch_add(1), *m_sock);
     }
-
+    void Control::movement(int flag, float frontBackTilt, float leftRightTilt, float verticalSpeed, float angularSpeed) {
+        movement(m_seqNum.fetch_add(1), flag, frontBackTilt, leftRightTilt, verticalSpeed, angularSpeed, *m_sock);
+    }
     // Ask the drone to send the navdata :
     // AT*CONFIG="seqNum",\"general:navdata_demo\",\"TRUE\"\r
     void Control::sendNavData(std::uint32_t seqNum, ClientSocket& s) {
