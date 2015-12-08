@@ -17,6 +17,11 @@ public:
     void gameInit() override;
     void gameLoop() override;
 
+    void userLeft();
+    void userRight();
+    void userUp();
+    void userDown();
+
 private:
     bool m_new_move;
     lmoves::Moves m_seq, m_user;

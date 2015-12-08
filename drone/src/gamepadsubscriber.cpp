@@ -15,29 +15,26 @@ GamePadSubscriber::GamePadSubscriber(GameSystem& system)
 }
 
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
-    std::cout << "1234567" << std::endl;
+    
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
-     std::cout << "abd7" << std::endl;
+
+     
        if(ctrl->keys() & GamepadPacket::Land) {
+
             Control::land();
         } else if(ctrl->keys() & GamepadPacket::TakeOff) {
             Control::takeoff();
         } else if(ctrl->keys() & GamepadPacket::Up) {
 
             PositionControl::up(50);
-        }
-        else if(ctrl->keys() & GamepadPacket::Down) {
-            PositionControl::down(50);
-        }
-        else if(ctrl->keys() & GamepadPacket::Left) {
-
-            PositionControl::up(50);
         } else if(ctrl->keys() & GamepadPacket::Down) {
             PositionControl::down(50);
+        } else if(ctrl->keys() & GamepadPacket::Left) {
+            PositionControl::left(50);
+        } else if(ctrl->keys() & GamepadPacket::Right) {
+            PositionControl::right(50);
         }
-    }
-    else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
-        std::cout << "sdfsdfdfsd" << std::endl;
+    } else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
         if(ctrl->keys() & GamepadPacket::Stop) {
             std::cout << "Stop requested:\n"
                          "         ________________\n"
@@ -58,8 +55,7 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|\n"
-                      << std::endl;
+                         "              |_|\n" << std::endl;
 
             Control::land();
             m_system.stop();

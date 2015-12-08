@@ -70,11 +70,7 @@ private:
 	Position_Control pos_con ;
 	SpeedMemory speed_mem ; 
 	ErrorMemory err_mem ; 
-	std::ifstream file ; 
-
-
-    //void fill_pos_con(Navdata nav, Position_Control& pos_con);
-
+	std::ifstream file ;
 };
 
 #endif // MOUVEMENT_STALKER_H

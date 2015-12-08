@@ -14,11 +14,7 @@ namespace lcontrol {
         static void config(std::string const& key, std::string const& value);
         static void ackControl();
         static void getCfgControl();
-        static void movement(int flag,
-                             float frontBackTilt,
-                             float leftRightTilt,
-                             float verticalSpeed,
-                             float angularSpeed);
+        static void movement(int flag, float frontBackTilt, float leftRightTilt, float verticalSpeed, float angularSpeed);
         static void strangeInit();
         static void clearSessionId();
         static void setSessionId();
