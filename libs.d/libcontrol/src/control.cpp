@@ -13,7 +13,7 @@ using namespace lcomm;
 #define SLEEP_DELAY 20ms
 
 // Define to 1 if you want the frames sent to the drone to be printed on stdout.
-#define PRINT_FRAMES 0
+#define PRINT_FRAMES 1
 
 namespace lcontrol {
     std::atomic<std::uint32_t> Control::m_seqNum;
@@ -201,7 +201,7 @@ namespace lcontrol {
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + "," + std::to_string(flag) + "," + Control::float_to_string(leftRightTilt) + "," +
                 Control::float_to_string(frontBackTilt) + "," + Control::float_to_string(verticalSpeed) + "," +
-                Control::float_to_string(angularSpeed) + ",\r";
+                Control::float_to_string(angularSpeed) + "\r";
         M_traceFrame(data);
         s.write(data);
     }
