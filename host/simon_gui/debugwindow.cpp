@@ -5,6 +5,7 @@
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
 #include "commmanager.h"
+#include <iostream>
 
 #include <QColor>
 #include <QDebug>
@@ -89,13 +90,13 @@ void DebugWindow::M_stop() {
     CommManager::self().reconnect();
 }
 
-void DebugWindow::M_takeOff() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
+void MainWindow::M_takeOff() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::TakeOff);
     CommManager::self().write(pkt);
 }
 
-void DebugWindow::M_land() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
+void MainWindow::M_land() {
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Land);
     CommManager::self().write(pkt);
 }
 

@@ -70,6 +70,7 @@ namespace lcontrol {
     void Control::takeoff() {
         for(int i = 0; i < NUM_ITER; ++i) {
             Control::takeoff(m_seqNum.fetch_add(1), *m_sock);
+            std::cout<<"elle take off bien\n"<<std::endl; 
             std::this_thread::sleep_for(SLEEP_DELAY);
         }
     }
@@ -77,6 +78,7 @@ namespace lcontrol {
     void Control::land() {
         for(int i = 0; i < NUM_ITER; ++i) {
             Control::land(m_seqNum.fetch_add(1), *m_sock);
+            std::cout<<"elle land bien\n"<<std::endl; 
             std::this_thread::sleep_for(SLEEP_DELAY);
         }
     }
