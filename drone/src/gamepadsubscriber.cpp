@@ -15,11 +15,11 @@ GamePadSubscriber::GamePadSubscriber(GameSystem& system)
 }
 
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
-    
+
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
 
-     
-       if(ctrl->keys() & GamepadPacket::Land) {
+
+        if(ctrl->keys() & GamepadPacket::Land) {
 
             Control::land();
         } else if(ctrl->keys() & GamepadPacket::TakeOff) {
