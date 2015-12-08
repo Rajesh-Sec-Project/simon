@@ -5,6 +5,7 @@
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
 #include "commmanager.h"
+#include <iostream>
 
 #include <QColor>
 #include <QDebug>
@@ -85,12 +86,13 @@ void MainWindow::M_stop() {
 }
 
 void MainWindow::M_takeOff() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::TakeOff);
+    std::cout<<"elle take off bien à partir du gui\n"<< std::endl; 
     CommManager::self().write(pkt);
 }
 
 void MainWindow::M_land() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Land);
     CommManager::self().write(pkt);
 }
 

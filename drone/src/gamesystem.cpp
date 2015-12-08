@@ -165,7 +165,7 @@ void GameSystem::M_gameLoop() {
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
 
-    std::ofstream f1("samples.txt");
+    
 
     /*** Add your own elements ***/
      
@@ -197,10 +197,6 @@ void GameSystem::M_gameLoop() {
         /*** Add you own elements here ***/
 
         
-        Navdata nav = m_navctrl.grab();
-         
-        f1<<nav.demo.vx<<" "<<nav.demo.vy<<" "<<nav.demo.vz<<" "<<nav.demo.altitude<<" "<<nav.demo.theta<<" "<<nav.demo.phi<<" "<<nav.demo.psi<<" "<<"\n";
-
         // We wait for a positive duration which is equal to the activation time minus the time actually spent in the
         // loop iteration.
         std::this_thread::sleep_for(std::max(0ns, m_gameLoopActivationTime - (clock() - lastTime)));

@@ -2,11 +2,18 @@
 #define MOUVEMENT_STALKER_H
 
 #include "gameelement.h"
+#include <fstream>
+#include <iostream>
 //#include "pid.h"
 #include "navdatacontroller.h"
 
- 
-typedef struct Position_Control {
+struct SetOrigin {
+	float org_x ; 
+	float org_y ; 
+	float org_z ; 
+ };
+
+struct Position_Control {
 	float set_x ; 
 	float set_y ;
 	float set_z ; 
@@ -26,18 +33,19 @@ typedef struct Position_Control {
 	float output_x ; 
 	float output_y ; 
 	float output_z ; 
-}Position_Control;
+};
 
-typedef struct speedmemory{
+
+struct SpeedMemory{
 	float pre_vx ; 
 	float pre_vy ; 
-}SpeedMemory; 
+}; 
 
-typedef struct errormemory{
+struct ErrorMemory{
 	float pre_error_x; 
 	float pre_error_y; 
 	float pre_error_z; 
-}ErrorMemory; 
+}; 
 
 class GameSystem;
 
@@ -49,7 +57,8 @@ public:
     void gameInit() override;
     void gameLoop() override;
 
-	void fill_pos_con(Navdata nav) ;
+    void setOrigine(Navdata const &nav);
+	void fill_pos_con(Navdata const &nav) ;
 	void SpeedIntegrate() ;
 	
 	void PIDcal() ;
@@ -57,12 +66,14 @@ public:
 	void speed_command_output() ;
 
 private: 
+	SetOrigin org ; 
 	Position_Control pos_con ;
 	SpeedMemory speed_mem ; 
 	ErrorMemory err_mem ; 
+	std::ifstream file ; 
 
 
-    void fill_pos_con(Navdata nav, Position_Control& pos_con);
+    //void fill_pos_con(Navdata nav, Position_Control& pos_con);
 
 };
 

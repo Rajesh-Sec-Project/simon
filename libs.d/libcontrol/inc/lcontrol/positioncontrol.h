@@ -21,7 +21,7 @@ namespace lcontrol {
         static void back(Distance d);
 
         //! Changes the origin of the reference axes.
-        //static void setOrigin(Distance x, Distance y, Distance z);
+        static void setOrigin(Distance x, Distance y, Distance z);
 
         //! Distance between the drone and the origin along the x axis (i.e. from the left of the player to his right).
         static Distance xPos();
