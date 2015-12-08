@@ -79,6 +79,10 @@ TagController& GameSystem::tagController() {
     return m_tagctrl;
 }
 
+RoundManager& GameSystem::roundManager() {
+    return m_roundmgr;
+}
+
 lcomm::Endpoint& GameSystem::endpoint() {
     return m_endpoint;
 }
