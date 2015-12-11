@@ -19,8 +19,8 @@ using namespace lcontrol;
 #define MAX 0.98
 #define MIN -0.98
 
-#define TOOK_OF_ALT 600.0f
-#define DEFAULT_ALT 1300.0f
+#define TOOK_OF_ALT 800.0f
+#define DEFAULT_ALT 1000.0f
 
 Mouvement_Stalker::Mouvement_Stalker(GameSystem& system)
         : GameElement(system)
@@ -72,7 +72,6 @@ void Mouvement_Stalker::gameInit() {
     pos_con.output_y = 0.0;
     pos_con.output_z = 0.0;
 
-
     speed_mem.pre_vx = 0.0;
     speed_mem.pre_vy = 0.0;
 
@@ -80,8 +79,8 @@ void Mouvement_Stalker::gameInit() {
     err_mem.pre_error_y = 0.0;
     err_mem.pre_error_z = 0.0;
 
-    m_gains.xy.kp = 0.0000f;
-    m_gains.xy.ki = 0.0000f;
+    m_gains.xy.kp = 0.0150f;
+    m_gains.xy.ki = 0.0005f;
     m_gains.xy.kd = 0.0000f;
 
     m_gains.z.kp = 0.0050f;
@@ -106,7 +105,7 @@ void Mouvement_Stalker::gameLoop() {
         frontBackTilt = pos_con.output_y;
         leftRightTilt = pos_con.output_x;
         verticalSpeed = pos_con.output_z;
-        print_Position_Control() ;
+        print_Position_Control();
         Control::movement(1, frontBackTilt, leftRightTilt, verticalSpeed, angularSpeed);
 
         // file << nav.demo.phi << ", " << nav.demo.theta << std::endl;
@@ -142,7 +141,7 @@ void Mouvement_Stalker::fill_pos_con(Navdata const& nav) {
     }*/
 
     float alpha = 0.35f;
-    float k = 0.01f;
+    float k = 0.001f;
 
     pos_con.vx = (1.0f - alpha) * pos_con.vx + alpha * k * nav.demo.phi;
     pos_con.vy = (1.0f - alpha) * pos_con.vy + alpha * k * nav.demo.theta;
@@ -167,8 +166,8 @@ void Mouvement_Stalker::SpeedIntegrate() {
 
     // float pre_vx = 0 ;
 
-    pos_con.real_x += pos_con.vx * dt;
-    pos_con.real_y += pos_con.vy * dt;
+    pos_con.real_x = pos_con.vx; // * dt;
+    pos_con.real_y = pos_con.vy; // * dt;
     pos_con.real_z = pos_con.altitude;
 
     // std::cout << "vitesse selon x,y,z" << pos_con.vx << " " << pos_con.vy << " " << pos_con.vz << std::endl;

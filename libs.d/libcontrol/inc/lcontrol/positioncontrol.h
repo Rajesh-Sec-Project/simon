@@ -20,6 +20,11 @@ namespace lcontrol {
         static void front(Distance d);
         static void back(Distance d);
 
+        static void frontMove();
+        static void backMove();
+        static void leftMove();
+        static void rightMove();
+
         //! Changes the origin of the reference axes.
 
 
@@ -34,6 +39,9 @@ namespace lcontrol {
         static Distance m_x;
         static Distance m_y;
         static Distance m_z;
+        static float m_alpha;
+        static int m_move_duration;
+        static int m_counter_move_duration;
     };
 }
 
