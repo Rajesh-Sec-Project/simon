@@ -54,6 +54,9 @@ public:
     //! Get the system's tag detection manager
     TagController& tagController();
 
+    //! Get the system's round manager
+    RoundManager& roundManager();
+
     //! Get the communication endpoint of this game system
     lcomm::Endpoint& endpoint();
 

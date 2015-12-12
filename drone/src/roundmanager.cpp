@@ -15,22 +15,17 @@ RoundManager::~RoundManager() {
 void RoundManager::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
     lcomm::GamepadPacket* pkt = packet->downcast<lcomm::GamepadPacket>();
 
-    unsigned int oldsz = m_user.size();
-
     if(pkt) {
         if(pkt->keys() & lcomm::GamepadPacket::Up) {
-            m_user.addMove(lmoves::tmove::UP);
+            userUp();
         } else if(pkt->keys() & lcomm::GamepadPacket::Down) {
-            m_user.addMove(lmoves::tmove::DOWN);
+            userDown();
         } else if(pkt->keys() & lcomm::GamepadPacket::Left) {
-            m_user.addMove(lmoves::tmove::LEFT);
+            userLeft();
         } else if(pkt->keys() & lcomm::GamepadPacket::Right) {
-            m_user.addMove(lmoves::tmove::RIGHT);
+            userRight();
         }
     }
-
-    if(oldsz != m_user.size())
-        m_new_move = true;
 }
 
 void RoundManager::gameInit() {
@@ -76,4 +71,24 @@ void RoundManager::gameLoop() {
             M_message("Game OVER");
         }
     }
+}
+
+void RoundManager::userUp() {
+    m_user.addMove(lmoves::tmove::UP);
+    m_new_move = true;
+}
+
+void RoundManager::userDown() {
+    m_user.addMove(lmoves::tmove::DOWN);
+    m_new_move = true;
+}
+
+void RoundManager::userLeft() {
+    m_user.addMove(lmoves::tmove::LEFT);
+    m_new_move = true;
+}
+
+void RoundManager::userRight() {
+    m_user.addMove(lmoves::tmove::RIGHT);
+    m_new_move = true;
 }

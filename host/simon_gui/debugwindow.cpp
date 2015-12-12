@@ -4,8 +4,13 @@
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+<<<<<<< HEAD
 #include "lcomm/score_packet.h"
+=======
+#include "lcomm/pid_packet.h"
+>>>>>>> 0c730fcf3aa21d1c43046a5d1ec3808e65ce26cf
 #include "commmanager.h"
+#include <iostream>
 
 #include <QColor>
 #include <QDebug>
@@ -50,14 +55,30 @@ DebugWindow::DebugWindow(QWidget* parent)
 
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
+<<<<<<< HEAD
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+=======
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
+    QObject::connect(m_ui->kp_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->ki_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kd_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kp, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->ki, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+    QObject::connect(m_ui->kd, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
+>>>>>>> 0c730fcf3aa21d1c43046a5d1ec3808e65ce26cf
 }
 
 DebugWindow::~DebugWindow() {
@@ -91,12 +112,12 @@ void DebugWindow::M_stop() {
 }
 
 void DebugWindow::M_takeOff() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::TakeOff);
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::TakeOff);
     CommManager::self().write(pkt);
 }
 
 void DebugWindow::M_land() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Land);
+    lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Land);
     CommManager::self().write(pkt);
 }
 
@@ -117,6 +138,14 @@ void DebugWindow::M_positionLeft() {
 
 void DebugWindow::M_positionRight() {
     lcomm::GamepadPositionPacket pkt(lcomm::GamepadPositionPacket::Right);
+    CommManager::self().write(pkt);
+}
+
+void DebugWindow::M_pidUpdated(double)
+{
+    using namespace lcomm;
+    PIDPacket pkt(m_ui->kp_z->value(), m_ui->ki_z->value(), m_ui->kd_z->value(),
+                  m_ui->kp->value(), m_ui->ki->value(), m_ui->kd->value());
     CommManager::self().write(pkt);
 }
 

@@ -20,7 +20,12 @@ namespace lcontrol {
     std::unique_ptr<lcomm::ClientSocket> Control::m_sock;
 
     std::string Control::float_to_string(float i) {
-        return std::to_string(*reinterpret_cast<std::uint32_t const*>(&i));
+        union {
+            std::uint32_t as_uint;
+            float as_float;
+        };
+        as_float = i;
+        return std::to_string(as_uint);
     }
 
     // Unique application ID
@@ -196,7 +201,7 @@ namespace lcontrol {
         std::string seqStr = std::to_string(seqNum);
         data += seqStr + "," + std::to_string(flag) + "," + Control::float_to_string(leftRightTilt) + "," +
                 Control::float_to_string(frontBackTilt) + "," + Control::float_to_string(verticalSpeed) + "," +
-                Control::float_to_string(angularSpeed) + ",\r";
+                Control::float_to_string(angularSpeed) + "\r";
         M_traceFrame(data);
         s.write(data);
     }

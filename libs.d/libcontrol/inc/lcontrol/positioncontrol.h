@@ -20,8 +20,13 @@ namespace lcontrol {
         static void front(Distance d);
         static void back(Distance d);
 
+        static void frontMove();
+        static void backMove();
+        static void leftMove();
+        static void rightMove();
+
         //! Changes the origin of the reference axes.
-        // static void setOrigin(Distance x, Distance y, Distance z);
+
 
         //! Distance between the drone and the origin along the x axis (i.e. from the left of the player to his right).
         static Distance xPos();
@@ -34,6 +39,9 @@ namespace lcontrol {
         static Distance m_x;
         static Distance m_y;
         static Distance m_z;
+        static float m_alpha;
+        static int m_move_duration;
+        static int m_counter_move_duration;
     };
 }
 

@@ -2,11 +2,19 @@
 #define MOUVEMENT_STALKER_H
 
 #include "gameelement.h"
-//#include "pid.h"
+#include "lcomm/lcomm.h"
+#include <fstream>
+#include <iostream>
+#include <memory>
 #include "navdatacontroller.h"
 
+struct SetOrigin {
+    float org_x;
+    float org_y;
+    float org_z;
+};
 
-typedef struct Position_Control {
+struct Position_Control {
     float set_x;
     float set_y;
     float set_z;
@@ -26,43 +34,56 @@ typedef struct Position_Control {
     float output_x;
     float output_y;
     float output_z;
-} Position_Control;
+};
 
-typedef struct speedmemory {
+
+struct SpeedMemory {
     float pre_vx;
     float pre_vy;
-} SpeedMemory;
+};
 
-typedef struct errormemory {
+struct ErrorMemory {
     float pre_error_x;
     float pre_error_y;
     float pre_error_z;
-} ErrorMemory;
+};
+
+struct Gains {
+    struct {
+        float kp, kd, ki;
+    } xy, z;
+};
 
 class GameSystem;
 
-class Mouvement_Stalker : public GameElement {
+class Mouvement_Stalker : public GameElement, public lcomm::Subscriber {
 public:
     Mouvement_Stalker(GameSystem& system);
     ~Mouvement_Stalker();
 
+    void notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) override;
+
     void gameInit() override;
     void gameLoop() override;
 
-    void fill_pos_con(Navdata nav);
+    void setOrigine(Navdata const& nav);
+    void fill_pos_con(Navdata const& nav);
     void SpeedIntegrate();
 
     void PIDcal();
     void print_Position_Control();
     void speed_command_output();
 
+    Gains& gains();
+    Gains const& gains() const;
+
 private:
+    Gains m_gains;
+    SetOrigin org;
     Position_Control pos_con;
     SpeedMemory speed_mem;
     ErrorMemory err_mem;
-
-
-    void fill_pos_con(Navdata nav, Position_Control& pos_con);
+    std::ofstream file;
 };
 
 #endif // MOUVEMENT_STALKER_H

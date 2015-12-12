@@ -44,6 +44,7 @@ GameSystem::GameSystem()
     m_endpoint.registerSubscriber(m_gamePadSubscriber);
     m_endpoint.registerSubscriber(m_gameControlSubscriber);
     m_endpoint.registerSubscriber(m_roundmgr);
+    m_endpoint.registerSubscriber(m_mouvement_stalker);
 
     std::cout << "Waiting for host to connect... ";
     std::cout.flush();
@@ -81,6 +82,10 @@ ConfigManager& GameSystem::configManager() {
 
 TagController& GameSystem::tagController() {
     return m_tagctrl;
+}
+
+RoundManager& GameSystem::roundManager() {
+    return m_roundmgr;
 }
 
 lcomm::Endpoint& GameSystem::endpoint() {
