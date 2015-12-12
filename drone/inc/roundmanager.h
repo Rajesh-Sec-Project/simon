@@ -23,10 +23,11 @@ public:
     void userDown();
 
 private:
+    void M_playSequence();
+
     bool m_new_move;
     lmoves::Moves m_seq, m_user;
     std::size_t m_current_move;
-    bool m_needs_print;
 };
 
 #endif // SIMON_ROUNDMANAGER_H

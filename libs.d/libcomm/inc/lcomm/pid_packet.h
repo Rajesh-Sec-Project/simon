@@ -8,8 +8,7 @@ namespace lcomm {
     class PIDPacket : public Packet<PIDPacket> {
     public:
         PIDPacket(lconf::json::Node* node);
-        PIDPacket(float kp_z, float ki_z, float kd_z,
-                  float kp, float ki, float kd);
+        PIDPacket(float kp_z, float ki_z, float kd_z, float kp, float ki, float kd);
 
         float kp_z() const;
         float ki_z() const;

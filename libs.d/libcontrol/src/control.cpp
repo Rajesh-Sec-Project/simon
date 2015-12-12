@@ -34,7 +34,6 @@ namespace lcontrol {
 
     void Control::init() {
         // Initialize random session id
-        srand(time(0));
         std::uint32_t x;
         x = rand() & 0xff;
         x |= (rand() & 0xff) << 8;
@@ -279,8 +278,7 @@ namespace lcontrol {
 #endif
     }
 
-    void Control::write(std::string const &data) {
-        std::lock_guard<std::mutex> lk(m_mutex);
+    void Control::write(std::string const& data) {
         m_sock->write(data);
     }
 }

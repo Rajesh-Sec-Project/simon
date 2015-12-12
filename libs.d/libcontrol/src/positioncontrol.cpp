@@ -14,6 +14,11 @@ Distance PositionControl::m_z = 0.0f;
 float PositionControl::m_alpha = 20.0f;
 int PositionControl::m_move_duration = 500.0f;
 int PositionControl::m_counter_move_duration = 250.0f;
+std::thread PositionControl::m_motionThread;
+std::condition_variable PositionControl::m_motionVariable;
+std::mutex PositionControl::m_motionMutex;
+std::queue<PositionControl::Motion> PositionControl::m_motionQueue;
+std::atomic_bool PositionControl::m_alive;
 
 void PositionControl::left(Distance d) {
     // return xPos and yPOs and zPos
@@ -52,62 +57,58 @@ void PositionControl::back(Distance d) {
     m_z = 0;
 }
 
-void PositionControl::frontMove()
-{
+void PositionControl::moveFront() {
     front(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    front(-2*m_alpha);
+    front(-2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     front(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     front(-m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    front(2*m_alpha);
+    front(2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     front(-m_alpha);
 }
 
-void PositionControl::backMove()
-{
+void PositionControl::moveBack() {
     back(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    back(-2*m_alpha);
+    back(-2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     back(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     back(-m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    back(2*m_alpha);
+    back(2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     back(-m_alpha);
 }
 
-void PositionControl::leftMove()
-{
+void PositionControl::moveLeft() {
     left(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    left(-2*m_alpha);
+    left(-2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     left(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     left(-m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    left(2*m_alpha);
+    left(2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     left(-m_alpha);
 }
 
-void PositionControl::rightMove()
-{
+void PositionControl::moveRight() {
     right(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    right(-2*m_alpha);
+    right(-2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     right(m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     right(-m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    right(2*m_alpha);
+    right(2 * m_alpha);
     std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
     right(-m_alpha);
 }
@@ -121,4 +122,60 @@ Distance PositionControl::yPos() {
 }
 Distance PositionControl::zPos() {
     return m_z;
+}
+
+void PositionControl::init() {
+    m_alive = true;
+    m_motionThread = std::thread(&PositionControl::M_motionThread);
+}
+
+void PositionControl::stop() {
+    {
+        std::lock_guard<std::mutex> lock(m_motionMutex);
+        while(m_motionQueue.size()) {
+            m_motionQueue.pop();
+        }
+    }
+    m_alive = false;
+    m_motionVariable.notify_one();
+    m_motionThread.join();
+}
+
+void PositionControl::M_motionThread() {
+    while(m_alive) {
+        Motion motion;
+        {
+            std::unique_lock<std::mutex> lock(m_motionMutex);
+            while(m_motionQueue.empty()) {
+                m_motionVariable.wait(lock);
+                if(!m_alive) {
+                    break;
+                }
+            }
+
+            motion = m_motionQueue.front();
+            m_motionQueue.pop();
+        }
+
+        switch(motion) {
+            case Motion::Front:
+                PositionControl::moveFront();
+                break;
+            case Motion::Back:
+                PositionControl::moveBack();
+                break;
+            case Motion::Left:
+                PositionControl::moveLeft();
+                break;
+            case Motion::Right:
+                PositionControl::moveRight();
+                break;
+        }
+    }
+}
+
+void PositionControl::move(Motion m) {
+    std::lock_guard<std::mutex> lock(m_motionMutex);
+    m_motionQueue.push(m);
+    m_motionVariable.notify_one();
 }

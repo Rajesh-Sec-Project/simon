@@ -30,12 +30,10 @@ Mouvement_Stalker::Mouvement_Stalker(GameSystem& system)
 Mouvement_Stalker::~Mouvement_Stalker() {
 }
 
-void Mouvement_Stalker::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet)
-{
+void Mouvement_Stalker::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
-    if(PIDPacket* ctrl = packet->downcast<PIDPacket>())
-    {
+    if(PIDPacket* ctrl = packet->downcast<PIDPacket>()) {
         m_gains.z.kp = ctrl->kp_z();
         m_gains.z.ki = ctrl->ki_z();
         m_gains.z.kd = ctrl->kd_z();
@@ -91,8 +89,8 @@ void Mouvement_Stalker::gameInit() {
 void Mouvement_Stalker::gameLoop() {
     Navdata nav = m_system.navdataController().grab();
     if(nav.header.state & navdata::fly) {
-        if (nav.demo.altitude < TOOK_OF_ALT) {
-            return ;
+        if(nav.demo.altitude < TOOK_OF_ALT) {
+            return;
         }
 
         fill_pos_con(nav);
@@ -247,7 +245,8 @@ void Mouvement_Stalker::PIDcal() {
 
     err_mem.pre_error_z = pos_con.error_z;
 
-    std::cout << "pos " << pos_con.real_x << ", " << pos_con.real_y << ", " << pos_con.real_z << "               " << std::endl << "\e[A";
+    std::cout << "pos " << pos_con.real_x << ", " << pos_con.real_y << ", " << pos_con.real_z << "               " << std::endl
+              << "\e[A";
     std::cout << "pos commande" << pos_con.output_x << " " << pos_con.output_y << " " << pos_con.output_z;
     std::cout << "                      " << std::endl << "\e[A";
 }
@@ -272,9 +271,9 @@ void Mouvement_Stalker::print_Position_Control() {
               << pos_con.output_y << clr << std::endl;
 
     std::cout << "real_x:    " << std::fixed << std::setw(4) << std::setprecision(3) << std::setfill('0')
-    << pos_con.real_x << clr << std::endl;
+              << pos_con.real_x << clr << std::endl;
     std::cout << "real_y:    " << std::fixed << std::setw(4) << std::setprecision(3) << std::setfill('0')
-    << pos_con.real_y<< clr << std::endl;
+              << pos_con.real_y << clr << std::endl;
     std::cout << "real_z:    " << std::fixed << std::setw(4) << std::setprecision(3) << std::setfill('0')
               << pos_con.real_z << clr << std::endl;
 
@@ -286,17 +285,15 @@ void Mouvement_Stalker::print_Position_Control() {
     std::cout << "error x:    " << std::fixed << std::setw(4) << std::setprecision(3) << std::setfill('0')
               << err_mem.pre_error_x << clr << std::endl;
 
-    for (int i = 0; i < 10; ++i)
+    for(int i = 0; i < 10; ++i)
         std::cout << "\e[A";
 }
 
-Gains& Mouvement_Stalker::gains() 
-{
+Gains& Mouvement_Stalker::gains() {
     return m_gains;
 }
 
-Gains const& Mouvement_Stalker::gains() const
-{
+Gains const& Mouvement_Stalker::gains() const {
     return m_gains;
 }
 

@@ -15,7 +15,7 @@
 using namespace std::literals;
 
 int main() {
-    srand(time(NULL));
+    srand(time(nullptr));
 
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPositionPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::GamepadPacket>();

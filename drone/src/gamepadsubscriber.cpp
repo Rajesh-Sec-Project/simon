@@ -24,29 +24,21 @@ GamePadSubscriber::GamePadSubscriber(GameSystem& system)
 void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> packet) {
 
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
-        if(ctrl->keys() & GamepadPacket::Land) {
+        if(ctrl->keys() & GamepadPositionPacket::Land) {
 
             Control::land();
-        } else if(ctrl->keys() & GamepadPacket::TakeOff) {
+        } else if(ctrl->keys() & GamepadPositionPacket::TakeOff) {
             Control::takeoff();
-        } else if(ctrl->keys() & GamepadPacket::Up)
-        {
+        } else if(ctrl->keys() & GamepadPositionPacket::Up) {
             PositionControl::frontMove();
-        }
-        else if(ctrl->keys() & GamepadPacket::Down)
-        {
+        } else if(ctrl->keys() & GamepadPositionPacket::Down) {
             PositionControl::backMove();
-        }
-        else if(ctrl->keys() & GamepadPacket::Left)
-        {
+        } else if(ctrl->keys() & GamepadPositionPacket::Left) {
             PositionControl::leftMove();
-        }
-        else if(ctrl->keys() & GamepadPacket::Right)
-        {
+        } else if(ctrl->keys() & GamepadPositionPacket::Right) {
             PositionControl::rightMove();
         }
-    }
-    else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
+    } else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
         if(ctrl->keys() & GamepadPacket::Stop) {
             std::cout << "Stop requested:\n"
                          "         ________________\n"
@@ -67,7 +59,8 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|\n" << std::endl;
+                         "              |_|\n"
+                      << std::endl;
 
             Control::land();
             m_system.stop();

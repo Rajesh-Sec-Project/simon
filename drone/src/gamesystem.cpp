@@ -7,6 +7,7 @@
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
 #include "lcontrol/control.h"
+#include "lcontrol/positioncontrol.h"
 #include "navdatacontroller.h"
 #include <iomanip>
 #include <fstream> // file I/O
@@ -61,6 +62,7 @@ GameSystem::~GameSystem() {
 
 void GameSystem::stop() {
     m_alive = false;
+    PositionControl::stop();
 }
 
 bool GameSystem::alive() const {
@@ -135,6 +137,7 @@ void GameSystem::error(std::string const& nm, std::string const& msg) {
 void GameSystem::M_droneSetup() {
     // Init AT command stuff
     Control::init();
+    PositionControl::init();
 
     m_navctrl.init();
     while(!m_navctrl.inited())

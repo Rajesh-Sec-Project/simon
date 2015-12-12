@@ -29,18 +29,17 @@ void RoundManager::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase
 void RoundManager::gameInit() {
     m_new_move = false;
     m_current_move = 0;
-    m_needs_print = true;
     m_seq.addRandomMove();
+    M_playSequence();
+}
+
+void RoundManager::M_playSequence() {
+    std::ostringstream ss;
+    ss << m_seq << std::endl;
+    M_message(ss.str());
 }
 
 void RoundManager::gameLoop() {
-    if(m_needs_print) {
-        std::ostringstream ss;
-        ss << m_seq << std::endl;
-        M_message(ss.str());
-        m_needs_print = false;
-    }
-
     if(m_new_move) {
         m_new_move = false;
 
@@ -48,11 +47,11 @@ void RoundManager::gameLoop() {
             if(m_current_move == (m_seq.getSequence().size() - 1)) {
                 m_seq.addRandomMove();
                 m_user.clearSequence();
-                m_needs_print = true;
                 m_current_move = 0;
                 M_message("well done !");
+                M_playSequence();
             } else {
-                m_current_move++;
+                ++m_current_move;
                 M_message("good");
             }
         } else {

@@ -33,12 +33,7 @@ namespace lcontrol {
         static void magnetometer(std::uint32_t seqNum);
         static void takeoff(std::uint32_t seqNum);
         static void land(std::uint32_t seqNum);
-        static void movement(std::uint32_t seqNum,
-                             int flag,
-                             float frontBackTilt,
-                             float leftRightTilt,
-                             float verticalSpeed,
-                             float angularSpeed);
+        static void movement(std::uint32_t seqNum, int flag, float frontBackTilt, float leftRightTilt, float verticalSpeed, float angularSpeed);
         static void ackControl(std::uint32_t seqNum);
         static void getCfgControl(std::uint32_t seqNum);
 
@@ -56,13 +51,12 @@ namespace lcontrol {
         static void M_trace(std::string const& msg);
         static void M_traceFrame(std::string const& msg);
 
-        static void write(std::string const &data);
+        static void write(std::string const& data);
 
     private:
         static std::atomic<std::uint32_t> m_seqNum;
         static std::unique_ptr<lcomm::ClientSocket> m_sock;
 
         static std::string m_session_id, m_app_id;
-        static std::mutex m_mutex;
     };
 }
