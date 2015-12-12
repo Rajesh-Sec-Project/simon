@@ -8,109 +8,80 @@
 
 using namespace lcontrol;
 
+using namespace std::literals;
+
 Distance PositionControl::m_x = 0.0f;
 Distance PositionControl::m_y = 0.0f;
 Distance PositionControl::m_z = 0.0f;
+
 float PositionControl::m_alpha = 20.0f;
-int PositionControl::m_move_duration = 500.0f;
-int PositionControl::m_counter_move_duration = 250.0f;
+std::chrono::nanoseconds PositionControl::m_move_duration_lr = 750ms;
+std::chrono::nanoseconds PositionControl::m_counter_move_duration_lr = 150ms;
+std::chrono::nanoseconds PositionControl::m_move_duration_front = 1000ms;
+std::chrono::nanoseconds PositionControl::m_counter_move_duration_front = 400ms;
+std::chrono::nanoseconds PositionControl::m_move_duration_back = 750ms;
+std::chrono::nanoseconds PositionControl::m_counter_move_duration_back = 800ms;
+
 std::thread PositionControl::m_motionThread;
 std::condition_variable PositionControl::m_motionVariable;
 std::mutex PositionControl::m_motionMutex;
 std::queue<PositionControl::Motion> PositionControl::m_motionQueue;
 std::atomic_bool PositionControl::m_alive;
 
-void PositionControl::left(Distance d) {
-    // return xPos and yPOs and zPos
-    m_x -= d;
+void PositionControl::leftRight(Distance d) {
+    m_x = d;
     m_y = 0;
     m_z = 0;
 }
-void PositionControl::right(Distance d) {
-    // return xPos and yPOs and zPos
-    m_x += d;
-    m_y = 0;
-    m_z = 0;
-}
-void PositionControl::up(Distance d) {
-    // return xPos and yPOs and zPos
+void PositionControl::upDown(Distance d) {
     m_x = 0;
     m_y = 0;
-    m_z += d;
+    m_z = d;
 }
-void PositionControl::down(Distance d) {
-    // return xPos and yPOs and zPos
+void PositionControl::frontBack(Distance d) {
     m_x = 0;
-    m_y = 0;
-    m_z -= d;
-}
-void PositionControl::front(Distance d) {
-    // return xPos and yPOs and zPos
-    m_x = 0;
-    m_y -= d;
-    m_z = 0;
-}
-void PositionControl::back(Distance d) {
-    // return xPos and yPOs and zPos
-    m_x = 0;
-    m_y += d;
+    m_y = d;
     m_z = 0;
 }
 
 void PositionControl::moveFront() {
-    front(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    front(-2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    front(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    front(-m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    front(2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    front(-m_alpha);
+    frontBack(m_alpha);
+    std::this_thread::sleep_for(m_move_duration_front);
+    frontBack(-m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_front + m_move_duration_back);
+    frontBack(m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_back);
+    frontBack(0);
 }
 
 void PositionControl::moveBack() {
-    back(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    back(-2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    back(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    back(-m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    back(2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    back(-m_alpha);
+    frontBack(-m_alpha);
+    std::this_thread::sleep_for(m_move_duration_back);
+    frontBack(m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_back + m_move_duration_front);
+    frontBack(-m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_front);
+    frontBack(0);
 }
 
 void PositionControl::moveLeft() {
-    left(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    left(-2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    left(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    left(-m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    left(2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    left(-m_alpha);
+    leftRight(-m_alpha);
+    std::this_thread::sleep_for(m_move_duration_lr);
+    leftRight(m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_lr + m_move_duration_lr);
+    leftRight(-m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_lr);
+    leftRight(0);
 }
 
 void PositionControl::moveRight() {
-    right(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    right(-2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    right(m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    right(-m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_move_duration));
-    right(2 * m_alpha);
-    std::this_thread::sleep_for(std::chrono::milliseconds(m_counter_move_duration));
-    right(-m_alpha);
+    leftRight(m_alpha);
+    std::this_thread::sleep_for(m_move_duration_lr);
+    leftRight(-m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_lr + m_move_duration_lr);
+    leftRight(m_alpha);
+    std::this_thread::sleep_for(m_counter_move_duration_lr);
+    leftRight(0);
 }
 
 Distance PositionControl::xPos() {

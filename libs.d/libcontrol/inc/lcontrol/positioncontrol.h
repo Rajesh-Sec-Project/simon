@@ -10,6 +10,7 @@
 #include <condition_variable>
 #include <queue>
 #include <atomic>
+#include <chrono>
 
 namespace lcontrol {
 
@@ -47,12 +48,9 @@ namespace lcontrol {
         static void move(Motion m);
 
         //! Moves the drone in the specified direction.
-        static void left(Distance d);
-        static void right(Distance d);
-        static void up(Distance d);
-        static void down(Distance d);
-        static void front(Distance d);
-        static void back(Distance d);
+        static void leftRight(Distance d);
+        static void upDown(Distance d);
+        static void frontBack(Distance d);
 
         static void moveFront();
         static void moveBack();
@@ -63,8 +61,12 @@ namespace lcontrol {
         static Distance m_y;
         static Distance m_z;
         static float m_alpha;
-        static int m_move_duration;
-        static int m_counter_move_duration;
+        static std::chrono::nanoseconds m_move_duration_lr;
+        static std::chrono::nanoseconds m_counter_move_duration_lr;
+        static std::chrono::nanoseconds m_move_duration_front;
+        static std::chrono::nanoseconds m_counter_move_duration_front;
+        static std::chrono::nanoseconds m_move_duration_back;
+        static std::chrono::nanoseconds m_counter_move_duration_back;
 
         static void M_motionThread();
 
