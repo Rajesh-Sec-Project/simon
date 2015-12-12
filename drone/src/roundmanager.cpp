@@ -2,9 +2,11 @@
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
 #include <sstream>
+#include <ctime>
 
 RoundManager::RoundManager(GameSystem& system)
-        : GameElement(system) {
+        : GameElement(system) 
+        , m_scoremgr(system) {
 }
 
 RoundManager::~RoundManager() {
@@ -36,6 +38,7 @@ void RoundManager::gameInit() {
     m_current_move = 0;
     m_needs_print = true;
     m_seq.addRandomMove();
+    m_scoremgr.gameInit();
 }
 
 void RoundManager::gameLoop() {
@@ -44,9 +47,11 @@ void RoundManager::gameLoop() {
         ss << m_seq << std::endl;
         M_message(ss.str());
         m_needs_print = false;
+        m_scoremgr.setStart();
     }
 
     if(m_new_move) {
+        m_scoremgr.setEnd();
         m_new_move = false;
 
         if(m_seq.getSequence()[m_current_move] == m_user.getSequence()[m_current_move]) {
@@ -55,11 +60,18 @@ void RoundManager::gameLoop() {
                 m_user.clearSequence();
                 m_needs_print = true;
                 m_current_move = 0;
-                M_message("well done !");
+
+                m_scoremgr.calculateScore();
+                m_scoremgr.printScore();
+
+                //M_message("well done !");
             } else {
                 m_current_move++;
-                M_message("good");
+                //M_message("good");
             }
+            
+            
+
         } else {
             M_message("Game OVER");
         }

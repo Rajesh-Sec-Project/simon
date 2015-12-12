@@ -4,6 +4,7 @@
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+#include "lcomm/score_packet.h"
 #include "commmanager.h"
 
 #include <QColor>
@@ -23,6 +24,7 @@ DebugWindow::DebugWindow(QWidget* parent)
     m_scene = std::make_unique<QGraphicsScene>(this);
     m_scene->setSceneRect(0, 0, 243, 138);
     m_ui->detections->setScene(m_scene.get());
+    m_ui->score->setText("0");
 
     m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
@@ -53,6 +55,9 @@ DebugWindow::DebugWindow(QWidget* parent)
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 }
 
 DebugWindow::~DebugWindow() {
@@ -205,4 +210,14 @@ void DebugWindow::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::Packet
         m_dot->hide();
         m_ui->detectionsLabel->setText("No");
     }
+}
+
+void DebugWindow::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+    using namespace lcomm;
+
+    ScorePacket* score = packet->downcast<ScorePacket>();
+    if(!score)
+        return;
+
+    m_ui->score->setText(std::to_string(score->getScore()).c_str());
 }

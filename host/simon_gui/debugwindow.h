@@ -38,6 +38,7 @@ private slots:
 
     void M_receivedLog(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
     void M_receivedInfo(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
+    void M_receivedScore(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
     std::unique_ptr<Ui::DebugWindow> m_ui;

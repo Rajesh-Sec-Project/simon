@@ -69,6 +69,9 @@ public:
     //! Send out an error log to the host
     void error(std::string const& nm, std::string const& msg);
 
+    //! Send the score value to the host
+    void score(int score);
+
     //! Return the elasped time since the creation of the game system.
     std::chrono::nanoseconds clock();
 

@@ -4,6 +4,7 @@
 #include "gameelement.h"
 #include "lcomm/lcomm.h"
 #include "moves.h"
+#include "scoremanager.h"
 
 class GameSystem;
 
@@ -22,6 +23,7 @@ private:
     lmoves::Moves m_seq, m_user;
     std::size_t m_current_move;
     bool m_needs_print;
+    ScoreManager m_scoremgr;
 };
 
 #endif // SIMON_ROUNDMANAGER_H
