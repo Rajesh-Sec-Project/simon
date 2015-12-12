@@ -20,14 +20,12 @@ signals:
     void down();
     void left();
     void right();
-    void stop();
 
 private slots:
     void M_up();
     void M_down();
     void M_left();
     void M_right();
-    void M_stop();
 
 protected:
     void keyPressEvent(QKeyEvent* evt) override;

@@ -38,7 +38,6 @@ DebugWindow::DebugWindow(QWidget* parent)
     QObject::connect(m_ui->gamepad, SIGNAL(down()), this, SLOT(M_down()));
     QObject::connect(m_ui->gamepad, SIGNAL(left()), this, SLOT(M_left()));
     QObject::connect(m_ui->gamepad, SIGNAL(right()), this, SLOT(M_right()));
-    QObject::connect(m_ui->gamepad, SIGNAL(stop()), this, SLOT(M_stop()));
 
     QObject::connect(m_ui->positionControl, SIGNAL(up()), this, SLOT(M_positionUp()));
     QObject::connect(m_ui->positionControl, SIGNAL(down()), this, SLOT(M_positionDown()));
@@ -85,13 +84,6 @@ void DebugWindow::M_left() {
 void DebugWindow::M_right() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Right);
     CommManager::self().write(pkt);
-}
-
-void DebugWindow::M_stop() {
-    lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Stop);
-    CommManager::self().write(pkt);
-    std::this_thread::sleep_for(200ms);
-    CommManager::self().reconnect();
 }
 
 void DebugWindow::M_takeOff() {

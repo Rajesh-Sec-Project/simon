@@ -53,7 +53,7 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="2">
+     <item row="2" column="1">
       <widget class="QToolButton" name="button_down">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -76,7 +76,7 @@ color: black;</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
+     <item row="1" column="2">
       <widget class="QToolButton" name="button_right">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -99,7 +99,7 @@ color: black;</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="4">
+     <item row="0" column="2">
       <spacer name="verticalSpacer_3">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -125,7 +125,7 @@ color: black;</string>
        </property>
       </spacer>
      </item>
-     <item row="2" column="4">
+     <item row="2" column="2">
       <spacer name="verticalSpacer_4">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -161,26 +161,7 @@ color: black;</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="3">
-      <widget class="QToolButton" name="button_stop">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>You can also press the ESC key</string>
-       </property>
-       <property name="statusTip">
-        <string>You can also press the ESC key</string>
-       </property>
-       <property name="text">
-        <string>STOP !</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
+     <item row="0" column="1">
       <widget class="QToolButton" name="button_up">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

@@ -25,7 +25,6 @@ private slots:
     void M_down();
     void M_left();
     void M_right();
-    void M_stop();
     void M_takeOff();
     void M_land();
 

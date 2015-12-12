@@ -12,11 +12,6 @@ using namespace lcontrol;
 using namespace lcomm;
 using namespace lmoves;
 
-#define TMOVE 500
-#define TBACK 250
-#define ALPHA 20
-#define DAMP 2
-
 GamePadSubscriber::GamePadSubscriber(GameSystem& system)
         : GameElement(system) {
 }
@@ -25,7 +20,6 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
 
     if(GamepadPositionPacket* ctrl = packet->downcast<GamepadPositionPacket>()) {
         if(ctrl->keys() & GamepadPositionPacket::Land) {
-
             Control::land();
         } else if(ctrl->keys() & GamepadPositionPacket::TakeOff) {
             Control::takeoff();
@@ -37,33 +31,6 @@ void GamePadSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBase> 
             PositionControl::leftMove();
         } else if(ctrl->keys() & GamepadPositionPacket::Right) {
             PositionControl::rightMove();
-        }
-    } else if(GamepadPacket* ctrl = packet->downcast<GamepadPacket>()) {
-        if(ctrl->keys() & GamepadPacket::Stop) {
-            std::cout << "Stop requested:\n"
-                         "         ________________\n"
-                         "       /.--------------.\\\n"
-                         "      //                \\\\\n"
-                         "     //                  \\\\\n"
-                         "    || .-..----. .-. .--. ||\n"
-                         "    ||( ( '-..-'|.-.||.-.|||\n"
-                         "    || \\ \\  ||  || ||||_||||\n"
-                         "    ||._) ) ||  \\'-'/||-' ||\n"
-                         "     \\\\'-'  `'   `-' `'  //\n"
-                         "      \\\\                //\n"
-                         "       \\\\______________//\n"
-                         "        '--------------'\n"
-                         "              |_|_\n"
-                         "       ____ _/ _)_)\n"
-                         "           '  | (_)\n"
-                         "        .--'\"\\| ()\n"
-                         "              | |\n"
-                         "              | |\n"
-                         "              |_|\n"
-                      << std::endl;
-
-            Control::land();
-            m_system.stop();
         }
     }
 }

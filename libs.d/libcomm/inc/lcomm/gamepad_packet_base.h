@@ -16,7 +16,6 @@ namespace lcomm {
             Down = 0x02,
             Left = 0x04,
             Right = 0x08,
-            Stop = 0x10,
 
             TakeOff = 0x20,
             Land = 0x40

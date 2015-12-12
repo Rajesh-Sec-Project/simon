@@ -6,8 +6,10 @@
 #include "lcomm/lcomm.h"
 #include "lcomm/gamecontrol_packet.h"
 #include "gamesystem.h"
+#include "lcontrol/control.h"
 
 using namespace lcomm;
+using namespace lcontrol;
 
 using lcomm::GameState;
 
@@ -19,6 +21,28 @@ void GameControlSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBa
     if(GameControlPacket* ctrl = packet->downcast<GameControlPacket>()) {
         if(ctrl->gameState() == GameState::Stopped) {
             M_message("The game has been stopped!");
+            std::cout << "Stop requested:\n"
+                    "         ________________\n"
+                    "       /.--------------.\\\n"
+                    "      //                \\\\\n"
+                    "     //                  \\\\\n"
+                    "    || .-..----. .-. .--. ||\n"
+                    "    ||( ( '-..-'|.-.||.-.|||\n"
+                    "    || \\ \\  ||  || ||||_||||\n"
+                    "    ||._) ) ||  \\'-'/||-' ||\n"
+                    "     \\\\'-'  `'   `-' `'  //\n"
+                    "      \\\\                //\n"
+                    "       \\\\______________//\n"
+                    "        '--------------'\n"
+                    "              |_|_\n"
+                    "       ____ _/ _)_)\n"
+                    "           '  | (_)\n"
+                    "        .--'\"\\| ()\n"
+                    "              | |\n"
+                    "              | |\n"
+                    "              |_|\n"
+            << std::endl;
+            Control::land();
         } else if(ctrl->gameState() == GameState::Paused) {
             M_message("The game has been paused!");
         } else if(ctrl->gameState() == GameState::Running) {
