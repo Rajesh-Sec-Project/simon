@@ -72,8 +72,18 @@ public:
     //! Send out an error log to the host
     void error(std::string const& nm, std::string const& msg);
 
+    //! Send the score value to the host
+    void score(int score);
+
     //! Return the elasped time since the creation of the game system.
     std::chrono::nanoseconds clock();
+
+    bool started() const {
+        return m_started;
+    }
+
+    void startGame();
+    void stopGame();
 
 protected:
     void M_droneSetup();
@@ -84,6 +94,7 @@ private:
 
     std::atomic_bool m_inited = {false};
     std::atomic_bool m_alive = {false};
+    std::atomic_bool m_started = {false};
     std::thread m_gameLoop;
 
     GamePadSubscriber m_gamePadSubscriber;

@@ -4,6 +4,7 @@
 #include "gameelement.h"
 #include "lcomm/lcomm.h"
 #include "moves.h"
+#include "scoremanager.h"
 
 class GameSystem;
 
@@ -22,12 +23,16 @@ public:
     void userUp();
     void userDown();
 
+    void clearAndStart();
+    void clear();
+
 private:
     void M_playSequence();
 
     bool m_new_move;
     lmoves::Moves m_seq, m_user;
     std::size_t m_current_move;
+    ScoreManager m_scoremgr;
 };
 
 #endif // SIMON_ROUNDMANAGER_H

@@ -2,9 +2,11 @@
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
 #include <sstream>
+#include <ctime>
 
 RoundManager::RoundManager(GameSystem& system)
-        : GameElement(system) {
+        : GameElement(system) 
+        , m_scoremgr(system) {
 }
 
 RoundManager::~RoundManager() {
@@ -27,20 +29,33 @@ void RoundManager::notify(lcomm::Endpoint& ep, std::shared_ptr<lcomm::PacketBase
 }
 
 void RoundManager::gameInit() {
+    m_seq.clearSequence();
+    m_user.clearSequence();
     m_new_move = false;
     m_current_move = 0;
     m_seq.addRandomMove();
     M_playSequence();
+    m_scoremgr.gameInit();
 }
 
 void RoundManager::M_playSequence() {
     std::ostringstream ss;
     ss << m_seq << std::endl;
     M_message(ss.str());
+    m_scoremgr.setStart();
+}
+
+void RoundManager::clearAndStart() {
+    this->gameInit();
+}
+
+void RoundManager::clear() {
+    m_scoremgr.clear();
 }
 
 void RoundManager::gameLoop() {
     if(m_new_move) {
+        m_scoremgr.setEnd();
         m_new_move = false;
 
         if(m_seq.getSequence()[m_current_move] == m_user.getSequence()[m_current_move]) {
@@ -49,6 +64,8 @@ void RoundManager::gameLoop() {
                 m_user.clearSequence();
                 m_current_move = 0;
                 M_message("well done !");
+                m_scoremgr.calculateScore();
+                m_scoremgr.printScore();
                 M_playSequence();
             } else {
                 ++m_current_move;
@@ -56,6 +73,7 @@ void RoundManager::gameLoop() {
             }
         } else {
             M_message("Game OVER");
+            this->clear();
         }
     }
 }

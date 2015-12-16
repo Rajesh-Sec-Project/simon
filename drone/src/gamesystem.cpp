@@ -6,6 +6,7 @@
 #include "lcomm/gamepad_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+#include "lcomm/score_packet.h"
 #include "lcontrol/control.h"
 #include "lcontrol/positioncontrol.h"
 #include "navdatacontroller.h"
@@ -19,7 +20,7 @@
 
 //! Only messages with the log level specified or the levels above will be output to stdout/stderr
 //! No messages will be output with a min log level of lcomm::LogPacket::NoLog
-#define LOCAL_MIN_LOG_LEVEL lcomm::LogPacket::Trace
+#define LOCAL_MIN_LOG_LEVEL lcomm::LogPacket::Message
 
 using namespace std::literals;
 using namespace lcomm;
@@ -134,6 +135,11 @@ void GameSystem::error(std::string const& nm, std::string const& msg) {
     }
 }
 
+void GameSystem::score(int score){
+    lcomm::ScorePacket log(score);
+    m_endpoint.write(log);
+}
+
 void GameSystem::M_droneSetup() {
     // Init AT command stuff
     Control::init();
@@ -160,6 +166,16 @@ void GameSystem::M_droneSetup() {
         ;
 }
 
+void GameSystem::startGame() {
+    m_started = true;
+    m_roundmgr.clearAndStart();
+}
+
+void GameSystem::stopGame() {
+    m_started = false;
+    m_roundmgr.clear();
+}
+
 void GameSystem::M_gameLoop() {
 
     while(!m_inited)
@@ -174,9 +190,10 @@ void GameSystem::M_gameLoop() {
     m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
-    m_roundmgr.gameInit();
+    //m_roundmgr.gameInit();
     m_confmgr.gameInit();
     m_navctrl.gameInit();
+
 
     // Send several FTRIM commands
     Control::enableStabilization();
@@ -190,15 +207,18 @@ void GameSystem::M_gameLoop() {
         Control::watchdog();
 
         // Wait for new navdata (only slightly blocking)
-        while(!m_navctrl.available())
-            ;
+        while (!m_navctrl.available());
 
         // Do stuff (regulations loops will go there for ex.)
         /*** Add you own elements here ***/
         m_confmgr.gameLoop();
         m_tagctrl.gameLoop();
         m_journalist.gameLoop();
-        m_roundmgr.gameLoop();
+
+        if (m_started) {
+            m_roundmgr.gameLoop();
+        }
+
         m_mouvement_stalker.gameLoop();
         m_navctrl.gameLoop();
 

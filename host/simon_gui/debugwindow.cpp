@@ -4,6 +4,7 @@
 #include "lcomm/gamepad_position_packet.h"
 #include "lcomm/log_packet.h"
 #include "lcomm/info_packet.h"
+#include "lcomm/score_packet.h"
 #include "lcomm/pid_packet.h"
 #include "commmanager.h"
 #include <iostream>
@@ -54,6 +55,11 @@ DebugWindow::DebugWindow(QWidget* parent)
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     QObject::connect(m_ui->kp_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
     QObject::connect(m_ui->ki_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));

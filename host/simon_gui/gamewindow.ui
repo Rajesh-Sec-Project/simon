@@ -15,21 +15,10 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="2">
-     <widget class="QLabel" name="statusLabel">
-      <property name="text">
-       <string>No current game</string>
-      </property>
-     </widget>
+    <item row="0" column="1" rowspan="2">
+     <widget class="GamePad" name="gamepad" native="true"/>
     </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Status:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1" colspan="2">
+    <item row="1" column="2" colspan="2">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QPushButton" name="startPauseButton">
@@ -45,6 +34,38 @@
         </property>
         <property name="text">
          <string>Stop</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="2" colspan="2">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Game status:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Score:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="status">
+        <property name="text">
+         <string>game status</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="score">
+        <property name="text">
+         <string>score</string>
         </property>
        </widget>
       </item>
@@ -69,6 +90,14 @@
    <addaction name="menuAwesome_GUI_Client"/>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GamePad</class>
+   <extends>QWidget</extends>
+   <header>gamepad.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

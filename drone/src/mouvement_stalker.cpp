@@ -253,7 +253,7 @@ void Mouvement_Stalker::PIDcal() {
 
 
 void Mouvement_Stalker::print_Position_Control() {
-
+    return;
     std::string clr = "                      ";
 
     /*std::cout << "set_x:    " << std::fixed << std::setw(4) << std::setprecision(1) << std::setfill('0')

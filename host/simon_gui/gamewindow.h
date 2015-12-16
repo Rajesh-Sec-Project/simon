@@ -27,6 +27,12 @@ private slots:
     void M_startPause();
     void M_stop();
 
+    void M_up();
+    void M_down();
+    void M_left();
+    void M_right();
+    void M_receivedScore(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
+
 private:
     void M_updateState();
 
