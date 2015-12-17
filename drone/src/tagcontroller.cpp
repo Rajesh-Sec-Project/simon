@@ -83,6 +83,7 @@ void TagController::gameInit() {
     m_avg_corr_update = 0.25f;
     m_tag_x = 0.0f;
     m_tag_y = 0.0f;
+    m_tag_z = 0.0f;
     m_avg_vx = 0.0f;
     m_avg_vy = 0.0f;
     m_avg_cor_vx = 0.0f;
@@ -104,6 +105,10 @@ float TagController::tagPositionX() const {
 
 float TagController::tagPositionY() const {
     return m_tag_y;
+}
+
+float TagController::tagPositionZ() const {
+    return m_tag_z;
 }
 
 float TagController::tagSpeedX() const {
@@ -128,6 +133,7 @@ void TagController::gameLoop() {
         //   for explanations on this black magic)
         x = 1e-3 * (1.158 * d * (x - 500.0f));
         y = 1e-3 * (0.658 * d * (y - 500.0f));
+        float z = d;
 
         // Compute average speeds (in mm/s)
         m_avg_vx = (1.0f - m_avg_update) * m_avg_vx + m_avg_update * (10.0 * (x - m_tag_x));
@@ -140,6 +146,7 @@ void TagController::gameLoop() {
         // Update internal state
         m_tag_x = x;
         m_tag_y = y;
+        m_tag_z = z;
 
         // Run move detections
         int h = M_moveDetection(m_horiz_detect, m_avg_vx);

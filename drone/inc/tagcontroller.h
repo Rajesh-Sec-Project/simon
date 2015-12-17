@@ -28,6 +28,11 @@ public:
     //!   position (if applicable) in cm
     float tagPositionY() const;
 
+    //! Returns the detected tag's depth
+    //!   position (if applicable) in cm
+    //! Computed using its size
+    float tagPositionZ() const;
+
     //! Returns the corrected and averaged tag
     //!   horizontal speed in mm/s
     float tagSpeedX() const;
@@ -52,6 +57,7 @@ private:
     bool m_has_detection;
     float m_tag_x;
     float m_tag_y;
+    float m_tag_z;
 
     float m_avg_update, m_avg_corr_update;
     float m_avg_vx, m_avg_cor_vx;

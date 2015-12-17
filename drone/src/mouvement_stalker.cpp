@@ -77,7 +77,7 @@ void Mouvement_Stalker::gameInit() {
     err_mem.pre_error_y = 0.0;
     err_mem.pre_error_z = 0.0;
 
-    m_gains.xy.kp = 0.0150f;
+    m_gains.xy.kp = 0.0100f;
     m_gains.xy.ki = 0.0005f;
     m_gains.xy.kd = 0.0000f;
 
@@ -88,22 +88,26 @@ void Mouvement_Stalker::gameInit() {
 
 void Mouvement_Stalker::gameLoop() {
     Navdata nav = m_system.navdataController().grab();
-    if(nav.header.state & navdata::fly) {
-        if(nav.demo.altitude < TOOK_OF_ALT) {
-            return;
-        }
-
+    if(nav.header.state & navdata::fly &&
+       nav.demo.altitude > TOOK_OF_ALT)
+    {
         fill_pos_con(nav);
         SpeedIntegrate();
         PIDcal();
-        float leftRightTilt;
-        float frontBackTilt;
-        float verticalSpeed;
+
+        float leftRightTilt = 0.0f;
+        float frontBackTilt = 0.0f;
+        float verticalSpeed = 0.0f;
         float angularSpeed = 0.0f;
-        frontBackTilt = pos_con.output_y;
-        leftRightTilt = pos_con.output_x;
+
+        if (m_system.tagController().hasDetection())
+        {
+            frontBackTilt = pos_con.output_y;
+            leftRightTilt = pos_con.output_x;
+        }
         verticalSpeed = pos_con.output_z;
-        print_Position_Control();
+
+        // print_Position_Control();
         Control::movement(1, frontBackTilt, leftRightTilt, verticalSpeed, angularSpeed);
 
         // file << nav.demo.phi << ", " << nav.demo.theta << std::endl;
@@ -149,8 +153,8 @@ void Mouvement_Stalker::fill_pos_con(Navdata const& nav) {
     pos_con.phi = nav.demo.phi;
     pos_con.theta = nav.demo.theta;
 
-    pos_con.set_x = lcontrol::PositionControl::xPos();
-    pos_con.set_y = lcontrol::PositionControl::yPos();
+    pos_con.set_x = 0; // lcontrol::PositionControl::xPos();
+    pos_con.set_y = 0; //lcontrol::PositionControl::yPos();
     pos_con.set_z = DEFAULT_ALT + lcontrol::PositionControl::zPos();
 }
 
@@ -164,9 +168,17 @@ void Mouvement_Stalker::SpeedIntegrate() {
 
     // float pre_vx = 0 ;
 
-    pos_con.real_x = pos_con.vx; // * dt;
-    pos_con.real_y = pos_con.vy; // * dt;
+    if (m_system.tagController().hasDetection())
+    {
+        pos_con.real_x = m_system.tagController().tagPositionX() / 100.0f; // pos_con.vx * dt;
+        pos_con.real_y = 0.0f; // m_system.tagController().tagPositionZ(); // pos_con.vy * dt;
+    }
     pos_con.real_z = pos_con.altitude;
+
+    std::cout << "---" << std::endl;
+    std::cout << "x: " << pos_con.real_x << " / " << pos_con.set_x << std::endl;
+    std::cout << "y: " << pos_con.real_y << " / " << pos_con.set_y << std::endl;
+    std::cout << "z: " << pos_con.real_z << " / " << pos_con.set_z << std::endl;
 
     // std::cout << "vitesse selon x,y,z" << pos_con.vx << " " << pos_con.vy << " " << pos_con.vz << std::endl;
     // std::cout << "real position d'apres integrateur  " << pos_con.real_x << " " << pos_con.real_y << " "
@@ -190,7 +202,7 @@ void Mouvement_Stalker::PIDcal() {
 
 
     // Caculate P,I,D
-    pos_con.error_x = pos_con.set_x - pos_con.real_x;
+    pos_con.error_x = -1.0f * (pos_con.set_x - pos_con.real_x);
     if(fabs(pos_con.error_x > epsilon)) // In case of error too small then stop integration
     {
         integral_x = integral_x + pos_con.error_x * dt;
@@ -244,11 +256,6 @@ void Mouvement_Stalker::PIDcal() {
     }
 
     err_mem.pre_error_z = pos_con.error_z;
-
-    std::cout << "pos " << pos_con.real_x << ", " << pos_con.real_y << ", " << pos_con.real_z << "               " << std::endl
-              << "\e[A";
-    std::cout << "pos commande" << pos_con.output_x << " " << pos_con.output_y << " " << pos_con.output_z;
-    std::cout << "                      " << std::endl << "\e[A";
 }
 
 
