@@ -10,6 +10,7 @@
 #include "lcomm/score_packet.h"
 #include "lcomm/gamecontrol_packet.h"
 #include "lcomm/pid_packet.h"
+#include "viewmanager.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -23,15 +24,16 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::ScorePacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
 
-    qDebug() << "Waiting for connection...";
-    while(!CommManager::self().opened())
-        ;
-    qDebug() << "Connected !";
+//    qDebug() << "Waiting for connection...";
+//    while(!CommManager::self().opened())
+//        ;
+//    qDebug() << "Connected !";
 
-    DebugWindow dw;
-    dw.show();
+//    DebugWindow dw;
+//    dw.show();
 
     GameWindow gw;
+    gw.setCentralWidget(&ViewManager::getMainMenu());
     gw.show();
 
     return a.exec();

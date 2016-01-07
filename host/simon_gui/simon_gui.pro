@@ -15,18 +15,23 @@ SOURCES += main.cpp \
     debugwindow.cpp \
     gamewindow.cpp \
     gamepad.cpp \
-    commmanager.cpp
+    commmanager.cpp \
+    mainmenu.cpp \
+    viewmanager.cpp
 
 HEADERS  += \
     debugwindow.h \
     gamewindow.h \
     gamepad.h \
-    commmanager.h
+    commmanager.h \
+    mainmenu.h \
+    viewmanager.h
 
 FORMS    += \
     debugwindow.ui \
     gamewindow.ui \
-    gamepad.ui
+    gamepad.ui \
+    mainmenu.ui
 
 CONFIG += c++14
 INCLUDEPATH += ../../libs.d/libcomm/inc
