@@ -33,7 +33,9 @@ int main(int argc, char* argv[]) {
 //    dw.show();
 
     GameWindow gw;
-    gw.setCentralWidget(&ViewManager::getMainMenu());
+    ViewManager::init(gw);
+
+    ViewManager::switchToMainMenu();
     gw.show();
 
     return a.exec();

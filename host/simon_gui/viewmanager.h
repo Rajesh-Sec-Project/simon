@@ -5,23 +5,23 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include "mainmenu.h"
-
-namespace Ui {
-    class MainMenu;
-}
+#include <memory>
+#include "gamewindow.h"
 
 class ViewManager {
 public:
-    static void init() {
-        m_mainMenu = new MainMenu();
+    static void init(GameWindow &window) {
+        m_window = &window;
+        m_mainMenu = std::make_unique<MainMenu>();
     }
 
-    static QWidget &getMainMenu() {
-       return *m_mainMenu;
+    static void switchToMainMenu() {
+        m_window->setCentralWidget(m_mainMenu.get());
     }
 
 private:
-    static MainMenu *m_mainMenu;
+    static std::unique_ptr<MainMenu> m_mainMenu;
+    static GameWindow *m_window;
 };
 
 #endif // VIEWMANAGER
