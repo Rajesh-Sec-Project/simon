@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     GameWindow gw;
     ViewManager::init(gw);
 
-    ViewManager::switchToMainMenu();
+    ViewManager::switchToHighScores();
     gw.show();
 
     return a.exec();

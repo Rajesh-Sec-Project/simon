@@ -16,7 +16,9 @@ public:
     ~MainMenu();
 
 private slots:
+    void M_highScores();
     void M_settings();
+    void M_quit();
 
 private:
     Ui::mainmenu *m_ui;
