@@ -38,7 +38,8 @@ GameSystem::GameSystem()
         , m_tagctrl(*this)
         , m_journalist(*this)
         , m_mouvement_stalker(*this)
-        , m_roundmgr(*this) {
+        , m_roundmgr(*this)
+        , m_ledcontroller(*this) {
     gettimeofday(&m_timeref, 0);
 
     m_gameLoop = std::thread(&GameSystem::M_gameLoop, this);
@@ -193,7 +194,7 @@ void GameSystem::M_gameLoop() {
     //m_roundmgr.gameInit();
     m_confmgr.gameInit();
     m_navctrl.gameInit();
-
+    m_ledcontroller.gameInit();
 
     // Send several FTRIM commands
     Control::enableStabilization();

@@ -23,6 +23,7 @@
 #include "mouvement_stalker.h"
 #include "roundmanager.h"
 #include "gamecontrolsubscriber.h"
+#include "ledcontroller.h"
 
 //! The game system class, that manages :
 //!   - all the game components
@@ -106,6 +107,7 @@ private:
     Journalist m_journalist;
     Mouvement_Stalker m_mouvement_stalker;
     RoundManager m_roundmgr;
+    LEDController m_ledcontroller;
 
     struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};
     static std::chrono::nanoseconds const m_gameLoopActivationTime;
