@@ -8,10 +8,10 @@ class NavdataController;
 class LEDController : public GameElement {
 public:
     enum Led {
-        Blue = 0x00,
+        Green = 0x00,
+        Red,
         Yellow,
-        Green,
-        Red
+        Blue
     };
 
 public:
@@ -21,8 +21,13 @@ public:
     void gameInit() override;
     void gameLoop() override;
 
-    void setLed(int led);
-    void unsetLed(int led);
+    //! Use this function to light up a led on the board
+    //! \param led The led to light
+    void setLed(Led led);
+
+    //! Use this function to turn off a led on the board
+    //! \param led The led to turn off
+    void unsetLed(Led led);
 
 private:
     void M_serial_config(int fd);

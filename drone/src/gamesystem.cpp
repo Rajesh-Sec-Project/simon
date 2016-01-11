@@ -98,7 +98,7 @@ lcomm::Endpoint& GameSystem::endpoint() {
 void GameSystem::trace(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
-    m_endpoint.write(log);
+    //m_endpoint.write(log);
 
     if(lcomm::LogPacket::Trace >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[TRACE]  " << str << std::endl;
@@ -108,7 +108,7 @@ void GameSystem::trace(std::string const& nm, std::string const& msg) {
 void GameSystem::message(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Message, str);
-    m_endpoint.write(log);
+    //m_endpoint.write(log);
 
 
     if(lcomm::LogPacket::Message >= LOCAL_MIN_LOG_LEVEL) {
@@ -119,7 +119,7 @@ void GameSystem::message(std::string const& nm, std::string const& msg) {
 void GameSystem::warning(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
-    m_endpoint.write(log);
+    //m_endpoint.write(log);
 
     if(lcomm::LogPacket::Warning >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[WARN]  " << str << std::endl;
@@ -129,7 +129,7 @@ void GameSystem::warning(std::string const& nm, std::string const& msg) {
 void GameSystem::error(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Error, str);
-    m_endpoint.write(log);
+    //m_endpoint.write(log);
 
     if(lcomm::LogPacket::Error >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[ERROR]  " << str << std::endl;

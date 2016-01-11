@@ -1,4 +1,4 @@
-#include "tagcontroller.h"
+#include "ledcontroller.h"
 #include "gamesystem.h"
 
 #include <stdlib.h>
@@ -30,14 +30,14 @@ void LEDController::gameLoop() {
 
 }
 
-void LEDController::setLed(int led) {
+void LEDController::setLed(LEDController::Led led) {
     m_flag |= (0x01 << led);
     
     char buf[2] = { 0xCA, m_flag };
     M_serial_write(m_serial, buf, 2);
 }
 
-void LEDController::unsetLed(int led) {
+void LEDController::unsetLed(LEDController::Led led) {
     m_flag &= ~(0x01 << led);
     
     char buf[2] = { 0xCA, m_flag };
@@ -74,16 +74,11 @@ int LEDController::M_serial_init(const char * device)
         return -1;
     }
 
-    if (! isatty(fd)) {
+    if (!isatty(fd)) {
         M_error("the device is not a serial port");
         close(fd);
         return -1;
     }
-
-    // Set blocking read
-    /* On the drone, the read is non-blocking anyway, normally we would
-     * use FNDELAY instead of 0 for that */
-    fcntl(fd, F_SETFL, 0);
 
     M_serial_config(fd);
 
