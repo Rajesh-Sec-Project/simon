@@ -34,6 +34,7 @@ private slots:
 
 private:
     void M_updateState();
+    void M_lost();
 
     std::unique_ptr<Ui::gameview> m_ui;
     GameState m_state = GameState::Stopped;

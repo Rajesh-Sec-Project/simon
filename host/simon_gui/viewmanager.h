@@ -10,7 +10,7 @@
 #include <memory>
 #include "gamewindow.h"
 #include <QStackedWidget>
-
+#include "gameview.h"
 class ViewManager {
 public:
     static void init(GameWindow& window) {
@@ -18,6 +18,7 @@ public:
         m_mainMenu = std::make_unique<MainMenu>();
         m_highScores = std::make_unique<HighScores>();
         m_lost = std::make_unique<Lost>();
+        m_game = std::make_unique<gameview>();
 
         while(m_window->stackedWidget().count()) {
             m_window->stackedWidget().removeWidget(m_window->stackedWidget().currentWidget());
@@ -34,6 +35,10 @@ public:
 
     static void switchToLost() {
         switchTo(*m_lost);
+    }
+
+    static void switchToGame() {
+        switchTo(*m_game);
     }
 
     static void closeWindow() {
@@ -61,6 +66,7 @@ private:
     static std::unique_ptr<MainMenu> m_mainMenu;
     static std::unique_ptr<HighScores> m_highScores;
     static std::unique_ptr<Lost> m_lost;
+    static std::unique_ptr<gameview> m_game;
     // static std::unique_ptr<> m_settings;
     static GameWindow* m_window;
     static int m_score;

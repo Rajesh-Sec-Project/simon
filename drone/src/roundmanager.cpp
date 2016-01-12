@@ -73,6 +73,7 @@ void RoundManager::gameLoop() {
             }
         } else {
             M_message("Game OVER");
+            m_scoremgr.gameOver();
             this->clear();
         }
     }

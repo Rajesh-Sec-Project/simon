@@ -9,6 +9,7 @@ MainMenu::MainMenu(QWidget* parent)
 
 
     // QObject::connect(m_ui->newGameButton, SIGNAL(clicked()), this, SLOT(M_stop()));
+    QObject::connect(m_ui->newGameButton, SIGNAL(clicked()), this, SLOT(M_newGame()));
     QObject::connect(m_ui->highScoresButton, SIGNAL(clicked()), this, SLOT(M_highScores()));
     QObject::connect(m_ui->settingsButton, SIGNAL(clicked()), this, SLOT(M_settings()));
     QObject::connect(m_ui->quitButton, SIGNAL(clicked()), this, SLOT(M_quit()));
@@ -16,6 +17,10 @@ MainMenu::MainMenu(QWidget* parent)
 
 MainMenu::~MainMenu() {
     delete m_ui;
+}
+
+void MainMenu::M_newGame() {
+    ViewManager::switchToGame();
 }
 
 void MainMenu::M_highScores() {

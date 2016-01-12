@@ -45,6 +45,13 @@ void ScoreManager::printScore() {
     M_message(std::to_string(m_current_score));
 }
 
+void ScoreManager::gameOver() {
+    lcomm::ScorePacket score(-1);
+    m_system.endpoint().write(score);
+    // M_message(std::to_string(this->m_added_score )) ;
+    M_message(std::to_string(m_current_score));
+}
+
 void ScoreManager::clear() {
     m_current_score = 0;
     this->printScore();

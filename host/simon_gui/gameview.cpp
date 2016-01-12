@@ -12,6 +12,7 @@
 #include <QFont>
 #include <QFontDatabase>
 #include <sstream>
+#include "viewmanager.h"
 
 using namespace std::literals;
 
@@ -85,6 +86,9 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     if(!score)
         return;
 
+    if(score->getScore() != -1) {
+        ViewManager::set_score(score->getScore());
+    }
     m_ui->score->setText(std::to_string(score->getScore()).c_str());
 }
 
@@ -106,4 +110,8 @@ void gameview::M_left() {
 void gameview::M_right() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Right);
     CommManager::self().write(pkt);
+}
+
+void gameview::M_lost() {
+    ViewManager::switchToLost();
 }

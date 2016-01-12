@@ -20,6 +20,8 @@ public:
 
     void clear();
 
+    void gameOver();
+
 private:
     int m_current_score;
     long long m_start;

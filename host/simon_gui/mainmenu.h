@@ -15,6 +15,7 @@ public:
     ~MainMenu();
 
 private slots:
+    void M_newGame();
     void M_highScores();
     void M_settings();
     void M_quit();
