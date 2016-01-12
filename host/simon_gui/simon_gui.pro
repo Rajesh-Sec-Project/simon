@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     mainmenu.cpp \
     viewmanager.cpp \
     highscores.cpp \
-    lost.cpp
+    lost.cpp \
+    gameview.cpp
 
 HEADERS  += \
     debugwindow.h \
@@ -29,7 +30,8 @@ HEADERS  += \
     mainmenu.h \
     viewmanager.h \
     highscores.h \
-    lost.h
+    lost.h \
+    gameview.h
 
 FORMS    += \
     debugwindow.ui \
@@ -37,7 +39,8 @@ FORMS    += \
     gamepad.ui \
     mainmenu.ui \
     highscores.ui \
-    lost.ui
+    lost.ui \
+    gameview.ui
 
 CONFIG += c++14
 INCLUDEPATH += ../../libs.d/libcomm/inc

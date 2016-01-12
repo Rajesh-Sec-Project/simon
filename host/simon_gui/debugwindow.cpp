@@ -56,10 +56,8 @@ DebugWindow::DebugWindow(QWidget* parent)
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
-    QObject::connect(&CommManager::self(),
-                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this,
-                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     QObject::connect(m_ui->kp_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
     QObject::connect(m_ui->ki_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));

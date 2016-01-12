@@ -4,23 +4,22 @@
 #include <QWidget>
 
 namespace Ui {
-class highscores;
+    class highscores;
 }
 
-class HighScores : public QWidget
-{
+class HighScores : public QWidget {
     Q_OBJECT
 
 public:
-    explicit HighScores(QWidget *parent = nullptr);
+    explicit HighScores(QWidget* parent = nullptr);
     ~HighScores();
     void display_Scores();
 
-private slots :
+private slots:
     void M_back();
 
 private:
-    Ui::highscores *m_ui;
+    Ui::highscores* m_ui;
 };
 
 #endif // HIGHSCORES_H

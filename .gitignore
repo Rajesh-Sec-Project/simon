@@ -8,3 +8,5 @@ build-*/
 *~
 *.sublime-workspace
 *.sublime-project
+high_scores.txt
+nohup.out

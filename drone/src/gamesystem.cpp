@@ -98,7 +98,7 @@ lcomm::Endpoint& GameSystem::endpoint() {
 void GameSystem::trace(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Trace, str);
-    //m_endpoint.write(log);
+    // m_endpoint.write(log);
 
     if(lcomm::LogPacket::Trace >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[TRACE]  " << str << std::endl;
@@ -108,7 +108,7 @@ void GameSystem::trace(std::string const& nm, std::string const& msg) {
 void GameSystem::message(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Message, str);
-    //m_endpoint.write(log);
+    // m_endpoint.write(log);
 
 
     if(lcomm::LogPacket::Message >= LOCAL_MIN_LOG_LEVEL) {
@@ -119,7 +119,7 @@ void GameSystem::message(std::string const& nm, std::string const& msg) {
 void GameSystem::warning(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Warning, str);
-    //m_endpoint.write(log);
+    // m_endpoint.write(log);
 
     if(lcomm::LogPacket::Warning >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[WARN]  " << str << std::endl;
@@ -129,14 +129,14 @@ void GameSystem::warning(std::string const& nm, std::string const& msg) {
 void GameSystem::error(std::string const& nm, std::string const& msg) {
     std::string str = "(" + nm + ") " + msg;
     lcomm::LogPacket log(lcomm::LogPacket::Error, str);
-    //m_endpoint.write(log);
+    // m_endpoint.write(log);
 
     if(lcomm::LogPacket::Error >= LOCAL_MIN_LOG_LEVEL) {
         std::cout << "[ERROR]  " << str << std::endl;
     }
 }
 
-void GameSystem::score(int score){
+void GameSystem::score(int score) {
     lcomm::ScorePacket log(score);
     m_endpoint.write(log);
 }
@@ -191,7 +191,7 @@ void GameSystem::M_gameLoop() {
     m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
-    //m_roundmgr.gameInit();
+    // m_roundmgr.gameInit();
     m_confmgr.gameInit();
     m_navctrl.gameInit();
     m_ledcontroller.gameInit();
@@ -208,7 +208,8 @@ void GameSystem::M_gameLoop() {
         Control::watchdog();
 
         // Wait for new navdata (only slightly blocking)
-        while (!m_navctrl.available());
+        while(!m_navctrl.available())
+            ;
 
         // Do stuff (regulations loops will go there for ex.)
         /*** Add you own elements here ***/
@@ -216,7 +217,7 @@ void GameSystem::M_gameLoop() {
         m_tagctrl.gameLoop();
         m_journalist.gameLoop();
 
-        if (m_started) {
+        if(m_started) {
             m_roundmgr.gameLoop();
         }
 

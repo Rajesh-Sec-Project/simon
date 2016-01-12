@@ -6,7 +6,7 @@
 
 class GameSystem;
 
-class ScoreManager : public GameElement{
+class ScoreManager : public GameElement {
 public:
     ScoreManager(GameSystem& system);
     ~ScoreManager();
@@ -18,13 +18,12 @@ public:
     void calculateScore();
     void printScore();
 
-	void clear();
+    void clear();
 
 private:
-	int m_current_score;
+    int m_current_score;
     long long m_start;
     long long m_end;
-
 };
 
 #endif // SIMON_SCOREMANAGER_H

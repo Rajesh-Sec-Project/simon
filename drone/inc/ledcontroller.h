@@ -7,12 +7,7 @@ class NavdataController;
 
 class LEDController : public GameElement {
 public:
-    enum Led {
-        Green = 0x00,
-        Red,
-        Yellow,
-        Blue
-    };
+    enum Led { Green = 0x00, Red, Yellow, Blue };
 
 public:
     LEDController(GameSystem& system);
@@ -31,7 +26,7 @@ public:
 
 private:
     void M_serial_config(int fd);
-    int M_serial_init(const char * device);
+    int M_serial_init(const char* device);
     int M_serial_write(int fd, char* buffer, int size);
 
 private:

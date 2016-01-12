@@ -4,15 +4,14 @@
 #include <QWidget>
 
 namespace Ui {
-class mainmenu;
+    class mainmenu;
 }
 
-class MainMenu : public QWidget
-{
+class MainMenu : public QWidget {
     Q_OBJECT
 
 public:
-    explicit MainMenu(QWidget *parent = nullptr);
+    explicit MainMenu(QWidget* parent = nullptr);
     ~MainMenu();
 
 private slots:
@@ -21,7 +20,7 @@ private slots:
     void M_quit();
 
 private:
-    Ui::mainmenu *m_ui;
+    Ui::mainmenu* m_ui;
 };
 
 #endif // MAINMENU_H

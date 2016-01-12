@@ -88,9 +88,7 @@ void Mouvement_Stalker::gameInit() {
 
 void Mouvement_Stalker::gameLoop() {
     Navdata nav = m_system.navdataController().grab();
-    if(nav.header.state & navdata::fly &&
-       nav.demo.altitude > TOOK_OF_ALT)
-    {
+    if(nav.header.state & navdata::fly && nav.demo.altitude > TOOK_OF_ALT) {
         fill_pos_con(nav);
         SpeedIntegrate();
         PIDcal();
@@ -100,8 +98,7 @@ void Mouvement_Stalker::gameLoop() {
         float verticalSpeed = 0.0f;
         float angularSpeed = 0.0f;
 
-        if (m_system.tagController().hasDetection())
-        {
+        if(m_system.tagController().hasDetection()) {
             frontBackTilt = pos_con.output_y;
             leftRightTilt = pos_con.output_x;
         }
@@ -154,7 +151,7 @@ void Mouvement_Stalker::fill_pos_con(Navdata const& nav) {
     pos_con.theta = nav.demo.theta;
 
     pos_con.set_x = 0; // lcontrol::PositionControl::xPos();
-    pos_con.set_y = 0; //lcontrol::PositionControl::yPos();
+    pos_con.set_y = 0; // lcontrol::PositionControl::yPos();
     pos_con.set_z = DEFAULT_ALT + lcontrol::PositionControl::zPos();
 }
 
@@ -168,8 +165,7 @@ void Mouvement_Stalker::SpeedIntegrate() {
 
     // float pre_vx = 0 ;
 
-    if (m_system.tagController().hasDetection())
-    {
+    if(m_system.tagController().hasDetection()) {
         pos_con.real_x = m_system.tagController().tagPositionX() / 100.0f; // pos_con.vx * dt;
         pos_con.real_y = 0.0f; // m_system.tagController().tagPositionZ(); // pos_con.vy * dt;
     }

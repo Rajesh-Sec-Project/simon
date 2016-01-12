@@ -5,7 +5,7 @@
 #include <ctime>
 
 RoundManager::RoundManager(GameSystem& system)
-        : GameElement(system) 
+        : GameElement(system)
         , m_scoremgr(system) {
 }
 
