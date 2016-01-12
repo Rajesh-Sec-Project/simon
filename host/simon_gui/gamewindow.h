@@ -22,7 +22,7 @@ public:
     explicit GameWindow(QWidget* parent = nullptr);
     ~GameWindow();
 
-    QStackedWidget &stackedWidget();
+    QStackedWidget& stackedWidget();
 
 private:
     std::unique_ptr<Ui::GameWindow> m_ui;

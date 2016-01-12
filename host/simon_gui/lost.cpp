@@ -57,6 +57,8 @@ void Lost::M_saveName() {
     new_temp.s_name = name;
     // new_temp.s_score = ViewManager::get_score();
     new_temp.s_score = ViewManager::get_score();
+
+    // infile >>
     bool add = false; // indicates if the new name and score have been added
     if(infile.peek() == std::ifstream::traits_type::eof()) {
         v.push_back(new_temp);
@@ -96,6 +98,8 @@ void Lost::M_saveName() {
         outfile << v[i].s_name << " " << v[i].s_score << '\n';
     }
     outfile.close();
+
+    ViewManager::switchToHighScores();
 }
 
 Lost::~Lost() {

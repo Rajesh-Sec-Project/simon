@@ -24,10 +24,10 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::ScorePacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
 
-    //    qDebug() << "Waiting for connection...";
-    //    while(!CommManager::self().opened())
-    //        ;
-    //    qDebug() << "Connected !";
+    qDebug() << "Waiting for connection...";
+    while(!CommManager::self().opened())
+        ;
+    qDebug() << "Connected !";
 
     //    DebugWindow dw;
     //    dw.show();

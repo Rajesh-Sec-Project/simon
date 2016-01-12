@@ -16,10 +16,9 @@
 
 using namespace std::literals;
 
-gameview::gameview(QWidget *parent) :
-    QWidget(parent),
-    m_ui(new Ui::gameview)
-{
+gameview::gameview(QWidget* parent)
+        : QWidget(parent)
+        , m_ui(new Ui::gameview) {
     m_ui->setupUi(this);
 
     m_ui->score->setText("0");
@@ -31,10 +30,12 @@ gameview::gameview(QWidget *parent) :
 
     QObject::connect(m_ui->stopButton, SIGNAL(clicked()), this, SLOT(M_stop()));
     QObject::connect(m_ui->startPauseButton, SIGNAL(clicked()), this, SLOT(M_startPause()));
+
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 }
 
-gameview::~gameview()
-{
+gameview::~gameview() {
 }
 
 void gameview::M_startPause() {
@@ -88,6 +89,8 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
 
     if(score->getScore() != -1) {
         ViewManager::set_score(score->getScore());
+    } else {
+        M_lost();
     }
     m_ui->score->setText(std::to_string(score->getScore()).c_str());
 }
@@ -114,4 +117,5 @@ void gameview::M_right() {
 
 void gameview::M_lost() {
     ViewManager::switchToLost();
+    M_stop();
 }

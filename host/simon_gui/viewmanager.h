@@ -31,6 +31,7 @@ public:
 
     static void switchToHighScores() {
         switchTo(*m_highScores);
+        m_highScores->display_Scores();
     }
 
     static void switchToLost() {
@@ -58,7 +59,7 @@ public:
     //    }
 
 private:
-    static void switchTo(QWidget &widget) {
+    static void switchTo(QWidget& widget) {
         m_window->stackedWidget().removeWidget(m_window->stackedWidget().currentWidget());
         m_window->stackedWidget().addWidget(&widget);
     }

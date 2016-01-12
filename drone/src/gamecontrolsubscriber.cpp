@@ -48,7 +48,6 @@ void GameControlSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBa
             M_message("The game has been paused!");
         } else if(ctrl->gameState() == GameState::Running) {
             M_message("The game has been started!");
-            Control::takeoff();
             m_system.startGame();
         }
     }

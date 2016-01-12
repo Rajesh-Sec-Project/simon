@@ -9,17 +9,16 @@
 #include "lcomm/gamecontrol_packet.h"
 
 namespace Ui {
-class gameview;
+    class gameview;
 }
 
 using lcomm::GameState;
 
-class gameview : public QWidget
-{
+class gameview : public QWidget {
     Q_OBJECT
 
 public:
-    explicit gameview(QWidget *parent = 0);
+    explicit gameview(QWidget* parent = 0);
     ~gameview();
 
 private slots:

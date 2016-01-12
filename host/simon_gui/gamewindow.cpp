@@ -20,9 +20,6 @@ GameWindow::GameWindow(QWidget* parent)
         , m_ui(std::make_unique<Ui::GameWindow>()) {
 
     m_ui->setupUi(this);
-    /*QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*,
-       std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));*/
 
     // M_stop();
 }
@@ -31,6 +28,6 @@ GameWindow::~GameWindow() {
 }
 
 
-QStackedWidget &GameWindow::stackedWidget() {
+QStackedWidget& GameWindow::stackedWidget() {
     return *m_ui->stackedWidget;
 }
