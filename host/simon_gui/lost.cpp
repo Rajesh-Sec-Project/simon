@@ -12,12 +12,13 @@ Lost::Lost(QWidget* parent)
         : QWidget(parent)
         , m_ui(new Ui::lost) {
     m_ui->setupUi(this);
-    m_ui->texte->setHidden(true);
-    m_ui->label_2->setHidden(true);
-    m_ui->textEdit->setHidden(true);
-    m_ui->OKButton->setHidden(true);
 
-    QObject::connect(m_ui->OKButton, SIGNAL(clicked()), this, SLOT(M_saveName()));
+    m_ui->tryAgain->setHidden(true);
+
+    m_ui->name->setHidden(true);
+    m_ui->ok->setHidden(true);
+
+    QObject::connect(m_ui->ok, SIGNAL(clicked()), this, SLOT(M_saveName()));
 
 
     ifstream infile("high_scores.txt", ios::app);
@@ -29,18 +30,18 @@ Lost::Lost(QWidget* parent)
         infile >> last_name >> last_score;
     }
     if(i <= 10 or ViewManager::get_score() > last_score) {
-        m_ui->texte->setHidden(true);
-        m_ui->label_2->setHidden(false);
-        m_ui->textEdit->setHidden(false);
-        m_ui->OKButton->setHidden(false);
+        m_ui->tryAgain->setHidden(true);
+
+        m_ui->name->setHidden(false);
+        m_ui->ok->setHidden(false);
 
     } else {
-        m_ui->texte->setHidden(false);
+        m_ui->tryAgain->setHidden(false);
     }
 }
 
 void Lost::M_saveName() {
-    string name = m_ui->textEdit->toPlainText().toStdString();
+    string name = m_ui->name->text().toStdString();
 
     ifstream infile("high_scores.txt");
 

@@ -47,3 +47,6 @@ INCLUDEPATH += ../../libs.d/libcomm/inc
 INCLUDEPATH += ../../libs.d/libconf/include
 LIBS += -L../../libs.d/libcomm/bin -lcomm
 LIBS += -L../../libs.d/libconf/bin -lconf
+
+RESOURCES += \
+    ressources.qrc

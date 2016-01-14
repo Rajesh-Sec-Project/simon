@@ -21,7 +21,7 @@ gameview::gameview(QWidget* parent)
         , m_ui(new Ui::gameview) {
     m_ui->setupUi(this);
 
-    m_ui->score->setText("0");
+    m_ui->score->setText("0x0");
 
     QObject::connect(m_ui->gamepad, SIGNAL(up()), this, SLOT(M_up()));
     QObject::connect(m_ui->gamepad, SIGNAL(down()), this, SLOT(M_down()));
@@ -33,6 +33,9 @@ gameview::gameview(QWidget* parent)
 
     QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
                      this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
+    m_state = GameState::Stopped;
+    M_updateState();
 }
 
 gameview::~gameview() {
@@ -60,19 +63,28 @@ void gameview::M_stop() {
 void gameview::M_updateState() {
     switch(m_state) {
         case GameState::Stopped:
-            m_ui->status->setText("No game currently running.");
+            m_ui->status->setText("Stopped");
             m_ui->startPauseButton->setText("Start");
             m_ui->stopButton->setEnabled(false);
+            m_ui->gamepad->hide();
+            m_ui->tagDisplay->hide();
+            m_ui->score->hide();
             break;
         case GameState::Paused:
-            m_ui->status->setText("The current game is paused.");
+            m_ui->status->setText("Paused");
             m_ui->startPauseButton->setText("Resume");
             m_ui->stopButton->setEnabled(true);
+            m_ui->gamepad->show();
+            m_ui->tagDisplay->show();
+            m_ui->score->show();
             break;
         case GameState::Running:
-            m_ui->status->setText("The current game is running.");
+            m_ui->status->setText("Running");
             m_ui->startPauseButton->setText("Pause");
             m_ui->stopButton->setEnabled(true);
+            m_ui->gamepad->show();
+            m_ui->tagDisplay->show();
+            m_ui->score->show();
             break;
     }
 
@@ -92,7 +104,7 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     } else {
         M_lost();
     }
-    m_ui->score->setText(std::to_string(score->getScore()).c_str());
+    m_ui->score->setText("0x" + QString::number(score->getScore(), 16));
 }
 
 void gameview::M_up() {

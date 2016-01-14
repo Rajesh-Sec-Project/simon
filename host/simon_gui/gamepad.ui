@@ -14,30 +14,12 @@
    <string>Game pad</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <property name="leftMargin">
-      <number>4</number>
-     </property>
-     <property name="topMargin">
-      <number>4</number>
-     </property>
-     <property name="rightMargin">
-      <number>4</number>
-     </property>
-     <property name="bottomMargin">
+     <property name="margin">
       <number>4</number>
      </property>
      <item row="0" column="0">
@@ -68,11 +50,12 @@
         <string>You can also press the W key</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: red;
-color: black;</string>
+        <string notr="true">background-color: Tomato;
+color: black;
+font: 25pt &quot;ArcadeClassic&quot;;</string>
        </property>
        <property name="text">
-        <string>v</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -91,11 +74,12 @@ color: black;</string>
         <string>You can also press the D key</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: yellow;
-color: black;</string>
+        <string notr="true">background-color: GoldenRod;
+color: black;
+font: 25pt &quot;ArcadeClassic&quot;;</string>
        </property>
        <property name="text">
-        <string>&gt;</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -153,11 +137,12 @@ color: black;</string>
         <string>You can also press the Q key</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: green;
-color: black;</string>
+        <string notr="true">background-color: ForestGreen;
+color: black;
+font: 25pt &quot;ArcadeClassic&quot;;</string>
        </property>
        <property name="text">
-        <string>&lt;</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -176,11 +161,12 @@ color: black;</string>
         <string>You can also press the Z key</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: blue;
-color: black;</string>
+        <string notr="true">background-color: SteelBlue;
+color: black;
+font: 25pt &quot;ArcadeClassic&quot;;</string>
        </property>
        <property name="text">
-        <string>^</string>
+        <string/>
        </property>
       </widget>
      </item>

@@ -34,9 +34,9 @@ void HighScores::display_Scores() {
     string temp = "";
     infile >> current_name >> current_score;
     for(i = 0; getline(infile, line); ++i) {
-        temp = temp + to_string(i + 1) + ": " + current_name + " " + to_string(current_score) + "<br /> ";
+        temp = temp + "<b>" + current_name + "</b>          " + to_string(current_score) + "<br />";
         infile >> current_name >> current_score;
     }
     QString temp2 = QString::fromStdString(temp);
-    m_ui->scoreText->setText(temp2);
+    m_ui->scoreList->setText(temp2);
 }

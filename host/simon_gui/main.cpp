@@ -11,6 +11,7 @@
 #include "lcomm/gamecontrol_packet.h"
 #include "lcomm/pid_packet.h"
 #include "viewmanager.h"
+#include <QFontDatabase>
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -23,6 +24,14 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::GameControlPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::ScorePacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
+
+    int id = QFontDatabase::addApplicationFont(":/simon/arcade_classic");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    qDebug() << family;
+
+    id = QFontDatabase::addApplicationFont(":/simon/zorque");
+    family = QFontDatabase::applicationFontFamilies(id).at(0);
+    qDebug() << family;
 
     qDebug() << "Waiting for connection...";
     while(!CommManager::self().opened())
