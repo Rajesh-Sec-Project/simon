@@ -1,6 +1,7 @@
 #include "roundmanager.h"
 #include "gamesystem.h"
 #include "lcomm/gamepad_packet.h"
+#include "lcomm/sound_packet.h"
 #include <sstream>
 #include <ctime>
 #include <chrono>
@@ -79,6 +80,8 @@ void RoundManager::gameLoop() {
             } else {
                 ++m_current_move;
                 M_message("good");
+                lcomm::SoundPacket sound(lcomm::SoundPacket::Good);
+                m_system.endpoint().write(sound);
             }
         } else {
             playLose();
@@ -133,6 +136,9 @@ void RoundManager::playMove(lmoves::tmove m, int delay) {
 void RoundManager::playWin() {
     int delay = 500;
 
+    lcomm::SoundPacket sound(lcomm::SoundPacket::Win);
+    m_system.endpoint().write(sound);
+
     m_system.ledController().setLed(LEDController::Green);
     m_system.ledController().setLed(LEDController::Blue);
     m_system.ledController().setLed(LEDController::Yellow);
@@ -150,6 +156,9 @@ void RoundManager::playWin() {
 
 void RoundManager::playLose() {
     int delay = 100;
+
+    lcomm::SoundPacket sound(lcomm::SoundPacket::Loose);
+    m_system.endpoint().write(sound);
 
     for (int times = 0; times < 10; ++times)
     {

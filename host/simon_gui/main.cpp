@@ -10,6 +10,7 @@
 #include "lcomm/score_packet.h"
 #include "lcomm/gamecontrol_packet.h"
 #include "lcomm/pid_packet.h"
+#include "lcomm/sound_packet.h"
 #include "viewmanager.h"
 #include <QFontDatabase>
 
@@ -24,6 +25,10 @@ int main(int argc, char* argv[]) {
     lcomm::PacketManager::registerPacketClass<lcomm::GameControlPacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::ScorePacket>();
     lcomm::PacketManager::registerPacketClass<lcomm::PIDPacket>();
+    lcomm::PacketManager::registerPacketClass<lcomm::SoundPacket>();
+
+    QFontDatabase::addApplicationFont(":/simon/arcade_classic");
+    QFontDatabase::addApplicationFont(":/simon/zorque");
 
     qDebug() << "Waiting for connection...";
     while(!CommManager::self().opened())
