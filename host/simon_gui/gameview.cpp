@@ -6,6 +6,7 @@
 #include "lcomm/info_packet.h"
 #include "lcomm/score_packet.h"
 #include "commmanager.h"
+#include "lcomm/sound_packet.h"
 
 #include <QColor>
 #include <QDebug>
@@ -13,6 +14,7 @@
 #include <QFontDatabase>
 #include <sstream>
 #include "viewmanager.h"
+#include "soundmanager.h"
 
 using namespace std::literals;
 
@@ -150,21 +152,39 @@ void gameview::M_lost() {
 void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
-    InfoPacket* info = packet->downcast<InfoPacket>();
-    if(!info)
+    SoundPacket *sound = packet->downcast<SoundPacket>();
+    if(sound) {
+        std::cout << "Sound: " << sound->sound() << std::endl;
+        switch(sound->sound()) {
+            case SoundPacket::Win:
+                SoundManager::playSound(SoundManager::winSound);
+                break;
+            case SoundPacket::Loose:
+                SoundManager::playSound(SoundManager::loseSound);
+                break;
+            case SoundPacket::Good:
+                SoundManager::playSound(SoundManager::goodSound);
+                break;
+        }
         return;
+    }
 
-    if(info->state() & InfoPacket::Detection) {
-        float raw_x = 1.0f - ((float) info->detectX()) / 1000.0f;
-        float raw_y = ((float) info->detectY()) / 1000.0f;
-        QPointF where = QPointF(m_scene->width() * raw_x, m_scene->height() * raw_y);
+    InfoPacket* info = packet->downcast<InfoPacket>();
+    if(info) {
+        if (info->state() & InfoPacket::Detection) {
+            float raw_x = 1.0f - ((float) info->detectX()) / 1000.0f;
+            float raw_y = ((float) info->detectY()) / 1000.0f;
+            QPointF where = QPointF(m_scene->width() * raw_x, m_scene->height() * raw_y);
 
-        m_text->hide();
-        m_dot->show();
-        m_dot->setPos(where);
-    } else {
-        m_text->show();
-        m_dot->hide();
+            m_text->hide();
+            m_dot->show();
+            m_dot->setPos(where);
+        } else {
+            m_text->show();
+            m_dot->hide();
+        }
+
+        return;
     }
 }
 
