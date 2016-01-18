@@ -28,6 +28,14 @@ public:
     //!   position (if applicable) in cm
     float tagPositionY() const;
 
+    //! Returns the detected tag's horizontal
+    //!   position (if applicable) in [0, 1000]
+    int tagRawX() const;
+
+    //! Returns the detected tag's vertical
+    //!   position (if applicable) in [0, 1000]
+    int tagRawY() const;
+
     //! Returns the detected tag's depth
     //!   position (if applicable) in cm
     //! Computed using its size
@@ -83,6 +91,7 @@ private:
 
     int m_delay;
     int m_delayCounter;
+    int m_raw_x, m_raw_y;
 };
 
 #endif // SIMON_TAGCONTROLLER_H

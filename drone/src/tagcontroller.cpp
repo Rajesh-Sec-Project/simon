@@ -107,6 +107,14 @@ float TagController::tagPositionY() const {
     return m_tag_y;
 }
 
+int TagController::tagRawX() const {
+    return m_raw_x;
+}
+
+int TagController::tagRawY() const {
+    return m_raw_y;
+}
+
 float TagController::tagPositionZ() const {
     return m_tag_z;
 }
@@ -128,6 +136,10 @@ void TagController::gameLoop() {
         float x = nav.vision_detect.xc[0];
         float y = nav.vision_detect.yc[0];
         float d = nav.vision_detect.dist[0];
+
+        // Save raw positions for posterior display
+        m_raw_x = x;
+        m_raw_y = y;
 
         // Convert tag position into centimeters (see docs.d/tag_calibration.md
         //   for explanations on this black magic)

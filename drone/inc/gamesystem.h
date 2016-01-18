@@ -58,6 +58,8 @@ public:
     //! Get the system's round manager
     RoundManager& roundManager();
 
+    LEDController& ledController();
+
     //! Get the communication endpoint of this game system
     lcomm::Endpoint& endpoint();
 

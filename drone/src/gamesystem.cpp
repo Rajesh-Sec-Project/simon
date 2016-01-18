@@ -87,6 +87,10 @@ TagController& GameSystem::tagController() {
     return m_tagctrl;
 }
 
+LEDController& GameSystem::ledController() {
+    return m_ledcontroller;
+}
+
 RoundManager& GameSystem::roundManager() {
     return m_roundmgr;
 }
