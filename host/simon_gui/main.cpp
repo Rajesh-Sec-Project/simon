@@ -13,6 +13,7 @@
 #include "lcomm/sound_packet.h"
 #include "viewmanager.h"
 #include <QFontDatabase>
+#include "soundmanager.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -37,6 +38,8 @@ int main(int argc, char* argv[]) {
 
     //    DebugWindow dw;
     //    dw.show();
+
+    SoundManager::init();
 
     GameWindow gw;
     ViewManager::init(gw);

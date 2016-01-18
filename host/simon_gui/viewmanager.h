@@ -11,6 +11,8 @@
 #include "gamewindow.h"
 #include <QStackedWidget>
 #include "gameview.h"
+#include "soundmanager.h"
+
 class ViewManager {
 public:
     static void init(GameWindow& window) {
@@ -27,6 +29,7 @@ public:
 
     static void switchToMainMenu() {
         switchTo(*m_mainMenu);
+        SoundManager::playMusic(SoundManager::menuMusic);
     }
 
     static void switchToHighScores() {
@@ -36,10 +39,12 @@ public:
 
     static void switchToLost() {
         switchTo(*m_lost);
+        SoundManager::playMusic(SoundManager::lostMusic);
     }
 
     static void switchToGame() {
         switchTo(*m_game);
+        SoundManager::playMusic(SoundManager::gameMusic);
     }
 
     static void closeWindow() {
