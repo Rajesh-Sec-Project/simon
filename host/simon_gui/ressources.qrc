@@ -2,5 +2,8 @@
     <qresource prefix="/simon">
         <file alias="arcade_classic">arcadeclassic/ARCADECLASSIC.TTF</file>
         <file alias="zorque">zorque/zorque.ttf</file>
+        <file alias="sound_good">sound/good.mp3</file>
+        <file alias="sound_loose">sound/loose.mp3</file>
+        <file alias="sound_win">sound/win.mp3</file>
     </qresource>
 </RCC>
