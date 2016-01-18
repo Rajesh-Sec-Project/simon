@@ -26,6 +26,10 @@ public:
     void clearAndStart();
     void clear();
 
+    void playMove(lmoves::tmove move, int delay = 500 /* ms */);
+    void playWin();
+    void playLose();
+
 private:
     void M_playSequence();
 

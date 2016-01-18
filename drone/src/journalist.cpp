@@ -41,8 +41,8 @@ void Journalist::gameLoop() {
     }
 
     if(m_detect) {
-        m_detect_x = (int)m_system.tagController().tagPositionX();
-        m_detect_y = (int)m_system.tagController().tagPositionY();
+        m_detect_x = m_system.tagController().tagRawX();
+        m_detect_y = m_system.tagController().tagRawY();
         m_speed_x = m_system.tagController().tagSpeedX();
         m_speed_y = m_system.tagController().tagSpeedY();
 

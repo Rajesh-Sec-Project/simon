@@ -41,13 +41,8 @@ Lost::Lost(QWidget* parent)
 }
 
 void Lost::M_saveName() {
+    //get the name enterred by the player
     string name = m_ui->name->text().toStdString();
-
-    ifstream infile("high_scores.txt");
-
-    if(!infile) {
-        cout << "erreur !  \n";
-    }
 
     string current_name, lines;
     int current_score;
@@ -55,11 +50,19 @@ void Lost::M_saveName() {
     // v is a vector that will be used to save actual scores, and add the new one
     vector<structScore> v;
     structScore temp, new_temp;
+
+    //create the new score to be added to high score file
     new_temp.s_name = name;
-    // new_temp.s_score = ViewManager::get_score();
     new_temp.s_score = ViewManager::get_score();
 
     // infile >>
+    ifstream infile("high_scores.txt");
+    if(!infile) {
+        cout << "error opening file  \n";
+    }
+
+    /** copy the all file into one vector, and add at the right place the new name and score's player **/
+
     bool add = false; // indicates if the new name and score have been added
     if(infile.peek() == std::ifstream::traits_type::eof()) {
         v.push_back(new_temp);
@@ -80,22 +83,23 @@ void Lost::M_saveName() {
 
             v.push_back(temp);
 
-            cout << current_name << " " << current_score << endl;
             infile >> current_name >> current_score;
         }
         if(v.size() < 10 and !add) {
             v.push_back(new_temp);
         }
     }
-
-
     infile.close();
+
+    //<< outfile
     ofstream outfile("high_scores.txt");
     if(!outfile) {
-        cout << "erreur ecriture fichier! \n";
+        cout << "error opening file \n";
     }
+
+    /** Right into the file the new list of high scores **/
     for(int i = 0; (unsigned)i < v.size() and i < 10; i++) { // copy all the vector into the file
-        // cout << i << v[i].s_name << " "  << '\n';
+
         outfile << v[i].s_name << " " << v[i].s_score << '\n';
     }
     outfile.close();

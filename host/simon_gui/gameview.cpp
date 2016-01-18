@@ -23,6 +23,21 @@ gameview::gameview(QWidget* parent)
 
     m_ui->score->setText("0x0");
 
+    m_scene = new QGraphicsScene(this);
+    m_scene->setSceneRect(0, 0, m_ui->tagDisplay->width()*0.90f, m_ui->tagDisplay->height()*0.90f);
+    m_ui->tagDisplay->setScene(m_scene);
+
+    m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
+    m_dot->setFlags(QGraphicsItem::ItemIsMovable);
+    m_dot->hide();
+
+    m_text = m_scene->addText("Tag    ?", QFont("ArcadeClassic"));
+    m_text->setPos(QPointF(m_scene->width() / 2.0f, m_scene->height() / 2.0f));
+    m_text->show();
+
+    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+
     QObject::connect(m_ui->gamepad, SIGNAL(up()), this, SLOT(M_up()));
     QObject::connect(m_ui->gamepad, SIGNAL(down()), this, SLOT(M_down()));
     QObject::connect(m_ui->gamepad, SIGNAL(left()), this, SLOT(M_left()));
@@ -99,9 +114,9 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     if(!score)
         return;
 
-    if(score->getScore() != -1) {
+    if(score->getScore() > 0) {
         ViewManager::set_score(score->getScore());
-    } else {
+    } else if(score->getScore() == -1) {
         M_lost();
     }
     m_ui->score->setText("0x" + QString::number(score->getScore(), 16));
@@ -131,3 +146,25 @@ void gameview::M_lost() {
     ViewManager::switchToLost();
     M_stop();
 }
+
+void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+    using namespace lcomm;
+
+    InfoPacket* info = packet->downcast<InfoPacket>();
+    if(!info)
+        return;
+
+    if(info->state() & InfoPacket::Detection) {
+        float raw_x = 1.0f - ((float) info->detectX()) / 1000.0f;
+        float raw_y = ((float) info->detectY()) / 1000.0f;
+        QPointF where = QPointF(m_scene->width() * raw_x, m_scene->height() * raw_y);
+
+        m_text->hide();
+        m_dot->show();
+        m_dot->setPos(where);
+    } else {
+        m_text->show();
+        m_dot->hide();
+    }
+}
+
