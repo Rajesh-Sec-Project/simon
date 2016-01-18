@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     viewmanager.cpp \
     highscores.cpp \
     lost.cpp \
-    gameview.cpp
+    gameview.cpp \
+    soundmanager.cpp
 
 HEADERS  += \
     debugwindow.h \
@@ -31,7 +32,8 @@ HEADERS  += \
     viewmanager.h \
     highscores.h \
     lost.h \
-    gameview.h
+    gameview.h \
+    soundmanager.h
 
 FORMS    += \
     debugwindow.ui \
