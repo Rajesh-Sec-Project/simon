@@ -127,7 +127,7 @@ void RoundManager::playMove(lmoves::tmove m, int delay) {
     m_system.ledController().setLed(led);
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     m_system.ledController().unsetLed(led);
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay/10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay/2));
 }
 
 void RoundManager::playWin() {
