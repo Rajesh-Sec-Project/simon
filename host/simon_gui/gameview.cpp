@@ -99,9 +99,9 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     if(!score)
         return;
 
-    if(score->getScore() != -1) {
+    if(score->getScore() > 0) {
         ViewManager::set_score(score->getScore());
-    } else {
+    } else if(score->getScore() == -1) {
         M_lost();
     }
     m_ui->score->setText("0x" + QString::number(score->getScore(), 16));
