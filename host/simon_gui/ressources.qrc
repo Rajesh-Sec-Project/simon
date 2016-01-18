@@ -5,5 +5,8 @@
         <file alias="sound_good">sound/good.mp3</file>
         <file alias="sound_loose">sound/loose.mp3</file>
         <file alias="sound_win">sound/win.mp3</file>
+        <file alias="music_loose">sound/Loneliness.ogg</file>
+        <file alias="music_menu">sound/State_Of_Confusion.ogg</file>
+        <file alias="music_game">sound/Lost_Age.ogg</file>
     </qresource>
 </RCC>

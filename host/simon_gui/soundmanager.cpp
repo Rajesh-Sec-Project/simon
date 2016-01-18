@@ -11,9 +11,9 @@ namespace {
     std::unique_ptr<QMediaPlayer> _player;
 }
 
-std::string const SoundManager::menuMusic = "/../res/State_Of_Confusion.ogg";
-std::string const SoundManager::gameMusic = "/../res/Lost_Age.ogg";
-std::string const SoundManager::lostMusic = "/../res/Loneliness.ogg";
+std::string const SoundManager::menuMusic = "qrc:/simon/music_menu";
+std::string const SoundManager::gameMusic = "qrc:/simon/music_game";
+std::string const SoundManager::lostMusic = "qrc:/simon/music_loose";
 
 void SoundManager::init() {
     _player = std::make_unique<QMediaPlayer>();
@@ -38,7 +38,7 @@ void SoundManager::pause() {
 }
 
 void SoundManager::playMusic(std::string const &str) {
-    _player->setMedia(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + QString(str.c_str())));
+    _player->setMedia(QUrl(str.c_str()));
     SoundManager::setVolume(1);
     SoundManager::resume();
 }
