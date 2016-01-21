@@ -14,6 +14,7 @@
 #include "soundmanager.h"
 #include "loadingview.h"
 #include "creditsview.h"
+#include "settingsview.h"
 
 class ViewManager {
 public:
@@ -25,6 +26,7 @@ public:
         m_game = std::make_unique<GameView>();
         m_credits = std::make_unique<CreditsView>();
         m_loading = std::make_unique<LoadingView>();
+        m_settings = std::make_unique<SettingsView>();
 
         while(m_window->stackedWidget().count()) {
             m_window->stackedWidget().removeWidget(m_window->stackedWidget().currentWidget());
@@ -71,9 +73,9 @@ public:
         return m_score;
     }
 
-    //    static void switchToSettings() {
-    //        m_window->setCentralWidget(m_settings.get());
-    //    }
+    static void switchToSettings() {
+        switchTo(*m_settings);
+    }
 
 private:
     static void switchTo(QWidget& widget) {
@@ -87,7 +89,7 @@ private:
     static std::unique_ptr<Lost> m_lost;
     static std::unique_ptr<GameView> m_game;
     static std::unique_ptr<CreditsView> m_credits;
-    // static std::unique_ptr<> m_settings;
+    static std::unique_ptr<SettingsView> m_settings;
     static GameWindow* m_window;
     static int m_score;
 };

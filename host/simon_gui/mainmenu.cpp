@@ -29,7 +29,7 @@ void MainMenu::M_highScores() {
 }
 
 void MainMenu::M_settings() {
-    // ViewManager::switchToSettings();
+    ViewManager::switchToSettings();
 }
 
 void MainMenu::M_credits() {
