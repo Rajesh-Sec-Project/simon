@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <memory>
+#include <functional>
 
 namespace Ui {
 class SettingsView;
@@ -16,6 +17,10 @@ public:
     explicit SettingsView(QWidget* parent = 0);
     ~SettingsView();
 
+    static void setMusicToggledCallback(std::function<void(bool)> const &callback) {
+        m_callback = callback;
+    }
+
     static bool soundEnabled();
     static bool musicEnabled();
 
@@ -26,6 +31,7 @@ private slots:
 
 private:
     std::unique_ptr<Ui::SettingsView> m_ui;
+    static std::function<void(bool)> m_callback;
 };
 
 #endif // SETTINGSVIEW_H

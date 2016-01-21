@@ -7,6 +7,8 @@
 
 using namespace lcomm;
 
+std::function<void(bool)> SettingsView::m_callback;
+
 SettingsView::SettingsView(QWidget *parent) :
     QWidget(parent),
     m_ui(std::make_unique<Ui::SettingsView>())
@@ -54,6 +56,10 @@ void SettingsView::M_setMusic(bool yes, bool apply)
     if (apply)
         m_ui->musicButton->setChecked(yes);
     m_ui->musicButton->setText("Music : " + QString(yes ? "yes" : "no"));
+
+    if(m_callback) {
+        m_callback(yes);
+    }
 
     QSettings settings;
     settings.value("musicEnabled", yes);

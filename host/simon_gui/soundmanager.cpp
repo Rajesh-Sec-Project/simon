@@ -6,6 +6,7 @@
 #include <QMediaPlayer>
 #include <memory>
 #include <QApplication>
+#include "settingsview.h"
 
 namespace {
     std::unique_ptr<QMediaPlayer> _player;
@@ -22,6 +23,14 @@ std::string const SoundManager::loseSound = "qrc:/simon/sound_loose";
 void SoundManager::init() {
     _player = std::make_unique<QMediaPlayer>();
     _soundPlayer = std::make_unique<QMediaPlayer>();
+    SettingsView::setMusicToggledCallback([](bool enabled) {
+        if(enabled) {
+            SoundManager::resume();
+        }
+        else {
+            SoundManager::pause();
+        }
+    });
 }
 
 void SoundManager::setVolume(float volume) {
@@ -49,7 +58,9 @@ void SoundManager::playMusic(std::string const& str) {
 }
 
 void SoundManager::playSound(const std::string& str) {
-    _soundPlayer->setMedia(QUrl(str.c_str()));
-    _soundPlayer->setVolume(static_cast<int>(100));
-    _soundPlayer->play();
+    if(SettingsView::soundEnabled()) {
+        _soundPlayer->setMedia(QUrl(str.c_str()));
+        _soundPlayer->setVolume(static_cast<int>(100));
+        _soundPlayer->play();
+    }
 }
