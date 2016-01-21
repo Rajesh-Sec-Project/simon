@@ -7,7 +7,7 @@ qmake:
 	@mkdir -p $(TMP_DIR)
 	$(call green,(QMAKE) $(PRODUCT))
 	$(call invoke,green,cd $(TMP_DIR); \
-	qmake ../$(PRO_FILE) -r -spec linux-g++ $(QMAKE_FLAGS))
+	$(QMAKE) ../$(PRO_FILE) -r -spec linux-g++ $(QMAKE_FLAGS))
 
 .PHONY: qbuild
 qbuild:
