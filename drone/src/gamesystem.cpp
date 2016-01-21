@@ -195,7 +195,7 @@ void GameSystem::M_gameLoop() {
     m_tagctrl.gameInit();
     m_mouvement_stalker.gameInit();
     m_journalist.gameInit();
-    // m_roundmgr.gameInit();
+    m_roundmgr.gameInit();
     m_confmgr.gameInit();
     m_navctrl.gameInit();
     m_ledcontroller.gameInit();
@@ -203,6 +203,9 @@ void GameSystem::M_gameLoop() {
     // Send several FTRIM commands
     Control::enableStabilization();
     trace("GameSystem", "stabilization ok");
+
+    InfoPacket info(InfoPacket::State::AppReady, 0, 0, 0.f, 0.f);
+    this->endpoint().write(info);
 
     // Main game loop
     auto lastTime = clock();

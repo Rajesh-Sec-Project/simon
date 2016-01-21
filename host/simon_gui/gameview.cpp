@@ -27,7 +27,7 @@ gameview::gameview(QWidget* parent)
     m_ui->score->setText("0x0");
 
     m_scene = new QGraphicsScene(this);
-    m_scene->setSceneRect(0, 0, m_ui->tagDisplay->width()*0.90f, m_ui->tagDisplay->height()*0.90f);
+    m_scene->setSceneRect(0, 0, m_ui->tagDisplay->width() * 0.90f, m_ui->tagDisplay->height() * 0.90f);
     m_ui->tagDisplay->setScene(m_scene);
 
     m_dot = m_scene->addEllipse(0, 0, 5, 5, QPen(QColor("black"), 1.0), QBrush(QColor("yellow")));
@@ -144,8 +144,10 @@ void gameview::M_updateUi() {
 }
 
 void gameview::M_sendStatusPacket() {
-    lcomm::GameControlPacket pkt(m_state);
-    CommManager::self().write(pkt);
+    if(sendStatus) {
+        lcomm::GameControlPacket pkt(m_state);
+        CommManager::self().write(pkt);
+    }
 }
 
 void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
@@ -191,7 +193,7 @@ void gameview::M_lost() {
 void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
-    SoundPacket *sound = packet->downcast<SoundPacket>();
+    SoundPacket* sound = packet->downcast<SoundPacket>();
     if(sound) {
         std::cout << "Sound: " << sound->sound() << std::endl;
         switch(sound->sound()) {
@@ -209,10 +211,10 @@ void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBas
     }
 
     InfoPacket* info = packet->downcast<InfoPacket>();
-    if(info) {
-        if (info->state() & InfoPacket::Detection) {
-            float raw_x = 1.0f - ((float) info->detectX()) / 1000.0f;
-            float raw_y = ((float) info->detectY()) / 1000.0f;
+    if(info && !(info->state() & InfoPacket::AppReady)) {
+        if(info->state() & InfoPacket::Detection) {
+            float raw_x = 1.0f - ((float)info->detectX()) / 1000.0f;
+            float raw_y = ((float)info->detectY()) / 1000.0f;
             QPointF where = QPointF(m_scene->width() * raw_x, m_scene->height() * raw_y);
 
             m_text->hide();
@@ -226,4 +228,3 @@ void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBas
         return;
     }
 }
-

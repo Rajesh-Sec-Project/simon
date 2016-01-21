@@ -6,7 +6,7 @@
 namespace lcomm {
     class InfoPacket : public Packet<InfoPacket> {
     public:
-        enum State { Landed = 0x01, Flying = 0x02, Detection = 0x04 };
+        enum State { Landed = 0x01, Flying = 0x02, Detection = 0x04, AppReady = 0x08 };
 
     public:
         InfoPacket(lconf::json::Node* node);

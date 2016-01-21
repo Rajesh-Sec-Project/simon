@@ -12,6 +12,7 @@
 #include <QStackedWidget>
 #include "gameview.h"
 #include "soundmanager.h"
+#include "loadingview.h"
 
 class ViewManager {
 public:
@@ -21,10 +22,15 @@ public:
         m_highScores = std::make_unique<HighScores>();
         m_lost = std::make_unique<Lost>();
         m_game = std::make_unique<gameview>();
+        m_loading = std::make_unique<LoadingView>();
 
         while(m_window->stackedWidget().count()) {
             m_window->stackedWidget().removeWidget(m_window->stackedWidget().currentWidget());
         }
+    }
+
+    static void switchToLoading() {
+        switchTo(*m_loading);
     }
 
     static void switchToMainMenu() {
@@ -69,6 +75,7 @@ private:
         m_window->stackedWidget().addWidget(&widget);
     }
 
+    static std::unique_ptr<LoadingView> m_loading;
     static std::unique_ptr<MainMenu> m_mainMenu;
     static std::unique_ptr<HighScores> m_highScores;
     static std::unique_ptr<Lost> m_lost;

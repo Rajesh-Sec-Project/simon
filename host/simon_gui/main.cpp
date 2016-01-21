@@ -32,8 +32,8 @@ int main(int argc, char* argv[]) {
     QFontDatabase::addApplicationFont(":/simon/arcade_classic");
     QFontDatabase::addApplicationFont(":/simon/zorque");
 
-    if (!(argc > 1 && QString(argv[1]) == "-no_conn"))
-    {
+    bool noConn = argc > 1 && QString(argv[1]) == "-no_conn";
+    if(!noConn) {
         qDebug() << "Waiting for connection...";
         while(!CommManager::self().opened())
             ;
@@ -48,7 +48,12 @@ int main(int argc, char* argv[]) {
     GameWindow gw;
     ViewManager::init(gw);
 
-    ViewManager::switchToMainMenu();
+    if(noConn) {
+        ViewManager::switchToMainMenu();
+    }
+    else {
+        ViewManager::switchToLoading();
+    }
     gw.show();
     gw.setWindowState(Qt::WindowMaximized);
 
