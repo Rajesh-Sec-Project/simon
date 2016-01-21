@@ -12,14 +12,14 @@ LIB_DIR=../
 ### Project names ###
 #####################
 
-PROJECT=libcomm
-PRODUCT=libcomm.a
+PROJECT=libchrono
+PRODUCT=libchrono.a
 
 #############
 ### Flags ###
 #############
 
-CX_FLAGS = -std=c++14 -I../libconf/include  -I../libchrono/inc -Wall #-Wsuggest-override
+CX_FLAGS = -std=c++14 -Wall #-Wsuggest-override
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g

@@ -13,9 +13,10 @@
 #include <chrono>
 #include <iostream>
 #include <array>
+#include "lchrono/chrono.h"
 
 namespace lcomm {
-    ServerSocket::ServerSocket(unsigned int port, std::chrono::nanoseconds latency)
+    ServerSocket::ServerSocket(unsigned int port, lchrono::duration latency)
             : m_latency(latency)
             , m_connected_flag(false)
             , m_buf(4096) {

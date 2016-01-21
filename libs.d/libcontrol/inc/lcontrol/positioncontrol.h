@@ -12,6 +12,8 @@
 #include <atomic>
 #include <chrono>
 
+#include "lchrono/chrono.h"
+
 namespace lcontrol {
 
     //! A distance/length value in metres.
@@ -61,12 +63,12 @@ namespace lcontrol {
         static Distance m_y;
         static Distance m_z;
         static float m_alpha;
-        static std::chrono::nanoseconds m_move_duration_lr;
-        static std::chrono::nanoseconds m_counter_move_duration_lr;
-        static std::chrono::nanoseconds m_move_duration_front;
-        static std::chrono::nanoseconds m_counter_move_duration_front;
-        static std::chrono::nanoseconds m_move_duration_back;
-        static std::chrono::nanoseconds m_counter_move_duration_back;
+        static lchrono::duration m_move_duration_lr;
+        static lchrono::duration m_counter_move_duration_lr;
+        static lchrono::duration m_move_duration_front;
+        static lchrono::duration m_counter_move_duration_front;
+        static lchrono::duration m_move_duration_back;
+        static lchrono::duration m_counter_move_duration_back;
 
         static void M_motionThread();
 

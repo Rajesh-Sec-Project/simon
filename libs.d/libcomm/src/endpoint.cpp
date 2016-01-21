@@ -4,6 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <queue>
+#include "lchrono/chrono.h"
 
 namespace lcomm {
     using namespace lconf;
@@ -11,7 +12,7 @@ namespace lcomm {
     std::string const Endpoint::m_magic = "simon";
     std::string const Endpoint::m_version = "01";
 
-    Endpoint::Endpoint(std::unique_ptr<Socket> socket, std::chrono::nanoseconds latency)
+    Endpoint::Endpoint(std::unique_ptr<Socket> socket, lchrono::duration latency)
             : m_latency(latency)
             , m_socket(std::move(socket))
             , m_read_thread_exit(false)

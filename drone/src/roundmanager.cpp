@@ -7,6 +7,8 @@
 #include <chrono>
 #include <thread>
 
+using namespace std::literals;
+
 RoundManager::RoundManager(GameSystem& system)
         : GameElement(system)
         , m_scoremgr(system) {
@@ -93,29 +95,29 @@ void RoundManager::gameLoop() {
 
 void RoundManager::userUp() {
     m_user.addMove(lmoves::tmove::UP);
-    playMove(lmoves::tmove::UP, 100);
+    playMove(lmoves::tmove::UP, 100ms);
     m_new_move = true;
 }
 
 void RoundManager::userDown() {
     m_user.addMove(lmoves::tmove::DOWN);
-    playMove(lmoves::tmove::DOWN, 100);
+    playMove(lmoves::tmove::DOWN, 100ms);
     m_new_move = true;
 }
 
 void RoundManager::userLeft() {
     m_user.addMove(lmoves::tmove::LEFT);
-    playMove(lmoves::tmove::LEFT, 100);
+    playMove(lmoves::tmove::LEFT, 100ms);
     m_new_move = true;
 }
 
 void RoundManager::userRight() {
     m_user.addMove(lmoves::tmove::RIGHT);
-    playMove(lmoves::tmove::RIGHT, 100);
+    playMove(lmoves::tmove::RIGHT, 100ms);
     m_new_move = true;
 }
 
-void RoundManager::playMove(lmoves::tmove m, int delay) {
+void RoundManager::playMove(lmoves::tmove m, lchrono::duration delay) {
     LEDController::Led led;
     if(m == lmoves::tmove::RIGHT)
         led = LEDController::Yellow;
@@ -127,13 +129,13 @@ void RoundManager::playMove(lmoves::tmove m, int delay) {
         led = LEDController::Blue;
 
     m_system.ledController().setLed(led);
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+    std::this_thread::sleep_for(delay);
     m_system.ledController().unsetLed(led);
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay / 2));
+    std::this_thread::sleep_for(delay / 2);
 }
 
 void RoundManager::playWin() {
-    int delay = 500;
+    auto delay = 500ms;
 
     lcomm::SoundPacket sound(lcomm::SoundPacket::Win);
     m_system.endpoint().write(sound);
@@ -143,18 +145,18 @@ void RoundManager::playWin() {
     m_system.ledController().setLed(LEDController::Yellow);
     m_system.ledController().setLed(LEDController::Red);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+    std::this_thread::sleep_for(delay);
 
     m_system.ledController().unsetLed(LEDController::Green);
     m_system.ledController().unsetLed(LEDController::Blue);
     m_system.ledController().unsetLed(LEDController::Yellow);
     m_system.ledController().unsetLed(LEDController::Red);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+    std::this_thread::sleep_for(delay);
 }
 
 void RoundManager::playLose() {
-    int delay = 100;
+    auto delay = 100ms;
 
     lcomm::SoundPacket sound(lcomm::SoundPacket::Loose);
     m_system.endpoint().write(sound);
@@ -165,11 +167,11 @@ void RoundManager::playLose() {
         m_system.ledController().setLed(LEDController::Yellow);
         m_system.ledController().setLed(LEDController::Red);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        std::this_thread::sleep_for(delay);
         m_system.ledController().unsetLed(LEDController::Green);
         m_system.ledController().unsetLed(LEDController::Blue);
         m_system.ledController().unsetLed(LEDController::Yellow);
         m_system.ledController().unsetLed(LEDController::Red);
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        std::this_thread::sleep_for(delay);
     }
 }

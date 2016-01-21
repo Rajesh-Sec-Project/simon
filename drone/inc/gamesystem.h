@@ -11,6 +11,7 @@
 #include <chrono>
 #include <mutex>
 #include "lcomm/lcomm.h"
+#include "lchrono/chrono.h"
 #include <ctime>
 #include <sys/time.h>
 
@@ -78,9 +79,6 @@ public:
     //! Send the score value to the host
     void score(int score);
 
-    //! Return the elasped time since the creation of the game system.
-    std::chrono::nanoseconds clock();
-
     bool started() const {
         return m_started;
     }
@@ -111,8 +109,7 @@ private:
     RoundManager m_roundmgr;
     LEDController m_ledcontroller;
 
-    struct timeval m_timeref = {.tv_sec = -1, .tv_usec = 0};
-    static std::chrono::nanoseconds const m_gameLoopActivationTime;
+    static lchrono::duration const m_gameLoopActivationTime;
 };
 
 

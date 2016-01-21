@@ -127,3 +127,37 @@ libcontrol_incdir: force_look
 .PHONY: libcontrol_bindir
 libcontrol_bindir: force_look
 	@echo $(LIBCONTROL_DIR)/$(call libbin,$(LIBCONTROL_BINDIR))
+
+
+###############
+### libchrono ###
+###############
+
+LIBCHRONO_DIR=libchrono
+LIBCHRONO_INCDIR=inc
+LIBCHRONO_BINDIR=bin
+LIBCHRONO_TMPDIR=build
+LIBCHRONO_OVERRIDES=CX=arm-cortex_a8-linux-gnueabi-g++ \
+                     AR=arm-cortex_a8-linux-gnueabi-ar \
+                     BIN_DIR=$(call libbin,$(LIBCHRONO_BINDIR)) \
+                     TMP_DIR=$(call libbin,$(LIBCHRONO_TMPDIR))
+
+.PHONY: libchrono_release
+libchrono_release: force_look
+	$(call libmake,,LIBCHRONO,release)
+
+.PHONY: libchrono_debug
+libchrono_debug: force_look
+	$(call libmake,,LIBCHRONO,debug)
+
+.PHONY: libchrono_clean
+libchrono_clean: force_look
+	$(call libmake,,LIBCHRONO,clean)
+
+.PHONY: libchrono_incdir
+libchrono_incdir: force_look
+	@echo $(LICHRONO_DIR)/$(LIBCHRONO_INCDIR)
+
+.PHONY: libchrono_bindir
+libchrono_bindir: force_look
+	@echo $(LIBCHRONO_DIR)/$(call libbin,$(LIBCHRONO_BINDIR))

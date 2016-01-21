@@ -8,6 +8,7 @@
 #include <queue>
 #include <stdexcept>
 #include <chrono>
+#include "lchrono/chrono.h"
 
 using namespace std::literals;
 
@@ -23,7 +24,7 @@ namespace lcomm {
         //!   the given port.
         //! \param port The port to listen to
         //! \param latency The polling period for reading (and therefore queuing) input data
-        ServerSocket(unsigned int port, std::chrono::nanoseconds latency = 5ms);
+        ServerSocket(unsigned int port, lchrono::duration latency = 5ms);
 
         //! The socket is closed when destroying the instance.
         virtual ~ServerSocket();
@@ -44,7 +45,7 @@ namespace lcomm {
         void close() override;
 
     private:
-        std::chrono::nanoseconds m_latency;
+        lchrono::duration m_latency;
         int m_fd, m_cfd;
         mutable std::mutex m_fd_mutex;
         std::atomic_bool m_connected_flag;
