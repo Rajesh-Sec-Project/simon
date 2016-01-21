@@ -41,7 +41,7 @@ Lost::Lost(QWidget* parent)
 }
 
 void Lost::M_saveName() {
-    //get the name enterred by the player
+    // get the name enterred by the player
     string name = m_ui->name->text().toStdString();
 
     string current_name, lines;
@@ -51,7 +51,7 @@ void Lost::M_saveName() {
     vector<structScore> v;
     structScore temp, new_temp;
 
-    //create the new score to be added to high score file
+    // create the new score to be added to high score file
     new_temp.s_name = name;
     new_temp.s_score = ViewManager::get_score();
 
