@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
     qRegisterMetaType<std::shared_ptr<lcomm::PacketBase>>("std::shared_ptr<lcomm::PacketBase>");
 
-    QCoreApplication::setOrganizationName("Rajesh Team");
+    QCoreApplication::setOrganizationName("RajeshTeam");
     QCoreApplication::setOrganizationDomain("www.insa-toulouse.fr");
     QCoreApplication::setApplicationName("Simon");
 
