@@ -14,10 +14,10 @@ namespace SoundManager {
 
     void pause();
     void resume();
-    void playMusic(std::string const &str);
-    void playSound(std::string const &str);
+    void playMusic(std::string const& str);
+    void playSound(std::string const& str);
 
     extern std::string const menuMusic, gameMusic, lostMusic, winSound, loseSound, goodSound;
 }
 
-#endif //SIMON_GAMEMANAGER_H
+#endif // SIMON_GAMEMANAGER_H

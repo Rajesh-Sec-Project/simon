@@ -32,8 +32,7 @@ int main(int argc, char* argv[]) {
     QFontDatabase::addApplicationFont(":/simon/arcade_classic");
     QFontDatabase::addApplicationFont(":/simon/zorque");
 
-    if (!(argc > 1 && QString(argv[1]) == "-no_conn"))
-    {
+    if(!(argc > 1 && QString(argv[1]) == "-no_conn")) {
         qDebug() << "Waiting for connection...";
         while(!CommManager::self().opened())
             ;

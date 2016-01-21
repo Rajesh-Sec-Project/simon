@@ -42,13 +42,13 @@ void SoundManager::pause() {
     }
 }
 
-void SoundManager::playMusic(std::string const &str) {
+void SoundManager::playMusic(std::string const& str) {
     _player->setMedia(QUrl(str.c_str()));
     SoundManager::setVolume(0.5);
     SoundManager::resume();
 }
 
-void SoundManager::playSound(const std::string &str) {
+void SoundManager::playSound(const std::string& str) {
     _soundPlayer->setMedia(QUrl(str.c_str()));
     _soundPlayer->setVolume(static_cast<int>(100));
     _soundPlayer->play();

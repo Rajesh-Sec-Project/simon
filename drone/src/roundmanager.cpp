@@ -46,8 +46,7 @@ void RoundManager::M_playSequence() {
     ss << m_seq << std::endl;
     M_message(ss.str());
 
-    for (auto m : m_seq.getSequence())
-    {
+    for(auto m : m_seq.getSequence()) {
         playMove(m);
     }
 
@@ -118,19 +117,19 @@ void RoundManager::userRight() {
 
 void RoundManager::playMove(lmoves::tmove m, int delay) {
     LEDController::Led led;
-    if (m == lmoves::tmove::RIGHT)
+    if(m == lmoves::tmove::RIGHT)
         led = LEDController::Yellow;
-    else if (m == lmoves::tmove::UP)
+    else if(m == lmoves::tmove::UP)
         led = LEDController::Green;
-    else if (m == lmoves::tmove::LEFT)
+    else if(m == lmoves::tmove::LEFT)
         led = LEDController::Red;
-    else if (m == lmoves::tmove::DOWN)
+    else if(m == lmoves::tmove::DOWN)
         led = LEDController::Blue;
 
     m_system.ledController().setLed(led);
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     m_system.ledController().unsetLed(led);
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay/2));
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay / 2));
 }
 
 void RoundManager::playWin() {
@@ -160,8 +159,7 @@ void RoundManager::playLose() {
     lcomm::SoundPacket sound(lcomm::SoundPacket::Loose);
     m_system.endpoint().write(sound);
 
-    for (int times = 0; times < 10; ++times)
-    {
+    for(int times = 0; times < 10; ++times) {
         m_system.ledController().setLed(LEDController::Green);
         m_system.ledController().setLed(LEDController::Blue);
         m_system.ledController().setLed(LEDController::Yellow);
