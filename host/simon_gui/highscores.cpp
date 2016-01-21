@@ -3,7 +3,9 @@
 #include "viewmanager.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <QString>
+#include <QSettings>
 #include <string>
 
 using namespace std;
@@ -27,7 +29,11 @@ void HighScores::M_back() {
 }
 
 void HighScores::display_Scores() {
-    ifstream infile("high_scores.txt");
+    QSettings settings;
+    QString str = settings.value("highScores", "").toString();
+    std::istringstream infile;
+    infile.str(str.toStdString());
+
     int i = 0;
     string line, current_name;
     int current_score;

@@ -54,7 +54,9 @@ void SoundManager::pause() {
 void SoundManager::playMusic(std::string const& str) {
     _player->setMedia(QUrl(str.c_str()));
     SoundManager::setVolume(0.5);
-    SoundManager::resume();
+    if(SettingsView::musicEnabled()) {
+        SoundManager::resume();
+    }
 }
 
 void SoundManager::playSound(const std::string& str) {
