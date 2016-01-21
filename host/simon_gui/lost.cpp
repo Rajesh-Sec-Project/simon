@@ -47,73 +47,56 @@ Lost::Lost(QWidget* parent)
 }
 
 void Lost::M_saveName() {
-    // get the name enterred by the player
-    string name = m_ui->name->text().toStdString();
-
     string current_name, lines;
     int current_score;
-    int i;
-    // v is a vector that will be used to save actual scores, and add the new one
-    vector<structScore> v;
-    structScore temp, new_temp;
+
+    vector<StructScore> scores;
+    StructScore temp, new_temp;
 
     // create the new score to be added to high score file
-    new_temp.s_name = name;
+    new_temp.s_name = m_ui->name->text().toStdString();
     new_temp.s_score = ViewManager::get_score();
 
-    // infile >>
     QSettings settings;
     QString str = settings.value("highScores", "").toString();
     std::istringstream infile;
     infile.str(str.toStdString());
-    if(!infile) {
-        cout << "error opening file  \n";
-    }
 
     /** copy the all file into one vector, and add at the right place the new name and score's player **/
-
     bool add = false; // indicates if the new name and score have been added
     if(infile.peek() == std::ifstream::traits_type::eof()) {
-        v.push_back(new_temp);
+        scores.push_back(new_temp);
         add = true;
     } else {
-
         infile >> current_name >> current_score;
-        for(i = 0; std::getline(infile, lines); ++i) {
 
+        for(int i = 0; std::getline(infile, lines); ++i) {
             temp.s_name = current_name;
             temp.s_score = current_score;
 
-
             if(current_score < new_temp.s_score and !add) {
-                v.push_back(new_temp);
+                scores.push_back(new_temp);
                 add = true;
             }
 
-            v.push_back(temp);
+            scores.push_back(temp);
 
             infile >> current_name >> current_score;
         }
-        if(v.size() < 10 and !add) {
-            v.push_back(new_temp);
+        
+        if(scores.size() < 10 and !add) {
+            scores.push_back(new_temp);
         }
     }
-    // infile.close();
 
-    //<< outfilestr = settings.value("highScores", "");
     std::ostringstream outfile;
     outfile.str(str.toStdString());
-    if(!outfile) {
-        cout << "error opening file \n";
-    }
 
     /** Right into the file the new list of high scores **/
-    for(int i = 0; (unsigned)i < v.size() and i < 10; i++) { // copy all the vector into the file
-
-        outfile << v[i].s_name << " " << v[i].s_score << '\n';
+    for(size_t i = 0; i < scores.size() && i < 10; ++i) { // copy all the vector into the file
+        outfile << scores[i].s_name << " " << scores[i].s_score << '\n';
     }
     settings.setValue("highScores", QString(outfile.str().c_str()));
-    // outfile.close();
 
     ViewManager::switchToHighScores();
 }

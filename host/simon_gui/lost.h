@@ -2,10 +2,11 @@
 #define LOST_H
 
 #include <QWidget>
+#include <iostream>
 
 namespace Ui {
     class lost;
-    struct structScore {
+    struct StructScore {
         std::string s_name;
         int s_score;
     };
