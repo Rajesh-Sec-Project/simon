@@ -144,10 +144,8 @@ void gameview::M_updateUi() {
 }
 
 void gameview::M_sendStatusPacket() {
-    if(sendStatus) {
-        lcomm::GameControlPacket pkt(m_state);
-        CommManager::self().write(pkt);
-    }
+    lcomm::GameControlPacket pkt(m_state);
+    CommManager::self().write(pkt);
 }
 
 void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
