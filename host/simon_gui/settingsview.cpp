@@ -16,7 +16,7 @@ SettingsView::SettingsView(QWidget *parent) :
     QObject::connect(m_ui->backButton, SIGNAL(clicked()), this, SLOT(M_back()));
 
     M_setSound(soundEnabled(), true);
-    M_setSound(musicEnabled(), true);
+    M_setMusic(musicEnabled(), true);
 
     QObject::connect(m_ui->soundButton, SIGNAL(toggled(bool)), this, SLOT(M_setSound(bool)));
     QObject::connect(m_ui->musicButton, SIGNAL(toggled(bool)), this, SLOT(M_setMusic(bool)));
@@ -30,13 +30,13 @@ SettingsView::~SettingsView()
 bool SettingsView::musicEnabled()
 {
     QSettings settings;
-    return settings.value("musicEnabled", true).toBool();
+    return settings.value("musicEnabled").toBool();
 }
 
 bool SettingsView::soundEnabled()
 {
     QSettings settings;
-    return settings.value("soundEnabled", true).toBool();
+    return settings.value("soundEnabled").toBool();
 }
 
 void SettingsView::M_setSound(bool yes, bool apply)
@@ -46,7 +46,7 @@ void SettingsView::M_setSound(bool yes, bool apply)
     m_ui->soundButton->setText("Sound : " + QString(yes ? "yes" : "no"));
 
     QSettings settings;
-    settings.value("soundEnabled", yes);
+    settings.setValue("soundEnabled", yes);
 }
 
 void SettingsView::M_setMusic(bool yes, bool apply)
@@ -56,7 +56,7 @@ void SettingsView::M_setMusic(bool yes, bool apply)
     m_ui->musicButton->setText("Music : " + QString(yes ? "yes" : "no"));
 
     QSettings settings;
-    settings.value("musicEnabled", yes);
+    settings.setValue("musicEnabled", yes);
 }
 
 void SettingsView::M_back() {
