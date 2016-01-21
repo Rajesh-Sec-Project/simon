@@ -13,6 +13,7 @@
 #include "gameview.h"
 #include "soundmanager.h"
 #include "loadingview.h"
+#include "creditsview.h"
 
 class ViewManager {
 public:
@@ -22,6 +23,7 @@ public:
         m_highScores = std::make_unique<HighScores>();
         m_lost = std::make_unique<Lost>();
         m_game = std::make_unique<GameView>();
+        m_credits = std::make_unique<CreditsView>();
         m_loading = std::make_unique<LoadingView>();
 
         while(m_window->stackedWidget().count()) {
@@ -53,6 +55,10 @@ public:
         SoundManager::playMusic(SoundManager::gameMusic);
     }
 
+    static void switchToCredits() {
+        switchTo(*m_credits);
+    }
+
     static void closeWindow() {
         m_window->close();
     }
@@ -80,6 +86,7 @@ private:
     static std::unique_ptr<HighScores> m_highScores;
     static std::unique_ptr<Lost> m_lost;
     static std::unique_ptr<GameView> m_game;
+    static std::unique_ptr<CreditsView> m_credits;
     // static std::unique_ptr<> m_settings;
     static GameWindow* m_window;
     static int m_score;

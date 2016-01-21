@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     lost.cpp \
     gameview.cpp \
     soundmanager.cpp \
-    loadingview.cpp
+    loadingview.cpp \
+    creditsview.cpp
 
 HEADERS  += \
     debugwindow.h \
@@ -35,7 +36,8 @@ HEADERS  += \
     lost.h \
     gameview.h \
     soundmanager.h \
-    loadingview.h
+    loadingview.h \
+    creditsview.h
 
 FORMS    += \
     debugwindow.ui \
@@ -45,7 +47,8 @@ FORMS    += \
     highscores.ui \
     lost.ui \
     gameview.ui \
-    loadingview.ui
+    loadingview.ui \
+    creditsview.ui
 
 CONFIG += c++14
 INCLUDEPATH += ../../libs.d/libcomm/inc

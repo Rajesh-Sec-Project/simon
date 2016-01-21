@@ -19,6 +19,7 @@ private slots:
     void M_highScores();
     void M_settings();
     void M_quit();
+    void M_credits();
 
 private:
     Ui::mainmenu* m_ui;
