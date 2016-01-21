@@ -25,16 +25,16 @@ PRODUCT=drone
 #############
 
 CX_FLAGS  = -std=gnu++14 -static-libstdc++ -static-libgcc -Wall -Wno-unused-function #-Wsuggest-override
-CX_FLAGS += -I$(LIB_DIR)/libpcap/include
+CX_FLAGS += -I$(LIB_DIR)/libpcap/include -I$(LIB_DIR)/libchrono/inc
 
 release: CX_FLAGS += -O3
 debug:   CX_FLAGS += -O0 -g
 
-LD_FLAGS  = -lm -static-libstdc++ -static-libgcc -lcomm -lconf -lcontrol -lpthread -lcomm
+LD_FLAGS  = -lm -static-libstdc++ -static-libgcc -lcomm -lconf -lcontrol -lpthread -lcomm -lchrono
 LD_FLAGS += -L$(LIB_DIR)/libpcap/lib -lpcap
 
 CROSS = 1
-DEPENDS = libcomm libconf libcontrol
+DEPENDS = libcomm libconf libcontrol libchrono
 
 #############
 ### Tools ###

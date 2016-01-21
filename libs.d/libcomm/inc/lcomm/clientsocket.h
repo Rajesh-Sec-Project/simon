@@ -2,6 +2,7 @@
 #define LCOMM_CLIENTSOCKET_H
 
 #include "lcomm/socket.h"
+#include "lchrono/chrono.h"
 
 #include <netinet/in.h>
 
@@ -27,7 +28,7 @@ namespace lcomm {
         //! \param ip The IP address of the remote server to connect to
         //! \param port The port to connect to
         //! \param latency The polling period for reading (and therefore queuing) input data
-        ClientSocket(std::string const& ip, unsigned int port, bool tcp = true, std::chrono::nanoseconds latency = 5ms);
+        ClientSocket(std::string const& ip, unsigned int port, bool tcp = true, lchrono::duration latency = 5ms);
 
         //! Connection is closed and ressources freed at destruction of the socket.
         virtual ~ClientSocket();
@@ -49,7 +50,7 @@ namespace lcomm {
         void close() override;
 
     private:
-        std::chrono::nanoseconds m_latency;
+        lchrono::duration m_latency;
         int m_fd;
         sockaddr_in m_addr;
         mutable std::mutex m_fd_mutex;

@@ -15,12 +15,12 @@ Distance PositionControl::m_y = 0.0f;
 Distance PositionControl::m_z = 0.0f;
 
 float PositionControl::m_alpha = 20.0f;
-std::chrono::nanoseconds PositionControl::m_move_duration_lr = 750ms;
-std::chrono::nanoseconds PositionControl::m_counter_move_duration_lr = 150ms;
-std::chrono::nanoseconds PositionControl::m_move_duration_front = 1000ms;
-std::chrono::nanoseconds PositionControl::m_counter_move_duration_front = 400ms;
-std::chrono::nanoseconds PositionControl::m_move_duration_back = 750ms;
-std::chrono::nanoseconds PositionControl::m_counter_move_duration_back = 800ms;
+lchrono::duration PositionControl::m_move_duration_lr = 750ms;
+lchrono::duration PositionControl::m_counter_move_duration_lr = 150ms;
+lchrono::duration PositionControl::m_move_duration_front = 1000ms;
+lchrono::duration PositionControl::m_counter_move_duration_front = 400ms;
+lchrono::duration PositionControl::m_move_duration_back = 750ms;
+lchrono::duration PositionControl::m_counter_move_duration_back = 800ms;
 
 std::thread PositionControl::m_motionThread;
 std::condition_variable PositionControl::m_motionVariable;

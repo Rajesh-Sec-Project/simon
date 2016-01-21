@@ -4,6 +4,9 @@
 #include "gameelement.h"
 #include <ctime>
 
+#include <chrono>
+#include "lchrono/chrono.h"
+
 class GameSystem;
 
 class ScoreManager : public GameElement {
@@ -15,7 +18,7 @@ public:
     void gameLoop() override;
     void setStart();
     void setEnd();
-    void calculateScore();
+    void calculateScore(size_t seqLen);
     void printScore();
     void clear();
 
@@ -23,8 +26,7 @@ public:
 
 private:
     int m_current_score = 0;
-    long long m_start;
-    long long m_end;
+    lchrono::timepoint m_start, m_end;
 };
 
 #endif // SIMON_SCOREMANAGER_H

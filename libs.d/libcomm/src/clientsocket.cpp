@@ -12,11 +12,12 @@
 #include <chrono>
 #include <iostream>
 #include <array>
+#include "lchrono/chrono.h"
 
 using namespace std::literals;
 
 namespace lcomm {
-    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, std::chrono::nanoseconds latency)
+    ClientSocket::ClientSocket(std::string const& ip, unsigned int port, bool tcp, lchrono::duration latency)
             : m_latency(latency)
             , m_connected_flag(false)
             , m_tcp(tcp)

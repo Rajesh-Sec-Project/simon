@@ -5,6 +5,10 @@
 #include "lcomm/lcomm.h"
 #include "moves.h"
 #include "scoremanager.h"
+#include <chrono>
+#include "lchrono/chrono.h"
+
+using namespace std::literals;
 
 class GameSystem;
 
@@ -26,7 +30,7 @@ public:
     void clearAndStart();
     void clear();
 
-    void playMove(lmoves::tmove move, int delay = 500 /* ms */);
+    void playMove(lmoves::tmove move, lchrono::duration delay = 500ms);
     void playWin();
     void playLose();
 

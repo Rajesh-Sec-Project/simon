@@ -21,19 +21,15 @@ void ScoreManager::gameLoop() {
 }
 
 void ScoreManager::setStart() {
-    struct timeval tp;
-    gettimeofday(&tp, NULL);
-    m_start = (long long)tp.tv_sec * 1000L + tp.tv_usec / 1000;
+    m_start = lchrono::clock();
 }
 
 void ScoreManager::setEnd() {
-    struct timeval tp;
-    gettimeofday(&tp, NULL);
-    m_end = (long long)tp.tv_sec * 1000L + tp.tv_usec / 1000;
+    m_end = lchrono::clock();
 }
 
-void ScoreManager::calculateScore() {
-    float timer = (float)(m_end - m_start) / 1000;
+void ScoreManager::calculateScore(size_t seqLen) {
+    float timer = std::chrono::duration_cast<std::chrono::milliseconds>(m_end - m_start).count() / (float)seqLen;
     float added_score = (float)(100 / log(1 + timer));
     m_current_score += (int)added_score;
 }

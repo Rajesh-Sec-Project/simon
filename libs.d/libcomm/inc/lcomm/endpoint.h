@@ -5,6 +5,7 @@
 #include "lcomm/packetfactory.h"
 #include "lcomm/socket.h"
 #include "lcomm/subscriber.h"
+#include "lchrono/chrono.h"
 #include <string>
 #include <set>
 #include <thread>
@@ -26,7 +27,7 @@ namespace lcomm {
     public:
         //! Create an endpoint.
         //! \param latency The socket's polling period for reading
-        Endpoint(std::unique_ptr<Socket> socket, std::chrono::nanoseconds latency = 10ms);
+        Endpoint(std::unique_ptr<Socket> socket, lchrono::duration latency = 10ms);
 
         virtual ~Endpoint();
 
@@ -55,7 +56,7 @@ namespace lcomm {
         void M_notify(std::shared_ptr<PacketBase> packet);
 
     private:
-        std::chrono::nanoseconds m_latency;
+        lchrono::duration m_latency;
         std::unique_ptr<Socket> m_socket;
         std::atomic<bool> m_read_thread_exit;
         std::exception_ptr m_read_thread_exc;
