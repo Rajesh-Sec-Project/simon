@@ -35,7 +35,7 @@ std::ostream& operator<<(std::ostream& out, lmoves::Moves const& seq) {
 
 namespace lmoves {
     // constructor
-    Moves::Moves(size_t seqLen) {
+    Moves::Moves(size_t seqLen) : m_distrib(0, 3), m_generator(std::random_device{}()) {
         while(seqLen-- != 0) {
             this->addRandomMove();
         }
@@ -43,26 +43,25 @@ namespace lmoves {
 
     // getter
     std::vector<tmove> const& Moves::getSequence() const {
-        return this->sequence;
+        return this->m_sequence;
     }
-
 
     void Moves::clearSequence() {
-        this->sequence.clear();
+        this->m_sequence.clear();
     }
 
-    unsigned int Moves::size() const {
-        return sequence.size();
+    size_t Moves::size() const {
+        return m_sequence.size();
     }
 
     tmove Moves::M_randomMove() {
-        return static_cast<tmove>(rand() % static_cast<int>(tmove::NUM_MOVES));
+        return static_cast<tmove>(m_distrib(m_generator));
     }
     void Moves::addMove(tmove m) {
-        sequence.push_back(m);
+        m_sequence.push_back(m);
     }
     void Moves::addRandomMove() {
         tmove new_move = this->M_randomMove();
-        sequence.push_back(new_move);
+        m_sequence.push_back(new_move);
     }
 }

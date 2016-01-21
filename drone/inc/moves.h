@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <iostream>
+#include <random>
+
 namespace lmoves {
     // An enum representing all the different moves that the drone is able to produce
-    enum class tmove { DOWN, UP, RIGHT, LEFT, NUM_MOVES };
+    enum class tmove { DOWN = 0, UP = 1, RIGHT = 2, LEFT = 3, NUM_MOVES };
 
     // The Moves class contains a sequence of moves (a list)
     class Moves {
@@ -23,13 +25,16 @@ namespace lmoves {
 
         void clearSequence();
 
-        unsigned int size() const;
+        size_t size() const;
 
     private:
         // return a random move among the moves available in the enum tmove.
         tmove M_randomMove();
 
-        std::vector<tmove> sequence;
+        std::uniform_int_distribution<int> m_distrib;
+        std::minstd_rand m_generator;
+
+        std::vector<tmove> m_sequence;
     };
 }
 
