@@ -3,7 +3,9 @@
 #include "viewmanager.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
+#include <QSettings>
 
 using namespace std;
 using namespace Ui;
@@ -21,7 +23,11 @@ Lost::Lost(QWidget* parent)
     QObject::connect(m_ui->ok, SIGNAL(clicked()), this, SLOT(M_saveName()));
 
 
-    ifstream infile("high_scores.txt", ios::app);
+    QSettings settings;
+    QString str = settings.value("highScores", "").toString();
+    std::istringstream infile;
+    infile.str(str.toStdString());
+
     string line;
     string last_name;
     int last_score;
@@ -56,7 +62,10 @@ void Lost::M_saveName() {
     new_temp.s_score = ViewManager::get_score();
 
     // infile >>
-    ifstream infile("high_scores.txt");
+    QSettings settings;
+    QString str = settings.value("highScores", "").toString();
+    std::istringstream infile;
+    infile.str(str.toStdString());
     if(!infile) {
         cout << "error opening file  \n";
     }
@@ -89,10 +98,11 @@ void Lost::M_saveName() {
             v.push_back(new_temp);
         }
     }
-    infile.close();
+    // infile.close();
 
-    //<< outfile
-    ofstream outfile("high_scores.txt");
+    //<< outfilestr = settings.value("highScores", "");
+    std::ostringstream outfile;
+    outfile.str(str.toStdString());
     if(!outfile) {
         cout << "error opening file \n";
     }
@@ -102,7 +112,8 @@ void Lost::M_saveName() {
 
         outfile << v[i].s_name << " " << v[i].s_score << '\n';
     }
-    outfile.close();
+    settings.setValue("highScores", QString(outfile.str().c_str()));
+    // outfile.close();
 
     ViewManager::switchToHighScores();
 }
