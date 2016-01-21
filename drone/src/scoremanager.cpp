@@ -14,7 +14,6 @@ ScoreManager::~ScoreManager() {
 
 
 void ScoreManager::gameInit() {
-
 }
 
 void ScoreManager::gameLoop() {

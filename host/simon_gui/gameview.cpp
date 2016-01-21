@@ -93,7 +93,7 @@ void GameView::M_updateState(bool sendStatus, bool startDelay) {
 
     QTimer::singleShot(startDelay ? 3000 : 0, this, SLOT(M_updateUi()));
 
-    if (sendStatus) {
+    if(sendStatus) {
         QTimer::singleShot(startDelay ? 3000 : 0, this, SLOT(M_sendStatusPacket()));
     }
 }

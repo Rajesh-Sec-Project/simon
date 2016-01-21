@@ -54,8 +54,7 @@ int main(int argc, char* argv[]) {
 
     if(noConn) {
         ViewManager::switchToMainMenu();
-    }
-    else {
+    } else {
         ViewManager::switchToLoading();
     }
     gw.show();

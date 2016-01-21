@@ -5,11 +5,10 @@
 #include <memory>
 
 namespace Ui {
-class CreditsView;
+    class CreditsView;
 }
 
-class CreditsView : public QWidget
-{
+class CreditsView : public QWidget {
     Q_OBJECT
 
 public:

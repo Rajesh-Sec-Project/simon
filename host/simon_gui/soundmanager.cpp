@@ -26,8 +26,7 @@ void SoundManager::init() {
     SettingsView::setMusicToggledCallback([](bool enabled) {
         if(enabled) {
             SoundManager::resume();
-        }
-        else {
+        } else {
             SoundManager::pause();
         }
     });

@@ -6,15 +6,14 @@
 #include "lcomm/lcomm.h"
 
 namespace Ui {
-class LoadingView;
+    class LoadingView;
 }
 
-class LoadingView : public QWidget
-{
+class LoadingView : public QWidget {
     Q_OBJECT
 
 public:
-    explicit LoadingView(QWidget *parent = 0);
+    explicit LoadingView(QWidget* parent = 0);
     ~LoadingView();
 
 private slots:

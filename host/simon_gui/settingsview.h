@@ -6,18 +6,17 @@
 #include <functional>
 
 namespace Ui {
-class SettingsView;
+    class SettingsView;
 }
 
-class SettingsView : public QWidget
-{
+class SettingsView : public QWidget {
     Q_OBJECT
 
 public:
     explicit SettingsView(QWidget* parent = 0);
     ~SettingsView();
 
-    static void setMusicToggledCallback(std::function<void(bool)> const &callback) {
+    static void setMusicToggledCallback(std::function<void(bool)> const& callback) {
         m_callback = callback;
     }
 

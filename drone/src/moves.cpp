@@ -35,7 +35,9 @@ std::ostream& operator<<(std::ostream& out, lmoves::Moves const& seq) {
 
 namespace lmoves {
     // constructor
-    Moves::Moves(size_t seqLen) : m_distrib(0, 3), m_generator(std::random_device{}()) {
+    Moves::Moves(size_t seqLen)
+            : m_distrib(0, 3)
+            , m_generator(std::random_device{}()) {
         while(seqLen-- != 0) {
             this->addRandomMove();
         }
