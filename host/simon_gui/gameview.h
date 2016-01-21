@@ -35,7 +35,7 @@ private slots:
     void M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet);
 
 private:
-    void M_updateState();
+    void M_updateState(bool sendStatus = true);
     void M_lost();
 
     std::unique_ptr<Ui::gameview> m_ui;

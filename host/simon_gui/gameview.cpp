@@ -52,7 +52,7 @@ gameview::gameview(QWidget* parent)
                      this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     m_state = GameState::Stopped;
-    M_updateState();
+    M_updateState(false);
 }
 
 gameview::~gameview() {
@@ -77,7 +77,7 @@ void gameview::M_stop() {
     M_updateState();
 }
 
-void gameview::M_updateState() {
+void gameview::M_updateState(bool sendStatus) {
     switch(m_state) {
         case GameState::Stopped:
             m_ui->status->setText("Stopped");
@@ -105,8 +105,10 @@ void gameview::M_updateState() {
             break;
     }
 
-    lcomm::GameControlPacket pkt(m_state);
-    CommManager::self().write(pkt);
+    if (sendStatus) {
+        lcomm::GameControlPacket pkt(m_state);
+        CommManager::self().write(pkt);
+    }
 }
 
 void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {

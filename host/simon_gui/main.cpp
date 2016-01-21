@@ -13,6 +13,7 @@
 #include "lcomm/sound_packet.h"
 #include "viewmanager.h"
 #include <QFontDatabase>
+#include <QMessageBox>
 #include "soundmanager.h"
 
 int main(int argc, char* argv[]) {
@@ -31,10 +32,13 @@ int main(int argc, char* argv[]) {
     QFontDatabase::addApplicationFont(":/simon/arcade_classic");
     QFontDatabase::addApplicationFont(":/simon/zorque");
 
-    qDebug() << "Waiting for connection...";
-    while(!CommManager::self().opened())
-        ;
-    qDebug() << "Connected !";
+    if (!(argc > 1 && QString(argv[1]) == "-no_conn"))
+    {
+        qDebug() << "Waiting for connection...";
+        while(!CommManager::self().opened())
+            ;
+        qDebug() << "Connected !";
+    }
 
     //    DebugWindow dw;
     //    dw.show();
