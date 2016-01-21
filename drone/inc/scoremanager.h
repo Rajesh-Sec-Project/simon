@@ -17,13 +17,12 @@ public:
     void setEnd();
     void calculateScore();
     void printScore();
-
     void clear();
 
     void gameOver();
 
 private:
-    int m_current_score;
+    int m_current_score = 0;
     long long m_start;
     long long m_end;
 };

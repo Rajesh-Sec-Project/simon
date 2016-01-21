@@ -172,7 +172,7 @@ void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBas
     }
 
     InfoPacket* info = packet->downcast<InfoPacket>();
-    if(info) {
+    if(info && !(info->state() & InfoPacket::AppReady)) {
         if(info->state() & InfoPacket::Detection) {
             float raw_x = 1.0f - ((float)info->detectX()) / 1000.0f;
             float raw_y = ((float)info->detectY()) / 1000.0f;
