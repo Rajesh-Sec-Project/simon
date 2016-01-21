@@ -19,7 +19,7 @@
 
 using namespace std::literals;
 
-gameview::gameview(QWidget* parent)
+GameView::GameView(QWidget* parent)
         : QWidget(parent)
         , m_ui(new Ui::gameview) {
     m_ui->setupUi(this);
@@ -56,10 +56,10 @@ gameview::gameview(QWidget* parent)
     M_updateState(false);
 }
 
-gameview::~gameview() {
+GameView::~GameView() {
 }
 
-void gameview::M_startPause() {
+void GameView::M_startPause() {
     bool delay = false;
 
     switch(m_state) {
@@ -77,12 +77,12 @@ void gameview::M_startPause() {
     M_updateState(true, delay);
 }
 
-void gameview::M_stop() {
+void GameView::M_stop() {
     m_state = GameState::Stopped;
     M_updateState();
 }
 
-void gameview::M_updateState(bool sendStatus, bool startDelay) {
+void GameView::M_updateState(bool sendStatus, bool startDelay) {
     m_ui->waitProgress->setValue(0);
     m_ui->waitProgress->show();
     m_ui->getReady->setText("Ready    ?");
@@ -98,17 +98,17 @@ void gameview::M_updateState(bool sendStatus, bool startDelay) {
     }
 }
 
-void gameview::M_waitProgress1() {
+void GameView::M_waitProgress1() {
     m_ui->waitProgress->setValue(50);
     m_ui->getReady->setText("Set   !");
 }
 
-void gameview::M_waitProgress2() {
+void GameView::M_waitProgress2() {
     m_ui->waitProgress->setValue(100);
     m_ui->getReady->setText("Go   !");
 }
 
-void gameview::M_updateUi() {
+void GameView::M_updateUi() {
     switch(m_state) {
         case GameState::Stopped:
             m_ui->status->setText("Stopped");
@@ -143,12 +143,12 @@ void gameview::M_updateUi() {
     }
 }
 
-void gameview::M_sendStatusPacket() {
+void GameView::M_sendStatusPacket() {
     lcomm::GameControlPacket pkt(m_state);
     CommManager::self().write(pkt);
 }
 
-void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+void GameView::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
     ScorePacket* score = packet->downcast<ScorePacket>();
@@ -163,32 +163,32 @@ void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBa
     m_ui->score->setText("0x" + QString::number(score->getScore(), 16));
 }
 
-void gameview::M_up() {
+void GameView::M_up() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Up);
     CommManager::self().write(pkt);
 }
 
-void gameview::M_down() {
+void GameView::M_down() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Down);
     CommManager::self().write(pkt);
 }
 
-void gameview::M_left() {
+void GameView::M_left() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Left);
     CommManager::self().write(pkt);
 }
 
-void gameview::M_right() {
+void GameView::M_right() {
     lcomm::GamepadPacket pkt(lcomm::GamepadPacket::Right);
     CommManager::self().write(pkt);
 }
 
-void gameview::M_lost() {
+void GameView::M_lost() {
     ViewManager::switchToLost();
     M_stop();
 }
 
-void gameview::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
+void GameView::M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
     using namespace lcomm;
 
     SoundPacket* sound = packet->downcast<SoundPacket>();

@@ -16,12 +16,12 @@ namespace Ui {
 
 using lcomm::GameState;
 
-class gameview : public QWidget {
+class GameView : public QWidget {
     Q_OBJECT
 
 public:
-    explicit gameview(QWidget* parent = 0);
-    ~gameview();
+    explicit GameView(QWidget* parent = 0);
+    ~GameView();
 
 private slots:
     void M_startPause();
