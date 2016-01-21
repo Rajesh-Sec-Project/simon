@@ -75,7 +75,7 @@ void RoundManager::gameLoop() {
                 m_current_move = 0;
                 M_message("well done !");
                 playWin();
-                m_scoremgr.calculateScore();
+                m_scoremgr.calculateScore(m_seq.size());
                 m_scoremgr.printScore();
                 M_playSequence();
             } else {

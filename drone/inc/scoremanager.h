@@ -18,7 +18,7 @@ public:
     void gameLoop() override;
     void setStart();
     void setEnd();
-    void calculateScore();
+    void calculateScore(size_t seqLen);
     void printScore();
     void clear();
 

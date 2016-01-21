@@ -28,8 +28,8 @@ void ScoreManager::setEnd() {
     m_end = lchrono::clock();
 }
 
-void ScoreManager::calculateScore() {
-    float timer = std::chrono::duration_cast<std:chrono::milliseconds>(m_end - m_start).count();
+void ScoreManager::calculateScore(size_t seqLen) {
+    float timer = std::chrono::duration_cast<std::chrono::milliseconds>(m_end - m_start).count() / (float)seqLen;
     float added_score = (float)(100 / log(1 + timer));
     m_current_score += (int)added_score;
 }

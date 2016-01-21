@@ -53,8 +53,10 @@ FORMS    += \
 CONFIG += c++14
 INCLUDEPATH += ../../libs.d/libcomm/inc
 INCLUDEPATH += ../../libs.d/libconf/include
+INCLUDEPATH += ../../libs.d/libchrono/inc
 LIBS += -L../../libs.d/libcomm/bin -lcomm
 LIBS += -L../../libs.d/libconf/bin -lconf
+LIBS += -L../../libs.d/libchrono/bin -lchrono
 
 RESOURCES += \
     ressources.qrc
