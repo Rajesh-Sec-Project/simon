@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
 
     ViewManager::switchToMainMenu();
     gw.show();
+    gw.setWindowState(Qt::WindowMaximized);
 
     return a.exec();
 }

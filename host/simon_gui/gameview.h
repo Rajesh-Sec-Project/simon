@@ -33,9 +33,13 @@ private slots:
     void M_right();
     void M_receivedScore(lcomm::Endpoint* ep, std::shared_ptr<lcomm::PacketBase> packet);
     void M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet);
+    void M_updateUi();
+    void M_sendStatusPacket();
+    void M_waitProgress1();
+    void M_waitProgress2();
 
 private:
-    void M_updateState(bool sendStatus = true);
+    void M_updateState(bool sendStatus = true, bool startDelay = false);
     void M_lost();
 
     std::unique_ptr<Ui::gameview> m_ui;

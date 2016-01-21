@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QFont>
 #include <QFontDatabase>
+#include <QTimer>
 #include <sstream>
 #include "viewmanager.h"
 #include "soundmanager.h"
@@ -33,7 +34,7 @@ gameview::gameview(QWidget* parent)
     m_dot->setFlags(QGraphicsItem::ItemIsMovable);
     m_dot->hide();
 
-    m_text = m_scene->addText("Tag    ?", QFont("ArcadeClassic"));
+    m_text = m_scene->addText("Tag    ?", QFont("ArcadeClassic", 20));
     m_text->setPos(QPointF(m_scene->width() / 2.0f, m_scene->height() / 2.0f));
     m_text->show();
 
@@ -59,17 +60,21 @@ gameview::~gameview() {
 }
 
 void gameview::M_startPause() {
+    bool delay = false;
+
     switch(m_state) {
         case GameState::Stopped:
         case GameState::Paused:
             m_state = GameState::Running;
+            delay = true;
             break;
         case GameState::Running:
             m_state = GameState::Paused;
+            delay = false;
             break;
     }
 
-    M_updateState();
+    M_updateState(true, delay);
 }
 
 void gameview::M_stop() {
@@ -77,7 +82,33 @@ void gameview::M_stop() {
     M_updateState();
 }
 
-void gameview::M_updateState(bool sendStatus) {
+void gameview::M_updateState(bool sendStatus, bool startDelay) {
+    m_ui->waitProgress->setValue(0);
+    m_ui->waitProgress->show();
+    m_ui->getReady->setText("Ready    ?");
+    m_ui->getReady->show();
+
+    QTimer::singleShot(startDelay ? 1000 : 0, this, SLOT(M_waitProgress1()));
+    QTimer::singleShot(startDelay ? 2000 : 0, this, SLOT(M_waitProgress2()));
+
+    QTimer::singleShot(startDelay ? 3000 : 0, this, SLOT(M_updateUi()));
+
+    if (sendStatus) {
+        QTimer::singleShot(startDelay ? 3000 : 0, this, SLOT(M_sendStatusPacket()));
+    }
+}
+
+void gameview::M_waitProgress1() {
+    m_ui->waitProgress->setValue(50);
+    m_ui->getReady->setText("Set   !");
+}
+
+void gameview::M_waitProgress2() {
+    m_ui->waitProgress->setValue(100);
+    m_ui->getReady->setText("Go   !");
+}
+
+void gameview::M_updateUi() {
     switch(m_state) {
         case GameState::Stopped:
             m_ui->status->setText("Stopped");
@@ -86,6 +117,8 @@ void gameview::M_updateState(bool sendStatus) {
             m_ui->gamepad->hide();
             m_ui->tagDisplay->hide();
             m_ui->score->hide();
+            m_ui->waitProgress->hide();
+            m_ui->getReady->hide();
             break;
         case GameState::Paused:
             m_ui->status->setText("Paused");
@@ -94,6 +127,8 @@ void gameview::M_updateState(bool sendStatus) {
             m_ui->gamepad->show();
             m_ui->tagDisplay->show();
             m_ui->score->show();
+            m_ui->waitProgress->hide();
+            m_ui->getReady->hide();
             break;
         case GameState::Running:
             m_ui->status->setText("Running");
@@ -102,13 +137,15 @@ void gameview::M_updateState(bool sendStatus) {
             m_ui->gamepad->show();
             m_ui->tagDisplay->show();
             m_ui->score->show();
+            m_ui->waitProgress->hide();
+            m_ui->getReady->hide();
             break;
     }
+}
 
-    if (sendStatus) {
-        lcomm::GameControlPacket pkt(m_state);
-        CommManager::self().write(pkt);
-    }
+void gameview::M_sendStatusPacket() {
+    lcomm::GameControlPacket pkt(m_state);
+    CommManager::self().write(pkt);
 }
 
 void gameview::M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase> packet) {
