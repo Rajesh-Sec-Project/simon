@@ -4,9 +4,9 @@
 Game screenshots
 ------------
 
-(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/main_menu.png)
-(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/high_scores.png)
-(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/settings.png)
+(https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/main_menu.png)
+(https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/high_scores.png)
+(https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/settings.png)
 
 ------------
 Required tools
