@@ -232,18 +232,52 @@ void TagController::M_initMoveDetection() {
     m_horiz_detect.step = m_horiz_detect.window / 8;
     m_horiz_detect.amplitude = 50.0f;
     m_horiz_detect.data = std::vector<float>(m_horiz_detect.window, 0.0f);
-    m_horiz_detect.reference_pattern = {0.000000, 0.111111, 0.222222, 0.333333, 0.444444, 0.555556, 0.666667,
-                                        0.777778, 0.888889, 1.000000, 0.888889, 0.777778, 0.666667, 0.555556,
-                                        0.444444, 0.333333, 0.222222, 0.111111, 0.000000, 0.000000};
+    m_horiz_detect.reference_pattern = {0.000000,
+                                        0.111111,
+                                        0.222222,
+                                        0.333333,
+                                        0.444444,
+                                        0.555556,
+                                        0.666667,
+                                        0.777778,
+                                        0.888889,
+                                        1.000000,
+                                        0.888889,
+                                        0.777778,
+                                        0.666667,
+                                        0.555556,
+                                        0.444444,
+                                        0.333333,
+                                        0.222222,
+                                        0.111111,
+                                        0.000000,
+                                        0.000000};
     m_horiz_detect.step_counter = 0;
 
     m_vert_detect.window = 20;
     m_vert_detect.step = m_vert_detect.window / 8;
     m_vert_detect.amplitude = 50.0f;
     m_vert_detect.data = std::vector<float>(m_vert_detect.window, 0.0f);
-    m_vert_detect.reference_pattern = {0.000000, 0.111111, 0.222222, 0.333333, 0.444444, 0.555556, 0.666667,
-                                       0.777778, 0.888889, 1.000000, 0.888889, 0.777778, 0.666667, 0.555556,
-                                       0.444444, 0.333333, 0.222222, 0.111111, 0.000000, 0.000000};
+    m_vert_detect.reference_pattern = {0.000000,
+                                       0.111111,
+                                       0.222222,
+                                       0.333333,
+                                       0.444444,
+                                       0.555556,
+                                       0.666667,
+                                       0.777778,
+                                       0.888889,
+                                       1.000000,
+                                       0.888889,
+                                       0.777778,
+                                       0.666667,
+                                       0.555556,
+                                       0.444444,
+                                       0.333333,
+                                       0.222222,
+                                       0.111111,
+                                       0.000000,
+                                       0.000000};
     m_vert_detect.step_counter = 0;
 }
 

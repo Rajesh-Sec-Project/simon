@@ -10,12 +10,12 @@ if [ "$#" -gt 1 ]; then
 fi
 
 if [ "$#" -eq 0 ]; then
-    format_path=("../drone" "../drone-sandbox" "../host" "../host-sandbox" "../libs.d/libcomm" "../libs.d/libcontrol")
+    format_path=("../drone" "../drone-sandbox" "../host" "../host-sandbox" "../libs.d/libcomm" "../libs.d/libcontrol" "../hard.d/leds_board/soft")
 else
     format_path=("$1")
 fi
 
-find "${format_path[@]}" \( -name "*.cpp" -o -name "*.h" \) -exec clang-format -i {} \;
+find "${format_path[@]}" \( -name "*.c" -o -name "*.cpp" -o -name "*.h" \) -exec clang-format -i {} \;
 
 cd "$OLD_DIR"
 

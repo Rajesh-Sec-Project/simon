@@ -40,8 +40,7 @@ void GameControlSubscriber::notify(Endpoint& ep, std::shared_ptr<lcomm::PacketBa
                          "        .--'\"\\| ()\n"
                          "              | |\n"
                          "              | |\n"
-                         "              |_|\n"
-                      << std::endl;
+                         "              |_|\n" << std::endl;
             Control::land();
             m_system.stopGame();
         } else if(ctrl->gameState() == GameState::Paused) {

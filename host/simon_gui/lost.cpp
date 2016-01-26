@@ -83,7 +83,7 @@ void Lost::M_saveName() {
 
             infile >> current_name >> current_score;
         }
-        
+
         if(scores.size() < 10 and !add) {
             scores.push_back(new_temp);
         }

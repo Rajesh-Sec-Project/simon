@@ -38,8 +38,10 @@ GameView::GameView(QWidget* parent)
     m_text->setPos(QPointF(m_scene->width() / 2.0f, m_scene->height() / 2.0f));
     m_text->show();
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     QObject::connect(m_ui->gamepad, SIGNAL(up()), this, SLOT(M_up()));
     QObject::connect(m_ui->gamepad, SIGNAL(down()), this, SLOT(M_down()));
@@ -49,8 +51,10 @@ GameView::GameView(QWidget* parent)
     QObject::connect(m_ui->stopButton, SIGNAL(clicked()), this, SLOT(M_stop()));
     QObject::connect(m_ui->startPauseButton, SIGNAL(clicked()), this, SLOT(M_startPause()));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedScore(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     m_state = GameState::Stopped;
     M_updateState(false);

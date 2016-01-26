@@ -50,14 +50,20 @@ DebugWindow::DebugWindow(QWidget* parent)
 
     QObject::connect(m_ui->minLogLevel, SIGNAL(currentIndexChanged(int)), this, SLOT(M_logLevelChanged(int)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedLog(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
-    QObject::connect(&CommManager::self(), SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
-                     this, SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
+    QObject::connect(&CommManager::self(),
+                     SIGNAL(packetReceived(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)),
+                     this,
+                     SLOT(M_receivedInfo(lcomm::Endpoint*, std::shared_ptr<lcomm::PacketBase>)));
 
     QObject::connect(m_ui->kp_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
     QObject::connect(m_ui->ki_z, SIGNAL(valueChanged(double)), this, SLOT(M_pidUpdated(double)));
@@ -122,8 +128,7 @@ void DebugWindow::M_positionRight() {
 
 void DebugWindow::M_pidUpdated(double) {
     using namespace lcomm;
-    PIDPacket pkt(m_ui->kp_z->value(), m_ui->ki_z->value(), m_ui->kd_z->value(), m_ui->kp->value(), m_ui->ki->value(),
-                  m_ui->kd->value());
+    PIDPacket pkt(m_ui->kp_z->value(), m_ui->ki_z->value(), m_ui->kd_z->value(), m_ui->kp->value(), m_ui->ki->value(), m_ui->kd->value());
     CommManager::self().write(pkt);
 }
 
