@@ -1,6 +1,14 @@
 # simon
 
 ------------
+Game screenshots
+------------
+
+(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/main_menu.png)
+(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/high_scores.png)
+(https://github.com/Rajesh-Sec-Project/simon/docs.d/screenshots/settings.png)
+
+------------
 Required tools
 ------------
 The project uses the ```make``` build system. It smartly manages the compilation process for the host applications and the cross-compiled applications for the drone.
