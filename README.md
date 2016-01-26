@@ -4,8 +4,13 @@
 Game screenshots
 ------------
 
+![Main menu]
 (https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/main_menu.png)
+
+![High scores hall of fame]
 (https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/high_scores.png)
+
+![Settings page]
 (https://github.com/Rajesh-Sec-Project/simon/tree/master/docs.d/screenshots/settings.png)
 
 ------------
