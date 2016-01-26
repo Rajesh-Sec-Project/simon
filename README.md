@@ -36,3 +36,20 @@ If this is happening, it can mean 2 things: either you did not meet the above pr
 Just run the command ```killall -9 program.elf; killall -9 drone``` to terminate the ```drone``` application and turn back in a restartable state. Note that you may want to execute the previous command each time you want to relaunch the ```drone``` application.
 
 The deployment puts the executable in the drone filesystem's ```/data/video/``` directory, and you can run the app by opening a shell on the drone: ```telnet 192.168.1.1```.
+
+------------
+Repository structure
+------------
+
+Here is a short roadmap of this repository's top-level structure :
+
+├── drone         -> The embedded program sources
+├── drone-sandbox -> An empty playground for embedded programs
+├── host          -> The host GUI client sources
+├── host-sandbox  -> An empty playground for host programs
+├── docs.d        -> Non-source folder for documentation stuff
+├── gdb.d         -> Script folder for debugging and executable pushing
+├── hard.d        -> Hardware sources folder
+├── libs.d        -> Shared libraries (across drone and host) source folder
+├── mk.d          -> Internal GNU Make scripts for building the project
+└── utils.d       -> Utilities scripts folder
