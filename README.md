@@ -43,13 +43,13 @@ Repository structure
 
 Here is a short roadmap of this repository's top-level structure :
 
-├── drone         -> The embedded program sources
-├── drone-sandbox -> An empty playground for embedded programs
-├── host          -> The host GUI client sources
-├── host-sandbox  -> An empty playground for host programs
-├── docs.d        -> Non-source folder for documentation stuff
-├── gdb.d         -> Script folder for debugging and executable pushing
-├── hard.d        -> Hardware sources folder
-├── libs.d        -> Shared libraries (across drone and host) source folder
-├── mk.d          -> Internal GNU Make scripts for building the project
-└── utils.d       -> Utilities scripts folder
+* drone         -> The embedded program sources
+* drone-sandbox -> An empty playground for embedded programs
+* host          -> The host GUI client sources
+* host-sandbox  -> An empty playground for host programs
+* docs.d        -> Non-source folder for documentation stuff
+* gdb.d         -> Script folder for debugging and executable pushing
+* hard.d        -> Hardware sources folder
+* libs.d        -> Shared libraries (across drone and host) source folder
+* mk.d          -> Internal GNU Make scripts for building the project
+* utils.d       -> Utilities scripts folder
