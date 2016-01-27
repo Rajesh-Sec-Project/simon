@@ -1,6 +1,26 @@
 # simon
 
 ------------
+Setup
+------------
+
+### Step 1
+
+Grab the project's sources using ```git clone https://github.com/Rajesh-Sec-Project/simon.git```.
+
+### Step 2
+
+Build the GUI component, you will need the Qt5 framework properly insstalled alongside with QtMultimedia.
+You will also need QtChooser.
+Then, type ```cd host && make release```, all should go well and you should see no errors.
+
+### Step 3
+
+Get a drone (and the LED board). Power-on the drone (but don't plut the LEDs board yet).
+Connect your computer to the drone's wifi network, then type in ```utils.d/setup.sh```.
+Wait some seconds, then plug in the LEDs when requested, the game should start shortly !
+
+------------
 Game screenshots
 ------------
 
